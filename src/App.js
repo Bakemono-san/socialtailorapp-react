@@ -3,7 +3,7 @@ import Sidebar from "./Components/Sidebar";
 import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
-
+import Panier from "./Pages/Panier";
 
 function App() {
   return (
@@ -15,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/discussion" element={<Discussion />} />
+            <Route path="/panier" element={<Panier />} />
           </Routes>
         </div>
       </div>
