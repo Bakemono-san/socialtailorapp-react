@@ -1,8 +1,9 @@
 import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
-import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import ListDiscussion from "./Pages/ListDiscussion";
+import DiscussionPage from "./Pages/DiscussionPage";
 
 
 function App() {
@@ -14,7 +15,9 @@ function App() {
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/discussion" element={<Discussion />} />
+            <Route path="/discussion" element={<ListDiscussion />} />
+            <Route path={`/discussion/:id`} element={<DiscussionPage />} />
+
           </Routes>
         </div>
       </div>
