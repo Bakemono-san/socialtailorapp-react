@@ -9,7 +9,7 @@ import DiscussionPage from "./Pages/DiscussionPage";
 function App() {
   return (
     <Router>
-      <div className="bg-blue-100 pb-16 h-screen overflow-hidden">
+      <div className="bg-blue-100 pb-16 h-dvh overflow-hidden">
         <Header />
         <div className="md:p-4 md:flex">
           <Sidebar color="bg-blue-700" />
