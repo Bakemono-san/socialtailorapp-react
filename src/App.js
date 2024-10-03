@@ -3,6 +3,7 @@ import Sidebar from "./Components/Sidebar";
 import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import AchatCredit from "./Pages/AchatCredit";
 
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/discussion" element={<Discussion />} />
+            <Route path="/achatcredit" element={<AchatCredit />} />
           </Routes>
         </div>
       </div>
