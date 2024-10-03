@@ -19,7 +19,7 @@ export default function DiscussionPage() {
         <MessageItem color={'bg-yellow-400'} position={'self-end'} />
         <MessageItem color={'bg-blue-400'} position={'left-2'} />
         <MessageItem color={'bg-yellow-400'} position={'self-end'} />
-        <form className='fixed flex bottom-2 right-4  left-32 gap-4 '>
+        <form className='absolute flex md:bottom-2 bottom-16 right-4 left-4  md:left-32 gap-4 '>
           <input type="text" name='message' placeholder="Message" className="input input-bordered w-full" />
           <input type="file" name='image' className="file-input w-full max-w-xs"/>
           <button className="btn btn-primary">Send</button>

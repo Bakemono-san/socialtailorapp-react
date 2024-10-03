@@ -11,7 +11,7 @@ const ModelForm = () => {
 
     return (
         <>
-            <form className="flex flex-col gap-4 w-full bg-white p-6 rounded-lg shadow-lg">
+            <form className="flex flex-col gap-4 w-full bg-white p-2 rounded-lg shadow-lg">
                 <div className="flex flex-col sm:flex-row gap-4 justify-between">
                     <div className="flex-1">
                         <label htmlFor="titre" className="font-semibold">Titre</label>
@@ -65,7 +65,7 @@ const ModelForm = () => {
 
             {/* Modal for Model Selection */}
             {isModalOpen && (
-                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
+                <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-10">
                     <div className="bg-white rounded-lg p-6 shadow-lg w-96">
                         <h3 className="font-bold text-lg">Choose a Model</h3>
                         <div className="py-4">

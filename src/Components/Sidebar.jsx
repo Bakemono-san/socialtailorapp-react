@@ -4,7 +4,7 @@ import { faCog, faCoins, faHome, faMessage, faVest } from '@fortawesome/free-sol
 
 export default function Sidebar(props) {
   return (
-    <div className={props.color+ ` md:py-8 md:px-4 flex md:flex-col md:gap-10 md:h-full text-white md:rounded fixed md:relative bottom-0 w-full min-h-12 border-t border-gray-300 shadow md:w-fit `}>
+    <div className={props.color+ ` md:py-8 md:px-4 flex md:flex-col md:gap-10 md:h-full text-white md:rounded absolute z-10 md:relative bottom-0 w-full min-h-12 border-t border-gray-300 shadow md:w-fit `}>
             <div className='flex-1 hidden md:block'>
                 <SidebarItem icon={faHome} path="/" />
             </div>
