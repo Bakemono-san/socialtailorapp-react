@@ -15,7 +15,12 @@ export default function StoryContainer() {
                 <dialog id="my_modal_2" className="modal">
                     <div className="modal-box">
                         <h3 className="font-bold text-lg">Create a storie</h3>
-                        <p className="py-4">Press ESC key or click outside to close</p>
+                        <p className="py-4">Select a model : </p>
+                        <div>
+                            <p>Model 1</p>
+                            <p>Model 2</p>
+                            <p>Model 3</p>
+                        </div>
                     </div>
                     <form method="dialog" className="modal-backdrop">
                         <button>close</button>

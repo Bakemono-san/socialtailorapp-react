@@ -1,6 +1,6 @@
 import React from 'react'
 import SidebarItem from './SidebarItem'
-import { faCog, faCoins, faComment, faHome, faMessage, faVest } from '@fortawesome/free-solid-svg-icons'
+import { faCog, faCoins, faHome, faMessage, faVest } from '@fortawesome/free-solid-svg-icons'
 
 export default function Sidebar(props) {
   return (
@@ -10,7 +10,7 @@ export default function Sidebar(props) {
             </div>
             <hr />
             <div className='flex-1 md:flex-col md:gap-8 justify-between flex'>
-                <SidebarItem icon={faHome} path="/" className="md:hidden"/>
+                <SidebarItem icon={faHome} path="/" className="sm:hidden"/>
                 <SidebarItem icon={faVest} path="/Models" />
                 <SidebarItem icon={faMessage} path="/discussion" />
                 <SidebarItem icon={faCoins} path="/Charger-credit" />
