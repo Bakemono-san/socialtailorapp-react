@@ -1,6 +1,6 @@
 import React from 'react'
-import StoryContainer from './StoryContainer'
-import PostCardContainer from './PostCardContainer'
+import StoryContainer from '../Components/StoryContainer'
+import PostCardContainer from '../Components/PostCardContainer'
 
 export default function MainPage() {
   return (

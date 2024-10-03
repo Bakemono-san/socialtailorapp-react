@@ -3,7 +3,7 @@ import { faClipboard } from '@fortawesome/free-solid-svg-icons/faClipboard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 
-export default function PostCard() {
+export default function PostCard(props) {
     return (
         <div className='w-full md-w-auto bg-white'>
             <div className='flex items-center justify-between py-2 md:px-8 px-2  border-b border-grey-300'>
@@ -24,15 +24,39 @@ export default function PostCard() {
                     </div>
                 </div>
             </div>
-            <main className='flex flex-col lg:flex-row'>
-                <img className='min-w-86 h-80' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s" alt="" />
-                <div className='p-4 flex flex-col gap-4 w-full'>
+            <main className='flex flex-col lg:flex-row relative'>
 
-                    <h2 className='text-2xl font-semibold text-center'>
-                        titre de votre poste
-                    </h2>
-                    <p className='overflow-hidden'>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab aut suscipit ipsa optio illo ipsam exercitationem veniam officiis eum fuga possimus quos, nesciunt ex, sunt totam quas perferendis quaerat sint officia id, eos unde. Amet officiis ab eaque deserunt, impedit consectetur! Voluptatibus vel ipsa distinctio assumenda officiis rem reprehenderit. Vero.</p>
+                <img className='min-w-86 h-80 object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s" alt="" />
+                <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-500 to-red-500 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+                    15000 fr
                 </div>
+                <div className="p-6 flex flex-col gap-6 w-full bg-white rounded-lg">
+                    <h2 className="text-3xl font-bold text-center text-gray-800">
+                        Model bou bess
+                    </h2>
+
+                    <div className="flex justify-between text-lg">
+                        <div>
+                            <h3 className="font-semibold text-gray-700 mb-2">Tissus</h3>
+                            <ul className="list-disc list-inside text-gray-600">
+                                {props.tissu.map((element, index) => (
+                                    <li key={index}>{element} <input type="radio" name="tissu" value={element} /></li>
+                                ))}
+                            </ul>
+                        </div>
+
+
+                        <div>
+                            <h3 className="font-semibold text-gray-700 mb-2">Materials</h3>
+                            <ul className="list-disc list-inside text-gray-600">
+                                {props.materials.map((element, index) => (
+                                    <li key={index}>{element}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </main>
             <div className="reactions flex justify-between items-center px-4 py-4 border-y border-grey-300  bg-white">
                 <div className='flex gap-2 items-baseline  '>
@@ -52,7 +76,7 @@ export default function PostCard() {
                     </button>
                 </span>
                 <span className='flex gap-2 items-baseline'>
-                    <button className='btn rounded w-40 h-10 text-white bg-blue-500'>
+                    <button className='btn rounded  h-10 text-white bg-blue-500'>
                         <FontAwesomeIcon icon={faCartPlus} />
                         <p>Add to cart</p>
                     </button>
