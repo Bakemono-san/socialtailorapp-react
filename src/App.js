@@ -4,6 +4,7 @@ import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
 import AchatCredit from "./Pages/AchatCredit";
+import ListeSouhait from "./Pages/ListeSouhait";
 
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/discussion" element={<Discussion />} />
             <Route path="/achatcredit" element={<AchatCredit />} />
+            <Route path="/listesouhait" element={< ListeSouhait/>} />
           </Routes>
         </div>
       </div>
