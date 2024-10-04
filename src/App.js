@@ -1,5 +1,7 @@
 import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
+import DiscussionPage from "./Pages/DiscussionPage";
+import Models from "./Pages/Models";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
 import Panier from "./Pages/Panier";
@@ -17,7 +19,7 @@ function App() {
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />
-            <Route path="/discussion" element={<Discussion />} />
+            <Route path="/Models" element={<Models/>} />
             <Route path="/panier" element={<Panier />} />
             <Route path="/rang" element={<Ranking />} />
             <Route path="/discussion" element={<ListDiscussion />} />
