@@ -4,6 +4,9 @@ import DiscussionPage from "./Pages/DiscussionPage";
 import Models from "./Pages/Models";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import TailleursListe from "./Pages/TailleursListe";
+import Parameters from "./Pages/Parameters";
+import Measurements from "./Pages/Measurements";
 import AchatCredit from "./Pages/AchatCredit";
 import ListeSouhait from "./Pages/ListeSouhait";
 import Panier from "./Pages/Panier";
@@ -21,6 +24,9 @@ function App() {
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/tailleurs" element={<TailleursListe />} />
+            <Route path="/params" element={<Parameters />} />
+            <Route path="/measurements" element={<Measurements/>} />
             <Route path="/achatcredit" element={<AchatCredit />} />
             <Route path="/listesouhait" element={< ListeSouhait/>} />
             <Route path="/Models" element={<Models/>} />
