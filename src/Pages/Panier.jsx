@@ -4,7 +4,7 @@ import PanierComponent from "../Components/PanierComponent";
 
 const Panier = () => {
   return (
-    <div className="flex flex-col justify-center items-center gap-4 w-full p-4 h-[calc(100vh-300px)]">
+    <div className="flex flex-col justify-center items-center gap-4 w-full p-4 h-[calc(100vh-200px)]">
       <h1 className="text-center">Récap Panier</h1>
 
       <div className="flex w-full gap-4 bg-white border rounded p-4 shadow">

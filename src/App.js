@@ -4,6 +4,7 @@ import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
 import Panier from "./Pages/Panier";
+import Ranking from "./Pages/Ranking";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<MainPage />} />
             <Route path="/discussion" element={<Discussion />} />
             <Route path="/panier" element={<Panier />} />
+            <Route path="/rang" element={<Ranking />} />
           </Routes>
         </div>
       </div>
