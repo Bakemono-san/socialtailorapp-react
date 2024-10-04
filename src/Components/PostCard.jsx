@@ -24,16 +24,18 @@ export default function PostCard(props) {
                     </div>
                 </div>
             </div>
-            <main className='flex flex-col lg:flex-row'>
+            <main className='flex flex-col lg:flex-row relative'>
 
                 <img className='min-w-86 h-80 object-cover' src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s" alt="" />
-                
-                <div className="py-2 px-6 md:p-6 flex flex-col md:gap-6 gap-4 w-full bg-white rounded-lg">
-                    <h2 className="md:text-3xl font-bold text-center text-gray-800">
+                <div className="absolute top-4 left-4 bg-gradient-to-r from-blue-500 to-red-500 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+                    15000 fr
+                </div>
+                <div className="p-6 flex flex-col gap-6 w-full bg-white rounded-lg">
+                    <h2 className="text-3xl font-bold text-center text-gray-800">
                         Model bou bess
                     </h2>
 
-                    <div className="flex justify-between md:text-lg">
+                    <div className="flex justify-between text-lg">
                         <div>
                             <h3 className="font-semibold text-gray-700 mb-2">Tissus</h3>
                             <ul className="list-disc list-inside text-gray-600">
@@ -53,13 +55,10 @@ export default function PostCard(props) {
                             </ul>
                         </div>
                     </div>
-                    <div className="bg-gradient-to-r from-blue-500 to-red-500 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out w-fit self-center">
-                    15000 fr
-                </div>
                 </div>
 
             </main>
-            <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
+            <div className="reactions flex justify-between items-center px-4 py-4 border-y border-grey-300  bg-white">
                 <div className='flex gap-2 items-baseline  '>
                     <FontAwesomeIcon icon={faSmile} />
                     <p>Like</p>
@@ -69,7 +68,7 @@ export default function PostCard(props) {
                 <div className='flex gap-2 items-baseline'><FontAwesomeIcon icon={faShare} />
                     <p>Share</p></div>
             </div>
-            <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
+            <div className="reactions flex justify-between items-center px-4 py-4 border-y border-grey-300  bg-white">
                 <span className='flex gap-2 items-baseline'>
                     <button className='btn btn-warning rounded h-10 text-white'>
                         <FontAwesomeIcon icon={faClipboard} />
