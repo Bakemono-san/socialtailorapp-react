@@ -2,6 +2,8 @@ import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import Panier from "./Pages/Panier";
+import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
 import DiscussionPage from "./Pages/DiscussionPage";
 
@@ -15,9 +17,11 @@ function App() {
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/discussion" element={<Discussion />} />
+            <Route path="/panier" element={<Panier />} />
+            <Route path="/rang" element={<Ranking />} />
             <Route path="/discussion" element={<ListDiscussion />} />
             <Route path={`/discussion/:id`} element={<DiscussionPage />} />
-
           </Routes>
         </div>
       </div>
