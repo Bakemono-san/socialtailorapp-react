@@ -6,12 +6,14 @@ import Post from '../Components/Forms/Post'
 
 export default function MainPage() {
   return (
-    <main className="text-sm md:w-full flex flex-col gap-4 overflow-y-scroll px-4">
+    <main className="text-sm md:w-full flex flex-col gap-8 overflow-y-scroll ">
       <StoryContainer />
-      <Post />  
-      <div className='flex gap-4 overflow-scroll'>
-        <PostCardContainer />
-        <StatsCard title="Stats"/>
+      <div className='flex gap-4'>
+        <div className='flex flex-col gap-4 overflow-scroll w-full'>
+          <Post />
+          <PostCardContainer />
+        </div>
+        <StatsCard title="Stats" />
       </div>
     </main>
   )

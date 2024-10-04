@@ -16,10 +16,19 @@ export default function DiscussionPage() {
             <h2 className='text-2xl'>Username {params.id}</h2>
           </div>
         </div>
+        <div className='flex flex-col gap-4 w-full overflow-scroll'>
+
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
+        <MessageItem color={'bg-blue-400'} position={'left-2'} />
         <MessageItem color={'bg-blue-400'} position={'left-2'} />
         <MessageItem color={'bg-yellow-400'} position={'self-end'} />
         <MessageItem color={'bg-blue-400'} position={'left-2'} />
         <MessageItem color={'bg-yellow-400'} position={'self-end'} />
+        </div>
       </div>
       <form className='flex gap-4 p-2 bg-gray-300 md:bg-transparent mx-2'>
         <input type="text" name='message' placeholder="Message" className="input input-bordered w-full" />

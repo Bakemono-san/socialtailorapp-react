@@ -11,10 +11,36 @@ const ModelForm = () => {
 
     return (
         <>
-            <form className='flex gap-4 md:h-40'>
-                <div className="flex flex-col gap-4 w-full md:w-4/5 bg-white p-2 rounded-lg shadow-lg">
+            <form className='flex flex-col gap-2  bg-white p-4 rounded-lg shadow-lg'>
+                <div className='flex justify-between items-center '>
+                    <h1 className='text-lg font-semibold text-gray-600'>Create a Post</h1>
+                    <div className='flex flex-col h-content items-center justify-center'>...</div>
+                </div>
+                <div>
+                    <input type="text" className='w-full bg-gray-200 p-2 rounded' placeholder='write something here...' />
+                </div>
+                <input
+                                type="text"
+                                id="modelId"
+                                name="modelId"
+                                value={modelId}
+                                onChange={(e) => setModelId(e.target.value)}
+                                className="hidden"
+                                required
+                            />
+                            {modelId && <p className="mt-2 text-gray-600">Selected Model: {modelId}</p>}
+                <button
+                    type="button"
+                    className=" bg-blue-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-blue-600"
+                    onClick={() => setIsModalOpen(true)}
+                >
+                    Choose Model
+                </button>
 
-                    <div className="flex  sm:flex-row gap-4 justify-between">
+
+                {/* <div className="flex flex-col gap-4 w-full md:w-4/5 bg-white p-2 rounded-lg shadow-lg">
+
+                    <div className="flex sm:flex-row gap-4 justify-between">
                         <div className="flex-1">
                             <label htmlFor="titre" className="font-semibold">Titre</label>
                             <input
@@ -65,7 +91,7 @@ const ModelForm = () => {
 
                 <div className='md:block hidden'>
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s" alt="" className='h-full w-full' />
-                </div>
+                </div> */}
 
 
             </form>
