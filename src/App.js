@@ -4,6 +4,8 @@ import DiscussionPage from "./Pages/DiscussionPage";
 import Models from "./Pages/Models";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import AchatCredit from "./Pages/AchatCredit";
+import ListeSouhait from "./Pages/ListeSouhait";
 import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
@@ -19,6 +21,8 @@ function App() {
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/achatcredit" element={<AchatCredit />} />
+            <Route path="/listesouhait" element={< ListeSouhait/>} />
             <Route path="/Models" element={<Models/>} />
             <Route path="/panier" element={<Panier />} />
             <Route path="/rang" element={<Ranking />} />
