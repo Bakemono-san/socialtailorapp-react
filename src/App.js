@@ -12,7 +12,6 @@ import ListeSouhait from "./Pages/ListeSouhait";
 import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
-import DiscussionPage from "./Pages/DiscussionPage";
 
 
 function App() {
