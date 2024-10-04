@@ -11,10 +11,10 @@ const ModelForm = () => {
 
     return (
         <>
-            <form className='flex gap-4 md:h-40 '>
+            <form className='flex gap-4 md:h-40'>
                 <div className="flex flex-col gap-4 w-full md:w-4/5 bg-white p-2 rounded-lg shadow-lg">
 
-                    <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                    <div className="flex  sm:flex-row gap-4 justify-between">
                         <div className="flex-1">
                             <label htmlFor="titre" className="font-semibold">Titre</label>
                             <input
