@@ -5,11 +5,11 @@ import Notification from './Notification'
 
 export default function Header() {
   return (
-    <div className="bg-blue-700 text-sm md:text-2xl text-white py-0.5 md:py-4 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
+    <div className="bg-blue-700 text-sm md:text-2xl text-white md:py-4 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
             <div className='flex items-center gap-24 flex-1'>
                 <h1 className=' font-bold animate-pulse'>Social Tailor</h1>
             </div>
-            <div className='flex items-center gap-12 flex-1 justify-end'>
+            <div className='flex items-center gap-4 md:gap-12 flex-1 justify-end'>
                 <div className='flex justify-between gap-2 md:gap-4'>
                 <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
                         <FontAwesomeIcon icon={faBasketShopping}/>

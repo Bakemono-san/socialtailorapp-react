@@ -9,9 +9,9 @@ import DiscussionPage from "./Pages/DiscussionPage";
 function App() {
   return (
     <Router>
-      <div className="bg-blue-100 pb-16 h-dvh overflow-hidden">
+      <div className="bg-blue-100 h-dvh flex flex-col overflow-hidden justify-between">
         <Header />
-        <div className="md:p-4 md:flex">
+        <div className="md:p-4 flex h-full flex-col-reverse justify-between md:flex-row">
           <Sidebar color="bg-blue-700" />
           <Routes>
             <Route path="/" element={<MainPage />} />

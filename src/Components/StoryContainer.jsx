@@ -3,7 +3,7 @@ import StoryItem from './StoryItem'
 
 export default function StoryContainer() {
     return (
-        <div className='flex gap-8 w-full !min-w-32 py-4 px-2 md:py-0'>
+        <div className='flex gap-8 w-full !min-w-32 py-2 px-2 md:py-0'>
                 <button className="btn rounded md:w-40 md:h-40 w-28 h-28 flex flex-col border border-blue-500 p-2" onClick={() => document.getElementById('my_modal_2').showModal()}>
                     <div className=' bg-blue-400/50 justify-center items-center rounded h-full gap-2 w-full flex flex-col'>
                         <div className='w-12 h-12 p-4 rounded-full bg-blue-400 flex items-center justify-center'>
