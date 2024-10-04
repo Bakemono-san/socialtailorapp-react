@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function StatsCard(props) {
   return (
-    <div className='hidden md:block'>
+    <>
       <div className='flex items-center gap-2 px-4 py-3 bg-blue-300 rounded-t min-w-96'>
         <h1 className='text-center text-2xl font-bold text-white w-full'> {props.title} </h1>
       </div>
@@ -34,6 +34,6 @@ export default function StatsCard(props) {
         </div>
       </div>
 
-    </div>
+    </>
   )
 }
