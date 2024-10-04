@@ -3,6 +3,9 @@ import Sidebar from "./Components/Sidebar";
 import Discussion from "./Pages/Discussion";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
+import TailleursListe from "./Pages/TailleursListe";
+import Parameters from "./Pages/Parameters";
+import Measurements from "./Pages/Measurements";
 
 
 function App() {
@@ -15,6 +18,9 @@ function App() {
           <Routes>
             <Route path="/" element={<MainPage />} />
             <Route path="/discussion" element={<Discussion />} />
+            <Route path="/tailleurs" element={<TailleursListe />} />
+            <Route path="/params" element={<Parameters />} />
+            <Route path="/measurements" element={<Measurements/>} />
           </Routes>
         </div>
       </div>
