@@ -1,66 +1,85 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons'; 
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
 
-// Liste fictive des stories avec leurs images respectives
-const storiesData = [
+const initialStoriesData = [
   { id: 1, title: "Josephine Water", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSsG6tsv7jBEEZbHs0UTvAa4pmL8X31von1A&s" },
-  { id: 2, title: "Sunrise", image: "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e0ca2a79-9357-4dfd-b264-ef4f7c81adfd/d898dq7-72e00cc8-694a-4ff7-a274-9b3af033181d.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2UwY2EyYTc5LTkzNTctNGRmZC1iMjY0LWVmNGY3YzgxYWRmZFwvZDg5OGRxNy03MmUwMGNjOC02OTRhLTRmZjctYTI3NC05YjNhZjAzMzE4MWQuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.ydSQ32iSqeJ0zGxtP-aKL6k2xYCiTM7dmgpWfWLVHZM" },
-  { id: 3, title: "Adventure", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToMGkeWU1HEGo6Yc7F8f20oU6-4Z6gWF-Upw&s" },
+  { id: 2, title: "Sunrise", image: "https://i.pinimg.com/736x/36/7e/39/367e39a52d963b9ac380c9ea3012ca25.jpg" },
+  { id: 3, title: "Adventure", image: "https://cdn-fijdp.nitrocdn.com/GVSxVNifwoHWotRFwNIamxBUqgcxVTHc/assets/images/optimized/rev-765e644/narutoshop.fr/wp-content/uploads/2024/07/variant-image-couleur-akatsuki-a-2.jpeg" },
   { id: 4, title: "Mountain Story", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyGdwrHRr5hroz-7f_fWYxMNphZj0N1wh3qA&s" },
-  { id: 5, title: "Beach Vibes", image: "https://i.pinimg.com/736x/de/a2/d6/dea2d69ad49802076c5a81dce804c67c.jpg" }
+  { id: 5, title: "Beach Vibes", image: "https://i.pinimg.com/736x/de/a2/d6/dea2d69ad49802076c5a81dce804c67c.jpg" },
+  { id: 6, title: "Sunset", image: "https://w0.peakpx.com/wallpaper/502/884/HD-wallpaper-inata-anim-girl-hyuga-love-naruto-shy.jpg" },
+  { id: 7, title: "Sunset", image: "https://www.nuitonepiece.com/wp-content/themes/nuitonpiece/assets/img/zoro.png" },
+  { id: 8, title: "Sunset", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeciL6f9NVs33cKGR1BBewMFV-SeZQQFGNpqbDiCoArDCbM_C5FClWixuKMyAD5yGfRWQ&usqp=CAU" },
 ];
 
 export default function StoryContainer() {
+  const [storiesData, setStoriesData] = useState(initialStoriesData);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(null);
-  const [likes, setLikes] = useState(0);
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState('');
+  const [likesCount, setLikesCount] = useState(Array(storiesData.length).fill(0));
+  const [isCommentInputVisible, setCommentInputVisible] = useState(false);
+  const [commentText, setCommentText] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [viewedStories, setViewedStories] = useState([]); // Pour gérer les stories vues
 
   const openModal = (index) => {
-    setCurrentStoryIndex(index);
+    moveStoryToEnd(index);
+    setCurrentStoryIndex(storiesData.length - 1); // Pointe vers la dernière story
     setIsModalOpen(true);
+    setCommentInputVisible(false);
+  };
+
+  const moveStoryToEnd = (index) => {
+    const storyToMove = storiesData[index];
+
+    // Nouvelle liste sans la story vue
+    const updatedStories = storiesData.filter((_, i) => i !== index);
+
+    // Ajoute la story vue à la fin
+    setStoriesData([...updatedStories, storyToMove]);
+
+    // Marque la story comme vue
+    setViewedStories([...viewedStories, storyToMove.id]);
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentStoryIndex(null);
+    setShowEmojiPicker(false);
   };
 
-  const handleLike = () => {
-    setLikes(likes + 1); // Incrémentation des likes
+  const handleLike = (index) => {
+    const newLikesCount = [...likesCount];
+    newLikesCount[index] += 1;
+    setLikesCount(newLikesCount);
   };
 
-  const handleCommentSubmit = (e) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      setComments([...comments, newComment]);
-      setNewComment('');
-    }
+  const handleComment = () => {
+    setCommentInputVisible(!isCommentInputVisible);
+  };
+
+  const addEmoji = (emoji) => {
+    setCommentText(commentText + emoji.native);
   };
 
   return (
-    <div className="flex gap-8 w-full !min-w-32 py-4 px-2 md:py-0">
-      {/* Bouton pour créer une nouvelle story */}
-      <button
-        className="btn rounded w-40 h-40 flex flex-col border border-blue-500 p-2"
-        onClick={() => document.getElementById('my_modal_2').showModal()}
-      >
-        <div className="bg-blue-400/50 justify-center items-center rounded h-full gap-2 w-full flex flex-col">
-          <div className="w-12 h-12 p-4 rounded-full bg-blue-400 flex items-center justify-center">
-            +
-          </div>
+    <div className="flex gap-4 w-full py-4 px-2">
+      <button className="btn w-[10rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer flex flex-col border border-blue-500 p-2" onClick={() => document.getElementById('my_modal_2').showModal()} >
+        <div className="bg-blue-400/50 justify-center items-center gap-2 w-[09rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
+          <div className="w-12 h-12 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
           <p>Add Story</p>
         </div>
       </button>
 
-      {/* Liste des stories */}
-      <div className="flex gap-8 overflow-x-scroll w-full">
+      <div className="flex gap-4 overflow-x-scroll w-full">
         {storiesData.map((story, index) => (
           <div
             key={story.id}
-            className="w-40 h-40 bg-cover bg-center bg-no-repeat rounded-md cursor-pointer"
+            className={`w-[10rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer 
+              `}  
             style={{
               backgroundImage: `url(${story.image})`,
               backgroundSize: 'cover',
@@ -75,9 +94,9 @@ export default function StoryContainer() {
         ))}
       </div>
 
-      {/* Modal pour afficher une story en grand */}
+      {/* Modal */}
       {isModalOpen && currentStoryIndex !== null && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-90">
           <div className="relative w-full h-full flex items-center justify-center">
             <button
               className="absolute left-0 p-4 text-white text-3xl"
@@ -85,54 +104,12 @@ export default function StoryContainer() {
             >
               &#8249;
             </button>
-            <div className="w-full h-full flex flex-col items-center justify-center">
+            <div className="flex justify-center items-center w-[500px] h-[500px] bg-black">
               <img
                 src={storiesData[currentStoryIndex].image}
                 alt={storiesData[currentStoryIndex].title}
-                className="max-w-4xl max-h-3xl w-auto h-auto"
+                className="w-[500px] h-[880px] object-cover rounded-lg"
               />
-              <div className="mt-4 text-white text-2xl">{storiesData[currentStoryIndex].title}</div>
-
-              {/* Actions: Like, Comment, Share */}
-              <div className="flex justify-around mt-4 w-full max-w-lg text-white">
-                <button className="flex items-center gap-2" onClick={handleLike}>
-                  <FontAwesomeIcon icon={faThumbsUp} /> {likes} Likes
-                </button>
-                <button className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faComment} /> {comments.length} Comments
-                </button>
-                <button className="flex items-center gap-2">
-                  <FontAwesomeIcon icon={faShare} /> Share
-                </button>
-              </div>
-
-              {/* Comment Section */}
-              <div className="mt-6 w-full max-w-lg">
-                <form onSubmit={handleCommentSubmit} className="flex">
-                  <input
-                    type="text"
-                    className="w-full p-2 rounded-l-md"
-                    placeholder="Add a comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="p-2 bg-blue-500 text-white rounded-r-md"
-                  >
-                    Send
-                  </button>
-                </form>
-
-                {/* Afficher les commentaires */}
-                <div className="mt-4 text-white">
-                  {comments.map((comment, idx) => (
-                    <div key={idx} className="bg-gray-800 p-2 my-2 rounded-md">
-                      {comment}
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
             <button
               className="absolute right-0 p-4 text-white text-3xl"
@@ -147,6 +124,36 @@ export default function StoryContainer() {
               ✕
             </button>
           </div>
+
+          {/* Interactions */}
+          <div className="flex gap-4 justify-center items-center mt-6 w-full">
+            <button className="flex items-center gap-2 text-white" onClick={() => handleLike(currentStoryIndex)}>
+              <FontAwesomeIcon icon={faThumbsUp} className="text-2xl" />
+              <span>Like</span>
+              <span>{likesCount[currentStoryIndex]}</span>
+            </button>
+            <button className="flex items-center gap-2 text-white" onClick={handleComment}>
+              <FontAwesomeIcon icon={faComment} className="text-2xl" />
+              <span>Comment</span>
+            </button>
+            <button className="flex items-center gap-2 text-white">
+              <FontAwesomeIcon icon={faShare} className="text-2xl" />
+              <span>Share</span>
+            </button>
+          </div>
+
+          {isCommentInputVisible && (
+            <div className="mt-4">
+              <textarea
+                className="p-2 border rounded w-full bg-white"
+                rows="3"
+                value={commentText}
+                onChange={(e) => setCommentText(e.target.value)}
+              />
+              <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => setShowEmojiPicker(true)}>Add Emoji</button>
+              {showEmojiPicker && <Picker data={data} onEmojiSelect={addEmoji} />}
+            </div>
+          )}
         </div>
       )}
     </div>

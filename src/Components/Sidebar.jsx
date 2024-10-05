@@ -3,7 +3,6 @@ import SidebarItem from "./SidebarItem";
 import {
   faCog,
   faCoins,
-  faComment,
   faHome,
   faMessage,
   faVest,
