@@ -26,6 +26,7 @@ function App() {
           <div className="flex flex-col flex-1 overflow-hidden h-full">
             <Routes>
               <Route path="/" element={<MainPage />} />
+              
               <Route path="/tailleurs" element={<TailleursListe />} />
               <Route path="/params" element={<Parameters />} />
               <Route path="/measurements" element={<Measurements />} />
