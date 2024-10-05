@@ -6,6 +6,7 @@ import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
 import DiscussionPage from "./Pages/DiscussionPage";
+import Discussion from "./Components/Discussion";
 
 
 function App() {
