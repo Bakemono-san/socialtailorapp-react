@@ -23,8 +23,7 @@ function App() {
           {/* Sidebar */}
           <Sidebar color="bg-blue-700" />
 
-          {/* Main Content */}
-          <div className="flex-1 overflow-y-auto ">
+          <div className="flex flex-col flex-1 overflow-hidden h-full">
             <Routes>
               <Route path="/" element={<MainPage />} />
               <Route path="/tailleurs" element={<TailleursListe />} />

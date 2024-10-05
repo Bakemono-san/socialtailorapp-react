@@ -15,7 +15,7 @@ export default function StoryContainer() {
     };
 
     return (
-        <div className="flex gap-8 w-full !min-w-32 py-4 md:py-0">
+        <div className="flex gap-8 w-full !min-w-32 pt-4 md:py-0">
             <button
                 className="btn rounded w-28 h-28 flex flex-col border border-blue-500 p-2"
                 onClick={() => document.getElementById('my_modal_2').showModal()}
