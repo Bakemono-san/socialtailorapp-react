@@ -67,12 +67,7 @@ export default function StoryContainer() {
 
   return (
     <div className="flex gap-4 w-full py-4 px-2">
-      <button className="btn w-[10rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer flex flex-col border border-blue-500 p-2" onClick={() => document.getElementById('my_modal_2').showModal()} >
-        <div className="bg-blue-400/50 justify-center items-center gap-2 w-[09rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
-          <div className="w-12 h-12 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
-          <p>Add Story</p>
-        </div>
-      </button>
+      
 
       <div className="flex gap-4 overflow-x-scroll w-full">
         {storiesData.map((story, index) => (
