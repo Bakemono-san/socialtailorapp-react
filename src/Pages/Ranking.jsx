@@ -31,7 +31,7 @@ const Ranking = () => {
   ];
 
   return (
-    <div className="classementTailleurs items-center gap-4 w-full p-4 h-[calc(100vh-300px)]">
+    <div className="classementTailleurs items-center gap-4 w-full p-4 h-full">
       <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
           <thead class="text-xl text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">

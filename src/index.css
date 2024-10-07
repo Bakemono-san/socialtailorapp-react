@@ -9,3 +9,7 @@
   margin: 0;
   padding: 0;
 }
+
+td,th{
+  @apply text-center;
+}
