@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons'; 
+import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
+import StoryItem from './StoryItem';
 
 const initialStoriesData = [
   { id: 1, title: "Josephine Water", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSsG6tsv7jBEEZbHs0UTvAa4pmL8X31von1A&s" },
@@ -24,6 +25,18 @@ export default function StoryContainer() {
   const [commentText, setCommentText] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [viewedStories, setViewedStories] = useState([]); // Pour gérer les stories vues
+
+  const [selectedModel, setSelectedModel] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedModel) {
+      alert("Veuillez sélectionner un modèle.");
+      return;
+    }
+    console.log("Modèle partagé :", selectedModel);
+    document.getElementById("my_modal_2").close(); // Fermer le modal après partage
+  };
 
   const openModal = (index) => {
     moveStoryToEnd(index);
@@ -67,30 +80,56 @@ export default function StoryContainer() {
 
   return (
     <div className="flex gap-4 w-full py-4 px-2">
-      <button className="btn w-[10rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer flex flex-col border border-blue-500 p-2" onClick={() => document.getElementById('my_modal_2').showModal()} >
-        <div className="bg-blue-400/50 justify-center items-center gap-2 w-[09rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
-          <div className="w-12 h-12 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
+      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 bg-white flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
+        <div className="bg-blue-400/50 flex flex-col justify-center w-full h-full items-center gap-2 bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
+          <div className="w-6 h-6 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
           <p>Add Story</p>
         </div>
       </button>
 
+      <dialog id="my_modal_2" className="modal">
+            <div className="modal-box">
+              <h3 className="font-bold text-lg">Créer une story</h3>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="model"
+                    className="block text-gray-700 font-semibold mb-2"
+                  >
+                    Sélectionnez un modèle :
+                  </label>
+                  <select
+                    id="model"
+                    value={selectedModel}
+                    onChange={(e) => setSelectedModel(e.target.value)}
+                    className="w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">-- Choisir un modèle --</option>
+                    <option value="Model 1">Modèle 1</option>
+                    <option value="Model 2">Modèle 2</option>
+                    <option value="Model 3">Modèle 3</option>
+                  </select>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    type="button"
+                    onClick={() => document.getElementById("my_modal_2").close()}
+                    className="btn bg-red-500 text-white hover:bg-red-600"
+                  >
+                    Fermer
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Partager le modèle
+                  </button>
+                </div>
+              </form>
+            </div>
+          </dialog>
+
       <div className="flex gap-4 overflow-x-scroll w-full">
         {storiesData.map((story, index) => (
-          <div
-            key={story.id}
-            className={`w-[10rem] h-[16rem] bg-cover bg-center bg-no-repeat rounded-md cursor-pointer 
-              `}  
-            style={{
-              backgroundImage: `url(${story.image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
-            }}
-            onClick={() => openModal(index)}
-          >
-            <div className="flex items-center justify-center h-full bg-black bg-opacity-25 text-white">
-              {story.title}
-            </div>
-          </div>
+          <StoryItem key={story.id} bg={story.image} onClick={() => openModal(index)} title={story.title} />
         ))}
       </div>
 
@@ -124,6 +163,8 @@ export default function StoryContainer() {
               ✕
             </button>
           </div>
+
+          
 
           {/* Interactions */}
           <div className="flex gap-4 justify-center items-center mt-6 w-full">
