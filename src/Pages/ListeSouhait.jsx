@@ -92,8 +92,8 @@ export default function ListeSouhaits() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 w-full max-w-screen-2xl mx-auto ">
+    <div className='h-full'>
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 w-full h-full max-w-screen-2xl mx-auto ">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-extrabold text-blue-900">Ma Liste de Souhaits</h1>
           <div className="flex items-center gap-2 bg-blue-100 px-6 py-2 rounded-full">
