@@ -27,21 +27,21 @@ export default function Measurements() {
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="p-4 w-full overflow-y-scroll">
       <h2 className="text-2xl text-center font-bold mb-4">Mesures de l'utilisateur</h2>
-      <div className="p-4 flex flex-col md:flex-row md:justify-center gap-2">
-        <div className="w-full md:w-1/2">
+      <div className="p-4 flex flex-col xl:flex-row md:justify-center gap-2">
+        <div className="w-full xl:w-1/2">
           <MeasurementForm onSubmit={handleMeasurementSubmit} measurements={measurements} />
         </div>
-        <div className="w-full md:w-1/3 mt-4 bg-white border rounded-lg shadow-md p-4">
+        <div className="w-full xl:w-1/3 mt-4 bg-white border rounded-lg shadow-md p-4">
           <h4 className="text-lg text-center font-semibold mb-4">Mes Mesures :</h4>
-          <ul className="list-none space-y-2">
+          <ul className="list-none space-y-1">
             {Object.keys(measurements).length === 0 ? (
               <li className="text-center font-semibold">Aucune mesure disponible.</li>
             ) : (
               Object.entries(measurements).map(([key, value]) => (
                 <li key={key} className="flex items-center space-x-2 font-semibold">
-                  <span className="bg-blue-400 text-white p-2 rounded-full w-10 h-10 flex items-center justify-center">
+                  <span className="bg-blue-400 text-white p-2 rounded-full w-8 h-8 flex items-center justify-center">
                     {measurementIcons[key]}
                   </span>
                   <span className="text-lg">{`${key}: ${value || 'NULL'}`}</span>

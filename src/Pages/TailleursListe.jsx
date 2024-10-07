@@ -3,12 +3,12 @@ import TailorCard from '../Components/TailorCard';
 import TailorTable from '../Components/TailorTable';
 
 const tailorsData = [
-  { id: 1, name: 'Tailleur 1', photo: 'https://img.freepik.com/photos-gratuite/jeune-homme-hispanique-tailleur-ecoutant-message-vocal-par-smartphone-dessinant-conception-vetements-atelier_839833-7530.jpg'},
-  { id: 2, name: 'Tailleur 2', photo: 'https://via.placeholder.com/150'},
-  { id: 3, name: 'Tailleur 3', photo: 'https://via.placeholder.com/150'},
-  { id: 4, name: 'Tailleur 4', photo: 'https://via.placeholder.com/150'},
-  { id: 5, name: 'Tailleur 5', photo: 'https://via.placeholder.com/150'},
-  { id: 6, name: 'Tailleur 6', photo: 'https://via.placeholder.com/150'}
+  { id: 1, name: 'Jean Michel', photo: 'https://img.freepik.com/photos-gratuite/jeune-homme-hispanique-tailleur-ecoutant-message-vocal-par-smartphone-dessinant-conception-vetements-atelier_839833-7530.jpg'},
+  { id: 2, name: 'Marie Dupont', photo: 'https://www.shutterstock.com/image-photo/young-beautiful-hispanic-woman-tailor-260nw-2310294181.jpg'},
+  { id: 3, name: 'Jeune Tailleur', photo: 'https://via.placeholder.com/150'},
+  { id: 4, name: 'Anta Diop', photo: 'https://www.shutterstock.com/image-photo/professional-hipster-female-tailor-wearing-260nw-2207623955.jpg'},
+  { id: 5, name: 'Louis Faye', photo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHxTOhCbcaI7p-hxjFfomZPAfFqKXAMf40pg&s'},
+  { id: 6, name: 'Georges Dupont', photo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQISv-rQkj0lXK87JBd_Uw0fjyD5WnqdA1zBg&s'}
   // Ajoutez autant de tailleurs que nécessaire
 ];
 
@@ -44,7 +44,7 @@ export default function TailorsList() {
   };
 
   return (
-    <div className='w-full p-4'>
+    <div className='w-full p-4 overflow-y-scroll'>
       <h2 className='text-2xl font-bold mb-4'>Liste des tailleurs</h2>
       
       {/* Filtre */}
@@ -64,7 +64,7 @@ export default function TailorsList() {
 
       {/* Affichage sous forme de Cards ou Tableau */}
       {viewMode === 'card' ? (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6'> {/* Augmentez le gap pour plus d'espace entre les cartes */}
+        <div className='grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6'> {/* Augmentez le gap pour plus d'espace entre les cartes */}
           {filteredTailors.map(tailor => (
             <TailorCard
               key={tailor.id}
