@@ -14,12 +14,14 @@ import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
 import RightSideBar from "./Components/RightSideBar";
 import Login from "./Pages/Login";
+import Signup from "./Pages/Signup";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
         <Route path="*" element={
           <div className="bg-blue-100 h-screen flex flex-col overflow-hidden">
             <Header />
