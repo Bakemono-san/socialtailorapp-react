@@ -5,19 +5,17 @@ import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import StoryItem from './StoryItem';
 
-const initialStoriesData = [
-  { id: 1, title: "Josephine Water", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSsG6tsv7jBEEZbHs0UTvAa4pmL8X31von1A&s" },
-  { id: 2, title: "Sunrise", image: "https://i.pinimg.com/736x/36/7e/39/367e39a52d963b9ac380c9ea3012ca25.jpg" },
-  { id: 3, title: "Adventure", image: "https://cdn-fijdp.nitrocdn.com/GVSxVNifwoHWotRFwNIamxBUqgcxVTHc/assets/images/optimized/rev-765e644/narutoshop.fr/wp-content/uploads/2024/07/variant-image-couleur-akatsuki-a-2.jpeg" },
-  { id: 4, title: "Mountain Story", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTyGdwrHRr5hroz-7f_fWYxMNphZj0N1wh3qA&s" },
-  { id: 5, title: "Beach Vibes", image: "https://i.pinimg.com/736x/de/a2/d6/dea2d69ad49802076c5a81dce804c67c.jpg" },
-  { id: 6, title: "Sunset", image: "https://w0.peakpx.com/wallpaper/502/884/HD-wallpaper-inata-anim-girl-hyuga-love-naruto-shy.jpg" },
-  { id: 7, title: "Sunset", image: "https://www.nuitonepiece.com/wp-content/themes/nuitonpiece/assets/img/zoro.png" },
-  { id: 8, title: "Sunset", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQeciL6f9NVs33cKGR1BBewMFV-SeZQQFGNpqbDiCoArDCbM_C5FClWixuKMyAD5yGfRWQ&usqp=CAU" },
-];
 
-export default function StoryContainer() {
-  const [storiesData, setStoriesData] = useState(initialStoriesData);
+export default function StoryContainer(props) {
+  
+  const [storiesData, setStoriesData] = useState(props.stories || [
+    {
+      Models: {
+        contenu: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSsG6tsv7jBEEZbHs0UTvAa4pmL8X31von1A&s",
+        titre: "Josephine Water"
+      }
+    }
+  ]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(null);
   const [likesCount, setLikesCount] = useState(Array(storiesData.length).fill(0));
@@ -129,7 +127,7 @@ export default function StoryContainer() {
 
       <div className="flex gap-4 overflow-x-scroll w-full">
         {storiesData.map((story, index) => (
-          <StoryItem key={story.id} bg={story.image} onClick={() => openModal(index)} title={story.title} />
+          <StoryItem key={story.id} bg={story.Models.contenu} onClick={() => openModal(index)} title={story.Models.titre} />
         ))}
       </div>
 
@@ -145,8 +143,8 @@ export default function StoryContainer() {
             </button>
             <div className="flex justify-center items-center w-[500px] h-[500px] bg-black">
               <img
-                src={storiesData[currentStoryIndex].image}
-                alt={storiesData[currentStoryIndex].title}
+                src={storiesData[currentStoryIndex].Models.contenu}
+                alt={storiesData[currentStoryIndex].Models.titre}
                 className="w-[500px] h-[880px] object-cover rounded-lg"
               />
             </div>
