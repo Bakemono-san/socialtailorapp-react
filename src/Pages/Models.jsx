@@ -35,10 +35,10 @@ export default function ModelPage() {
     };
 
     return (
-        <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8 overflow-y-scroll">
             <h1 className="text-center text-4xl font-bold text-blue-600 mb-8">Gestion des Modèles</h1>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 {/* Formulaire */}
                 <div className="shadow-lg p-6 bg-white rounded-lg lg:col-span-1">
                     <Form 
