@@ -40,10 +40,10 @@ const Ranking = () => {
                 Photo
               </th>
               <th scope="col" class="px-6 py-3">
-                Rang
+                Tailleur
               </th>
               <th scope="col" class="px-6 py-3">
-                Tailleur
+                Classemnt
               </th>
               <th scope="col" class="px-6 py-3">
                 Note

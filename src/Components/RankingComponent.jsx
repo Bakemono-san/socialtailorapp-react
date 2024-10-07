@@ -14,13 +14,15 @@ const RankingComponent = ({ tailleur }) => {
             />
           </th>
 
+          <td class="px-6 py-4">{tailleur.nom}</td>
+
           <th
             scope="row"
             class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray"
           >
             {tailleur.position}
           </th>
-          <td class="px-6 py-4">{tailleur.nom}</td>
+          
           <td class="px-6 py-4">{tailleur.note}</td>
         </tr>
       </tbody>
