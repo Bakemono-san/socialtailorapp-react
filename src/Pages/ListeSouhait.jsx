@@ -1,136 +1,175 @@
 import React, { useState } from 'react';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination } from 'swiper/modules';
 
 export default function ListeSouhaits() {
   const [wishList] = useState([
-    { id: 1, nom: 'Produit 1', prix: 29.99, image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg' },
-    { id: 2, nom: 'Produit 2', prix: 49.99, image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg' },
-    { id: 3, nom: 'Produit 3', prix: 19.99, image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg' }
+    {
+      id: 1,
+      nom: 'Costume sur mesure',
+      prix: 299.99,
+      prixOriginal: 399.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.8,
+      reviews: 128,
+      tailleur: "Martin Couture",
+      delai: "2-3 semaines"
+    },
+    {
+      id: 2,
+      nom: 'Chemise personnalisée',
+      prix: 89.99,
+      prixOriginal: 119.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.9,
+      reviews: 256,
+      tailleur: "Emma Style",
+      delai: "1-2 semaines"
+    },
+    {
+      id: 3,
+      nom: 'Veste élégante',
+      prix: 199.99,
+      prixOriginal: 249.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.7,
+      reviews: 89,
+      tailleur: "Classic Fashion",
+      delai: "2 semaines"
+    },
+    {
+      id: 4,
+      nom: 'Robe de soirée',
+      prix: 149.99,
+      prixOriginal: 199.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.6,
+      reviews: 74,
+      tailleur: "Glamour Couture",
+      delai: "3 semaines"
+    },
+    {
+      id: 5,
+      nom: 'Pantalon sur mesure',
+      prix: 79.99,
+      prixOriginal: 109.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.5,
+      reviews: 95,
+      tailleur: "Style Urbain",
+      delai: "1-2 semaines"
+    }
+    ,
+    {
+      id: 6,
+      nom: 'Robe de soirée',
+      prix: 149.99,
+      prixOriginal: 199.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.6,
+      reviews: 74,
+      tailleur: "Glamour Couture",
+      delai: "3 semaines"
+    },
+    {
+      id: 7,
+      nom: 'Pantalon sur mesure',
+      prix: 79.99,
+      prixOriginal: 109.99,
+      image: 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg',
+      rating: 4.5,
+      reviews: 95,
+      tailleur: "Style Urbain",
+      delai: "1-2 semaines"
+    }
   ]);
 
   const handleCommander = (item) => {
-    // Logique pour gérer la commande
     console.log(`Commande passée pour ${item.nom} au prix de ${item.prix}€`);
   };
 
   return (
-    <div className="p-6 mx-4 w-full bg-gradient-to-br from-green-200 to-yellow-300 min-h-screen animate-fade-in">
-      <h1 className="text-center text-4xl font-extrabold text-gray-900 mb-12 drop-shadow-lg">Votre Liste de Souhaits</h1>
+    <div className="container mx-auto p-4">
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8 w-full max-w-screen-2xl mx-auto ">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-extrabold text-blue-900">Ma Liste de Souhaits</h1>
+          <div className="flex items-center gap-2 bg-blue-100 px-6 py-2 rounded-full">
+            <span className="text-blue-800 font-medium">{wishList.length} articles</span>
+            <span className="text-red-500 text-lg">❤️</span>
+          </div>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 animate-fade-in">
-        {wishList.length === 0 ? (
-          <p className="text-center text-gray-700 font-semibold">Votre liste de souhaits est vide.</p>
-        ) : (
-          wishList.map((item) => (
-            <div 
-              key={item.id} 
-              className="bg-white shadow-lg rounded-lg p-6 transform transition-all hover:scale-105 hover:shadow-2xl duration-300 ease-out animate-pop"
-            >
-              <img 
-                src={item.image} 
-                alt={item.nom} 
-                className="w-full h-48 object-cover rounded-t-lg mb-4 transition-all duration-500 hover:opacity-90"
-              />
-              <div className="flex flex-col justify-between items-center text-center">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">{item.nom}</h2>
-                <p className="text-lg text-green-600 font-semibold mb-4">Prix : {item.prix} €</p>
+        {/* Swiper Carousel */}
+        <Swiper
+          spaceBetween={20}
+          slidesPerView={1}
+          navigation
+          pagination={{ clickable: true }}
+          modules={[Navigation, Pagination]}
+          breakpoints={{
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 }
+          }}
+        >
+          {wishList.map((item) => (
+            <SwiperSlide key={item.id}>
+              <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200">
+                <div className="relative group">
+                  <img
+                    src={item.image}
+                    alt={item.nom}
+                    className="w-full h-48 object-cover group-hover:opacity-95 transition-all duration-300"
+                  />
+                  <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs font-semibold">
+                    -{Math.round(((item.prixOriginal - item.prix) / item.prixOriginal) * 100)}%
+                  </div>
+                </div>
+
+                <div className="p-4">
+                  <h2 className="text-base font-bold text-blue-900 mb-1 hover:text-blue-600 transition-colors duration-200">
+                    {item.nom}
+                  </h2>
+                  <p className="text-sm text-blue-700">Par <span className="font-medium">{item.tailleur}</span></p>
+
+                  <div className="flex items-center mt-2 mb-3">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className={`text-sm ${i < Math.floor(item.rating) ? 'text-yellow-400' : 'text-gray-300'}`}>
+                        ⭐
+                      </span>
+                    ))}
+                    <span className="text-xs text-gray-600 ml-2">({item.reviews})</span>
+                  </div>
+
+                  <div className="flex items-baseline mb-3">
+                    <span className="text-lg font-bold text-blue-600">{item.prix}€</span>
+                    <span className="text-sm text-gray-500 line-through ml-2">{item.prixOriginal}€</span>
+                  </div>
+
+                  <p className="text-sm text-gray-500 mb-4">Délai : <span className="font-medium text-blue-700">{item.delai}</span></p>
+
+                  <div className="flex flex-col gap-2">
+                    <button
+                      onClick={() => handleCommander(item)}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center gap-2"
+                    >
+                      🛒 Commander
+                    </button>
+                    <button
+                      className="w-full bg-gray-100 hover:bg-red-100 text-red-600 py-2 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center gap-2"
+                    >
+                      🗑 Retirer
+                    </button>
+                  </div> 
+                </div>
               </div>
-              <div className="flex justify-between mt-4">
-                <button 
-                  onClick={() => handleCommander(item)} 
-                  className="bg-blue-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-blue-600 transition-all duration-300 transform active:scale-95 active:bg-blue-700"
-                >
-                  Commander
-                </button>
-                <button 
-                  onClick={() => {}} 
-                  className="bg-red-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-red-600 transition-all duration-300 transform active:scale-95 active:bg-red-700"
-                >
-                  Supprimer
-                </button>
-              </div>
-            </div>
-          ))
-        )}
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
     </div>
   );
 }
-
-// Ajout des animations CSS
-const styles = `
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-fade-in {
-  animation: fade-in 1s ease forwards;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-.animate-pop {
-  animation: pop 0.5s ease-out forwards;
-}
-
-// Transition bouton sur clic
-button:active {
-  transform: scale(0.95);
-  transition: transform 0.1s ease;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-}
-
-@media (min-width: 640px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-// Améliorations pour le style des cartes
-.bg-white {
-  background-color: white;
-}
-
-.shadow-lg {
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-}
-
-.transition-all {
-  transition: all 0.3s ease;
-}
-
-.hover\\:scale-105 {
-  transform: scale(1.05);
-}
-
-.hover\\:shadow-2xl {
-  box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
-}
-`
-
-document.head.insertAdjacentHTML('beforeend', `<style>${styles}</style>`);
