@@ -1,13 +1,31 @@
 import React from "react";
 
-const RankingComponent = ({ position, nom, note }) => {
+const RankingComponent = ({ tailleur }) => {
   return (
     <>
-      <tr className="border-b">
-        <td className="py-4 px-6">{position}</td>
-        <td className="py-4 px-6">{nom}</td>
-        <td className="py-4 px-6">{note}</td>
-      </tr>
+      <tbody>
+        <tr class="bg-white border-b dark:bg-white-800 dark:border-gray-700">
+          
+          
+          <th className="mask mask-squircle h-10 w-10">
+            <img
+              src={tailleur.photo}
+              alt="Avatar Tailwind CSS Component"
+            />
+          </th>
+
+          <td class="px-6 py-4">{tailleur.nom}</td>
+
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-gray"
+          >
+            {tailleur.position}
+          </th>
+          
+          <td class="px-6 py-4">{tailleur.note}</td>
+        </tr>
+      </tbody>
     </>
   );
 };

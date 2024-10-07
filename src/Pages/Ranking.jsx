@@ -4,45 +4,57 @@ import RankingComponent from "../Components/RankingComponent";
 const Ranking = () => {
   // Liste de données fictives pour le classement
   const classement = [
-    { position: 1, nom: "Baba Ndiaye", note: 150 },
-    { position: 2, nom: "Diop Fashion", note: 130 },
-    { position: 3, nom: "Dija shop", note: 120 },
-    { position: 4, nom: "Mbaye Style", note: 100 },
-    { position: 5, nom: "Fatou Nice", note: 90 },
+    {
+      position: 2,
+      photo: "https://img.daisyui.com/images/profile/demo/3@94.webp",
+      nom: "Diop Fashion",
+      note: 130,
+    },
+    {
+      position: 3,
+      photo: "https://img.daisyui.com/images/profile/demo/4@94.webp",
+      nom: "Dija shop",
+      note: 120,
+    },
+    {
+      position: 4,
+      photo: "https://img.daisyui.com/images/profile/demo/5@94.webp",
+      nom: "Maman Nice",
+      note: 100,
+    },
+    {
+      position: 1,
+      photo: "https://img.daisyui.com/images/profile/demo/2@94.webp",
+      nom: "Baba Ndiaye",
+      note: 150,
+    },
   ];
 
   return (
-    <div>
-      {/* <div>
-        <select className="select select-bordered w-full max-w-xs bg-slate-500">
-          <option disabled selected>
-            Who shot first?
-          </option>
-          <option>Han Solo</option>
-          <option>Greedo</option>
-        </select>
-      </div> */}
-      <div className="w-full max-w-lg bg-white shadow-lg rounded-lg">
-        <table className="table">
-          {/* head */}
-          <thead>
+    <div className="classementTailleurs items-center gap-4 w-full p-4 h-[calc(100vh-300px)]">
+      <div class="relative overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead class="text-xl text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
-              {/* <th></th> */}
-              <th className="text-lg">Position</th>
-              <th className="text-lg">Nom</th>
-              <th className="text-lg">Note</th>
+              <th scope="col" class="px-6 py-3">
+                Photo
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Tailleur
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Classemnt
+              </th>
+              <th scope="col" class="px-6 py-3">
+                Note
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {classement.map((person, index) => (
-              <RankingComponent
-                key={index}
-                position={person.position}
-                nom={person.nom}
-                note={person.note}
-              />
+          {classement
+            .sort((a, b) => b.note - a.note)
+            .map((tailleur, index) => (
+              <RankingComponent tailleur={tailleur} key={index} />
             ))}
-          </tbody>
         </table>
       </div>
     </div>
