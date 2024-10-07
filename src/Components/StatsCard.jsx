@@ -1,6 +1,8 @@
 import React from 'react'
 
-export default function StatsCard(props) {
+export default React.memo(
+  
+ function StatsCard(props) {
   return (
     <div className='w-full lg:block hidden'>
       {/* Card Header */}
@@ -49,4 +51,4 @@ export default function StatsCard(props) {
       </div>
     </div>
   )
-}
+}); 
