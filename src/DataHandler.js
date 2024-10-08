@@ -21,4 +21,23 @@ export default class DataHandler{
             throw error;
         }
     }
+
+    static async updateData(url,data){
+        try{
+            const datas = await axios.put(url,data);
+            return datas;
+        }catch(error){
+            throw error;
+        }
+    }
+
+    static async deleteData(url){
+        try{
+            const datas = await axios.delete(url);
+            return datas;
+        }catch(error){
+            throw error;
+        }
+    }
+    
 }   
