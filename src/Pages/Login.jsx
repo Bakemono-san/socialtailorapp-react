@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { DataContext } from "../App";
 import DataHandler from "../DataHandler";
 
