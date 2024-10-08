@@ -1,7 +1,8 @@
-import { useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { DataContext } from "../App";
+import DataHandler from "../DataHandler";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -13,31 +14,27 @@ function Login() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    setLoading(true); // Set loading to true
+    setLoading(true);
 
-    // Make a POST request to the backend for login
-    axios.post("http://localhost:3004/login", { email, password })
-      .then((response) => {
-        // Save token in local storage or cookies if necessary
-        
-        setValue(response.data);
-        
-        localStorage.setItem("token", response.data.token); // Storing JWT token
-        localStorage.setItem("isAuthenticated", "true"); // Store auth status
-        navigate("/"); // Redirect to the homepage
+    DataHandler.postData("http://localhost:3004/login", { email, password })
+      .then((data) => {
+        if (data) {
+          setValue(data);
+
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("isAuthenticated", "true");
+          navigate("/");
+        }
       })
       .catch((error) => {
-        // Handle error
         if (error.response) {
-          // The request was made and the server responded with a status code
-          setError(error.response.data.error); // Set the error message
+          setError(error.response.data.error);
         } else {
-          // Something happened in setting up the request that triggered an Error
           setError("Erreur interne du serveur");
         }
       })
       .finally(() => {
-        setLoading(false); // Reset loading state
+        setLoading(false);
       });
   };
 
@@ -112,4 +109,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default React.memo(Login);
