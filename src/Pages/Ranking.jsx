@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RankingComponent from "../Components/RankingComponent";
+import axios from "axios";
+import DataHandler from "../DataHandler";
 
 const Ranking = () => {
+  const [taillors, setTaillors] = useState([]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("http://localhost:3004/listeTailleurs")
+  //     .then((res) => setTaillors(res.data))
+  //     .then(() => console.log(taillors));
+  // }, []); 
+
+  useEffect(() => {
+    DataHandler.getDatas("http://localhost:3004/rang")
+    .then((res) => setTaillors(res.data))
+    .then(() => console.log(taillors));
+  },[])
+ 
+
   // Liste de données fictives pour le classement
   const classement = [
     {
@@ -43,15 +61,15 @@ const Ranking = () => {
                 Tailleur
               </th>
               <th scope="col" class="px-6 py-3">
-                Classemnt
+                Classement
               </th>
               <th scope="col" class="px-6 py-3">
-                Note
+                Certifié ?
               </th>
             </tr>
           </thead>
-          {classement
-            .sort((a, b) => b.note - a.note)
+          {taillors
+            // .sort((a, b) => b.rank - a.rank)
             .map((tailleur, index) => (
               <RankingComponent tailleur={tailleur} key={index} />
             ))}
