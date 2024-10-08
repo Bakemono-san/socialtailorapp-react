@@ -34,18 +34,18 @@ const Ranking = () => {
     <div className="classementTailleurs items-center gap-4 w-full p-4 h-[calc(100vh-300px)]">
       <div class="relative overflow-x-auto">
         <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-          <thead class="text-xl text-gray-900 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <thead class="text-xl text-gray-900 uppercase bg-gray-50 dark:bg-blue-700 dark:text-gray-400">
             <tr>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" class="px-6 py-3 text-sm">
                 Photo
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" class="px-6 py-3 text-sm">
                 Tailleur
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" class="px-6 py-3 text-sm">
                 Classemnt
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" class="px-6 py-3 text-sm">
                 Note
               </th>
             </tr>
