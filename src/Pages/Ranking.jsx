@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import RankingComponent from "../Components/RankingComponent";
+import DataHandler from "../DataHandler";
 
 const Ranking = () => {
   // Liste de données fictives pour le classement
@@ -30,6 +31,14 @@ const Ranking = () => {
     },
   ];
 
+  const [taillors, setTaillors] = useState([]);
+
+  useEffect(() => {
+    DataHandler.getDatas("http://localhost:3004/rang")
+      .then((res) => setTaillors(res))
+      // .then(() => console.log(taillors));
+  }, []);
+
   return (
     <div className="classementTailleurs items-center gap-4 w-full p-4 h-full">
       <div class="relative overflow-x-auto">
@@ -50,8 +59,8 @@ const Ranking = () => {
               </th>
             </tr>
           </thead>
-          {classement
-            .sort((a, b) => b.note - a.note)
+          {taillors
+            // .sort((a, b) => b.rank - a.rank)
             .map((tailleur, index) => (
               <RankingComponent tailleur={tailleur} key={index} />
             ))}
