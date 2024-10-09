@@ -23,7 +23,7 @@ export default React.memo(
           </div>
 
           {/* Stat: Nombre de followers */}
-          <div className="flex-1 text-right sm:text-left">
+          <div className="flex-1 text-right sm:text-end">
             <p className="text-gray-600 text-sm">Nombre de followers :</p>
             <p className="text-xl font-semibold">12,345</p>
           </div>
@@ -43,7 +43,7 @@ export default React.memo(
           </div>
 
           {/* Stat: Moyenne de likes */}
-          <div className="flex-1 text-right sm:text-left">
+          <div className="flex-1 text-right sm:text-end">
             <p className="text-gray-600 text-sm">Moyenne de likes :</p>
             <p className="text-xl font-semibold">2,500</p>
           </div>
