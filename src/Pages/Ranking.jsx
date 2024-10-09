@@ -38,6 +38,7 @@ const Ranking = () => {
       .then((res) => setTaillors(res))
       // .then(() => console.log(taillors));
   }, []);
+  
 
   return (
     <div className="classementTailleurs items-center gap-4 w-full p-4 h-full">

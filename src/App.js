@@ -17,6 +17,7 @@
   import Login from "./Pages/Login";
   import Signup from "./Pages/Signup";
   import { createContext,useState } from "react";
+import Notation from "./Pages/Notation";
 
 
   // Create a context
@@ -52,6 +53,7 @@
                       <Route path="/rang" element={<Ranking />} />
                       <Route path="/discussion" element={<ListDiscussion />} />
                       <Route path="/discussion/:id" element={<DiscussionPage />} />
+                      <Route path="/note" element={<Notation />}/>
                     </Routes>
                   </div>
 
