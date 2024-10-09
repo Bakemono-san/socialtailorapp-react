@@ -32,11 +32,11 @@
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="*" element={
-              <div className="bg-blue-100 h-screen flex flex-col overflow-hidden">
+              <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
                 <Header />
                 <div className="flex flex-1 md:flex-row flex-col-reverse overflow-hidden md:p-4 md:gap-8 lg:gap-24">
                   {/* Sidebar */}
-                  <Sidebar color="bg-blue-700" />
+                  <Sidebar color="bg-white" />
 
                   <div className="flex flex-col flex-1 overflow-hidden h-full">
                     <Routes>

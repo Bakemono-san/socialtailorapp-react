@@ -5,7 +5,7 @@ import { faCog, faCoins, faHome, faMessage, faVest, faTrophy } from '@fortawesom
 
 export default function Sidebar(props) {
   return (
-    <div className={props.color + ` md:py-8 flex md:flex-col md:gap-10 md:h-full lg:min-w-72 text-white md:rounded w-full min-h-12 border-t border-gray-300 shadow md:w-fit md:px-2`}>
+    <div className={props.color + ` bg-[#3b5999] md:py-8 flex md:flex-col md:gap-10 md:h-full lg:min-w-72 text-white md:rounded w-full min-h-12 border-t border-gray-300 shadow md:w-fit md:px-2`}>
       <div className='hidden md:block'>
         <SidebarItem icon={faHome} name="Home" path="/" />
       </div>

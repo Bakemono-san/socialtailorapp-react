@@ -80,7 +80,7 @@ export default function StoryContainer(props) {
 
   return (
     <div className="flex gap-4 w-full py-4 px-2">
-      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 bg-white flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
+      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 border-2 border-gray-300 flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
         <div className="bg-blue-400/50 flex flex-col justify-center w-full h-full items-center gap-2 bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
           <div className="w-6 h-6 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
           <p>Add Story</p>

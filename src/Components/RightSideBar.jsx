@@ -8,7 +8,7 @@ export default function Sidebar(props) {
   const { value, setDiscussion } = useContext(DataContext)
 
   return (
-    <div className={props.color + ` hidden md:flex md:py-4 md:px-5 md:flex-col md:gap-10 md:h-full text-white md:rounded w-full min-h-12 shadow md:w-24`}>
+    <div className={props.color + `  bg-[#3b5999] hidden md:flex md:py-4 md:px-5 md:flex-col md:gap-10 md:h-full text-white md:rounded w-full min-h-12 shadow md:w-24`}>
       <div className='hidden md:block'>
         <SidebarItem icon={faSearch} path="/" />
       </div>
