@@ -12,7 +12,7 @@ export default function Header() {
       <div className="flex items-center gap-12 flex-1 justify-end">
         <div className="flex justify-between gap-2 md:gap-4">
           <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
-            <Link to={"/panier"}>
+            <Link to={"/listesouhait"}>
               <FontAwesomeIcon icon={faBasketShopping} />
             </Link>
           </div>
