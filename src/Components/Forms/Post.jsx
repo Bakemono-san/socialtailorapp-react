@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { DataContext } from '../../App';
 
 const ModelForm = () => {
-    const [modelId, setModelId] = useState('');
+    const { value, setValue } = useContext(DataContext);
+    const [models, setModels] = useState(value.models);
+    const [modelId, setModelId] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
+
+
+
 
     const handleSelectModel = (model) => {
         setModelId(model);
@@ -20,22 +26,33 @@ const ModelForm = () => {
                     <input type="text" className='w-full bg-gray-200 p-2 rounded' placeholder='write something here...' />
                 </div>
                 <input
-                                type="text"
-                                id="modelId"
-                                name="modelId"
-                                value={modelId}
-                                onChange={(e) => setModelId(e.target.value)}
-                                className="hidden"
-                                required
-                            />
-                            {modelId && <p className="mt-2 text-gray-600">Selected Model: {modelId}</p>}
-                <button
-                    type="button"
-                    className=" bg-blue-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-blue-600"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Choose Model
-                </button>
+                    type="text"
+                    id="modelId"
+                    name="modelId"
+                    value={modelId}
+                    onChange={(e) => setModelId(e.target.value)}
+                    className="hidden"
+                    required
+                />
+                {modelId && <p className="mt-2 text-gray-600">Selected Model: {modelId}</p>}
+                <div className='p-1 flex justify-between items-center'>
+
+                    <button
+                        type="button"
+                        className=" bg-blue-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-blue-600"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        Choose Model
+                    </button>
+
+                    <button
+                        type="button"
+                        className=" bg-green-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-green-600"
+                    >
+                        publish
+                    </button>
+
+                </div>
 
 
                 {/* <div className="flex flex-col gap-4 w-full md:w-4/5 bg-white p-2 rounded-lg shadow-lg">
@@ -102,20 +119,16 @@ const ModelForm = () => {
                     <div className="bg-white rounded-lg p-6 shadow-lg w-96">
                         <h3 className="font-bold text-lg">Choose a Model</h3>
                         <div className="py-4">
-                            <button
-                                type="button"
-                                className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
-                                onClick={() => handleSelectModel('Model 1')}
-                            >
-                                Model 1
-                            </button>
-                            <button
-                                type="button"
-                                className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
-                                onClick={() => handleSelectModel('Model 2')}
-                            >
-                                Model 2
-                            </button>
+
+                            {models.map((model) => {
+                                return <button
+                                    type="button"
+                                    className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
+                                    onClick={() => handleSelectModel(model.libelle)}
+                                >
+                                    {model.libelle}
+                                </button>
+                            })}
                             {/* Add more model options as needed */}
                         </div>
                         <div className="modal-action mt-4">

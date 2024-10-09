@@ -15,8 +15,9 @@ export default React.memo(
 
         {/* Card Body */}
         <div className="bg-white rounded-lg shadow-md p-6 relative">
-          <div className={` ${props.status == null ? "absolute flex items-center justify-center w-full h-full inset-0 bg-black" : ""}`}>
+          <div className={` ${props.status == null ? "absolute flex flex-col gap-4 items-center justify-center w-full h-full inset-0 bg-black" : ""}`}>
               <p className='text-white text-md animate-bounce inset-0 mx-auto'>Fait un abonnement premium pour acceder a tes stats</p>
+              <button className='text-white bg-yellow-600 p-2 rounded'>s'abonner</button>
           </div>
           {/* Flex Container for Stats */}
           <div className="flex flex-col sm:flex-row sm:flex-wrap justify-between gap-4">

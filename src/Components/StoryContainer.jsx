@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import StoryItem from './StoryItem';
+import { DataContext } from '../App';
 
 
 export default function StoryContainer(props) {
-  
+  const {value, setValue} = useContext(DataContext);
+  const [models, setModels] = useState(value.models);
   const [storiesData, setStoriesData] = useState(props.stories || [
     {
       Models: {
@@ -103,9 +105,7 @@ export default function StoryContainer(props) {
                     className="w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">-- Choisir un modèle --</option>
-                    <option value="Model 1">Modèle 1</option>
-                    <option value="Model 2">Modèle 2</option>
-                    <option value="Model 3">Modèle 3</option>
+                    {models.map(model => <option value={model.libelle}>{model.libelle}</option>)}
                   </select>
                 </div>
 
