@@ -12,7 +12,6 @@ const ModelForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(title,modelId);
         DataHandler.postData("http://localhost:3004/post/create",{modelId:modelId,titre:title,description: "hello world"})
         .then((data) => {
             if (data) {
@@ -87,10 +86,11 @@ const ModelForm = () => {
                                 return <button
                                     key={model.id}
                                     type="button"
-                                    className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
+                                    className="w-fit bg-gray-100 hover:bg-gray-200 mb-2 rounded-lg"
                                     onClick={() => handleSelectModel(model.libelle,model.id)}
                                 >
-                                    {model.libelle}
+                                    <img src={model.contenu} alt={model.libelle} className='w-12 h-12 rounded'/>
+                                    {/* {model.libelle} */}
                                 </button>
                             })}
                             {/* Add more model options as needed */}
