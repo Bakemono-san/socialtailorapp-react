@@ -5,7 +5,7 @@ const NoteComponent = ({ tailleur }) => {
     <div className="bg-white shadow-lg rounded-lg overflow-hidden flex my-4 max-w-4xl mx-auto">
       {/* Image du produit */}
       <img
-        className="w-32 h-32 object-cover"
+        className="w-20 h-20 object-cover"
         src={tailleur.image}
         alt={tailleur.name}
       />
