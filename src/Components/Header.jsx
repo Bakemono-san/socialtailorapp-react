@@ -1,19 +1,27 @@
 import { faBasketShopping, faBell } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from '@fortawesome/free-solid-svg-icons'; // Import de l'icône de cœur
 import { Link } from "react-router-dom";
 import React from "react";
 
 export default function Header() {
   return (
-    <div className="bg-blue-700 text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
+    <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
       <div className="flex items-center gap-24 flex-1">
         <h1 className=" font-bold animate-pulse">Social Tailor</h1>
       </div>
       <div className="flex items-center gap-12 flex-1 justify-end">
         <div className="flex justify-between gap-2 md:gap-4">
+          
           <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
             <Link to={"/panier"}>
               <FontAwesomeIcon icon={faBasketShopping} />
+            </Link>
+          </div>
+
+          <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
+            <Link to={"/listesouhait"}>
+              <FontAwesomeIcon icon={faHeart} />
             </Link>
           </div>
           <div className="notif flex items-center justify-center p-2 cursor-pointer">

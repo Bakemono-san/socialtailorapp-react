@@ -4,10 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { useContext } from 'react'
 import { DataContext } from '../App'
+import DataHandler from '../DataHandler'
 
 export default function ListDiscussion() {
     const { value, setDiscussion } = useContext(DataContext)
-    console.log(value.message);
+
+    const discussions = DataHandler.getDatas("http://localhost:3004/user/discussions").then((data) => {return data}).catch((err) => {console.log(err)});
+    console.log(discussions);
+    
 
     return (
         <div className='w-full h-full'>

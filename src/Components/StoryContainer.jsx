@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import StoryItem from './StoryItem';
+import { DataContext } from '../App';
 
 
 export default function StoryContainer(props) {
-  
+  const {value, setValue} = useContext(DataContext);
+  const [models, setModels] = useState(value.models);
   const [storiesData, setStoriesData] = useState(props.stories || [
     {
       Models: {
@@ -78,7 +80,7 @@ export default function StoryContainer(props) {
 
   return (
     <div className="flex gap-4 w-full py-4 px-2">
-      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 bg-white flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
+      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 border-2 border-gray-300 flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
         <div className="bg-blue-400/50 flex flex-col justify-center w-full h-full items-center gap-2 bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
           <div className="w-6 h-6 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
           <p>Add Story</p>
@@ -103,9 +105,7 @@ export default function StoryContainer(props) {
                     className="w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">-- Choisir un modèle --</option>
-                    <option value="Model 1">Modèle 1</option>
-                    <option value="Model 2">Modèle 2</option>
-                    <option value="Model 3">Modèle 3</option>
+                    {models.map(model => <option value={model.libelle}>{model.libelle}</option>)}
                   </select>
                 </div>
 
