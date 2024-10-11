@@ -4,7 +4,7 @@ export default React.memo(
 
   function StatsCard(props) {
     return (
-      <div className={`w-full lg:block hidden`}>
+      <div className={`w-full lg:block hidden shadow h-fit`}>
         {/* Card Header */}
 
         <div className='flex items-center gap-2 px-4 py-3 bg-blue-300 rounded-t'>

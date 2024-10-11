@@ -13,7 +13,6 @@ export default class DataHandler {
                 
                 if (token) {
                     config.headers["Authorization"] = `Bearer ${token}`;
-                    console.log(config.headers);
                 }
 
                 return config;

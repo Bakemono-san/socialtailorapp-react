@@ -1,17 +1,33 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MessageItem from '../Components/MessageItem'
-import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import { DataContext } from '../App';
+import DataHandler from '../DataHandler';
 
 export default function DiscussionPage() {
-  const params = useParams();
 
-  const {value , setValue} = useContext(DataContext);
+  const [textos, setTextos] = useState([]);
+  const [connectedUser, setConnectedUsers] = useState([]);
 
-  const [messages,setMessage] = useState(value.message[params.id].UsersDiscussionsMessages);
 
-  const connectedUser = useRef(value.user.id);
+  const [messages,setMessage] = useState([]);
+
+  useEffect(() =>{
+    DataHandler.getDatas("http://localhost:3004/user/discussions")
+    .then(data => {
+      console.log(data);
+      
+      setTextos(data[0]);
+      setMessage(data[0].UsersDiscussionsMessages);
+    })
+
+    DataHandler.getDatas("http://localhost:3004/getConnectedUser")
+    .then(data => {
+      setConnectedUsers(data);
+    })
+    .catch(err => {
+      console.error(err);
+    })
+  })
+
 
   return (
     <div className='flex flex-col justify-between h-full w-full'>
@@ -19,8 +35,8 @@ export default function DiscussionPage() {
         <div>
           <h1 className='lg:text-2xl hidden font-bold'>Discussion</h1>
           <div className='flex items-center gap-4 w-full lg:p-4 p-2 bg-white'>
-            <img src={value.message[params.id].Users_UsersDiscussions_receiverIdToUsers.photoProfile} alt="" className='rounded-full w-12 h-12 lg:w-20 lg:h-20 object-cover' />
-            <h2 className='text-2xl'>Username {params.id}</h2>
+            <img src={textos.Users_UsersDiscussions_receiverIdToUsers.photoProfile} alt="" className='rounded-full w-12 h-12 lg:w-20 lg:h-20 object-cover' />
+            <h2 className='text-2xl'>{textos.Users_UsersDiscussions_receiverIdToUsers.prenom + " " + textos.Users_UsersDiscussions_receiverIdToUsers.nom}</h2>
           </div>
         </div>
         <div className='flex flex-col gap-2 md:gap-4 w-full overflow-y-scroll h-full'>
@@ -28,8 +44,8 @@ export default function DiscussionPage() {
         {
           messages.map(
             (message) => {
-              const color = connectedUser.current === message.senderId ? "bg-blue-400" : "bg-yellow-400";
-              const position = connectedUser.current === message.senderId? "left-2" : "self-end";
+              const color = connectedUser === message.senderId ? "bg-blue-400" : "bg-yellow-400";
+              const position = connectedUser === message.senderId? "left-2" : "self-end";
              return <MessageItem color={color} position={position} message={message.content} />
             }
           )

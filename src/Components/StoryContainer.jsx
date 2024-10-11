@@ -105,7 +105,7 @@ export default function StoryContainer(props) {
                     className="w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="">-- Choisir un modèle --</option>
-                    {models.map(model => <option value={model.libelle}>{model.libelle}</option>)}
+                    {models.map(model => <option key={model.id} value={model.libelle}>{model.libelle}</option>)}
                   </select>
                 </div>
 
