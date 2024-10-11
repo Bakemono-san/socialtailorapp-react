@@ -36,7 +36,7 @@ export default function Header() {
               alt=""
             />
             <div className="text-sm">
-              <h2>Josephine</h2>
+              <h2>{value.user.prenom}</h2>
               <p className="hidden">Active</p>
             </div>
           </div>
