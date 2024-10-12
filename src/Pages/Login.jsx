@@ -22,6 +22,8 @@ function Login() {
 
           localStorage.setItem("token", data.token);
           localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("userId", data.user.id); // Store user ID
+          localStorage.setItem("userName", data.user.name); // Store user name
           navigate("/");
         }
       })
