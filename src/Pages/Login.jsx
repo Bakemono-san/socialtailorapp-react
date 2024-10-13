@@ -90,6 +90,13 @@ function Login() {
               {loading ? "Loading..." : "Sign in"}
             </button>
           </form>
+
+          <p className="text-center mt-4 text-gray-500">
+            Don't have an account?{" "}
+            <span className="text-blue-600 underline hover:text-purple-700" onClick={handleSignupRedirect}>
+              Sign up now
+            </span>
+          </p>
         </div>
 
         {/* Right part: Welcome message */}

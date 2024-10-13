@@ -1,40 +1,93 @@
-import { faBasketShopping, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from '@fortawesome/free-solid-svg-icons'; // Import de l'icône de cœur
 import { Link } from "react-router-dom";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { DataContext } from "../App";
 
 export default function Header() {
-  const { value, setValue } = useContext(DataContext);
-  return (
-    <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
-      <div className="flex items-center gap-24 flex-1">
-        <h1 className=" font-bold animate-pulse">Social Tailor</h1>
-      </div>
-      <div className="flex items-center gap-12 flex-1 justify-end">
-        <div className="flex justify-between gap-2 md:gap-4">
+  const { value } = useContext(DataContext);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
 
-          <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
+  // Fonction pour acheter le badge
+  const acheterBadge = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/user/acheterBadge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ajouter JWT si nécessaire
+        },
+        body: JSON.stringify({ badgeId: value.badgeId }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setModalMessage(data.message || "Badge acquis avec succès !");
+        setIsSuccess(true);
+      } else {
+        setModalMessage(data.message || "Une erreur est survenue.");
+        setIsSuccess(false);
+      }
+    } catch (error) {
+      setModalMessage("Erreur de connexion au serveur.");
+      setIsSuccess(false);
+    } finally {
+      setIsModalOpen(true); // Affiche la modal
+    }
+  };
+
+  // Fermer la modal
+  const closeModal = () => setIsModalOpen(false);
+
+  return (
+    <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between items-center w-full">
+      <div className="flex items-center gap-24 flex-1">
+        <h1 className="font-bold animate-pulse">Social Tailor</h1>
+      </div>
+
+      <div className="flex items-center gap-12 flex-1 justify-end">
+        <div className="flex gap-4 items-center">
+          <div className="notif p-2 cursor-pointer hover:text-red-500">
             <Link to={"/panier"}>
               <FontAwesomeIcon icon={faBasketShopping} />
             </Link>
           </div>
 
-          <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
+          <div className="notif p-2 cursor-pointer hover:text-red-500">
             <Link to={"/listesouhait"}>
               <FontAwesomeIcon icon={faHeart} />
             </Link>
           </div>
-          <div className="notif flex items-center justify-center p-2 cursor-pointer">
-            <FontAwesomeIcon icon={faBell} path="/Models" />
+
+          <div className="notif p-2 cursor-pointer">
+            <FontAwesomeIcon icon={faBell} />
           </div>
-          <div className="profile flex gap-1 md:gap-2 cursor-pointer items-center">
+
+          {/* Bouton pour acheter un badge */}
+          <div
+            className="badge p-2 cursor-pointer hover:text-yellow-400 flex items-center"
+            onClick={acheterBadge}
+          >
+            <FontAwesomeIcon icon={faMedal} size="lg" />
+          </div>
+
+          {/* Photo de profil avec icône de certification */}
+          <div className="relative flex justify-between items-center">
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={value.user.photoProfile}
-              alt=""
+              alt="Profile"
             />
+            {value.user.badges && (
+              <FontAwesomeIcon
+                icon={faMedal}
+                className="absolute -bottom-1 -right-1 text-blue-500"
+                size="lg"
+              />
+            )}
             <div className="text-sm">
               <h2>{value.user.prenom}</h2>
               <p className="hidden">Active</p>
@@ -42,6 +95,27 @@ export default function Header() {
           </div>
         </div>
       </div>
+
+      {/* Modal pour les messages d'erreur ou succès */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white w-96 p-8 rounded-lg shadow-lg">
+            <p
+              className={`text-lg font-bold text-center ${
+                isSuccess ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {modalMessage}
+            </p>
+            <button
+              className="mt-6 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              onClick={closeModal}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
