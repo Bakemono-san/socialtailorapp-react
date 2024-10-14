@@ -12,7 +12,7 @@
   import Panier from "./Pages/Panier";
   import Ranking from "./Pages/Ranking";
   import ListDiscussion from "./Pages/ListDiscussion";
-
+ 
   import RightSideBar from "./Components/RightSideBar";
   import Login from "./Pages/Login";
   import Signup from "./Pages/Signup";
