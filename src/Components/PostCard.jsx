@@ -3,18 +3,131 @@ import {
   faComment,
   faShare,
   faSmile,
+  faStar as fasStar,
 } from "@fortawesome/free-solid-svg-icons";
+import {
+  faStar as farStar,
+  faStarHalfAlt,
+} from "@fortawesome/free-regular-svg-icons";
+
 import { faClipboard } from "@fortawesome/free-solid-svg-icons/faClipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React from "react";
+import { useEffect, useState } from "react";
+import DataHandler from "../DataHandler";
 
 export default function PostCard(props) {
+  const { notes } = props; // Déstructurer les props pour plus de lisibilité
+  const [currentRating, setCurrentRating] = useState(notes);
+  //
+  const [notification, setNotification] = useState({ message: "", type: "" });
+
+  //
+  const [averageRating, setAverageRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
+
+  const [showRating, setShowRating] = useState(false);
+
+  useEffect(() => {
+    if (typeof notes === "number") {
+      // Si notes est déjà une moyenne
+      setAverageRating(Math.round(notes * 2) / 2);
+    } else if (Array.isArray(notes) && notes.length > 0) {
+      // Si notes est un tableau de notes individuelles
+      const sum = notes.reduce(
+        (acc, curr) => acc + (typeof curr === "number" ? curr : curr.rate),
+        0
+      );
+      const avg = sum / notes.length;
+      setAverageRating(Math.round(avg * 2) / 2);
+    } else {
+      // Si notes n'est ni un nombre ni un tableau valide
+      setAverageRating(0);
+    }
+  }, [notes]);
+
+  const handleRating = async (newRating) => {
+    try {
+      const response = await DataHandler.postData(
+        `/notes/${props.post.Users.id}`,
+        { rate: newRating }
+      );
+      setCurrentRating(newRating);
+      setAverageRating(
+        (prev) => Math.round(((prev * 5 + newRating) / 6) * 2) / 2
+      );
+
+      // Mettre à jour la notification en vert en cas de succès
+      setNotification({
+        message: "Note ajoutée avec succès",
+        type: "success",
+      });
+
+      // alert("Note ajoutée avec succès");
+    } catch (error) {
+      //
+      // console.error("Erreur lors de la notation:", error.response.data);
+      const errorMessage =
+        typeof error.response.data === "object"
+          ? JSON.stringify(error.response.data)
+          : error.response.data;
+      // alert(`Erreur Notation: ${errorMessage}`);
+      // Mettre à jour la notification en rouge en cas d'erreur
+      setNotification({
+        message: `Erreur Notation: ${errorMessage}`,
+        type: "error",
+      });
+    }
+  };
+
+  // Effet pour masquer la notification après 3 secondes
+  useEffect(() => {
+    if (notification.message) {
+      const timer = setTimeout(() => {
+        setNotification({ message: "", type: "" });
+      }, 3000); // 3 secondes
+
+      return () => clearTimeout(timer); // Nettoie le timer si le composant est démonté
+    }
+  }, [notification]);
+
+  const toggleRating = () => {
+    setShowRating(!showRating);
+  };
+
+  const renderStars = (rating) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= fullStars) {
+        stars.push(
+          <FontAwesomeIcon key={i} icon={fasStar} className="text-yellow-500" />
+        );
+      } else if (i === fullStars + 1 && hasHalfStar) {
+        stars.push(
+          <FontAwesomeIcon
+            key={i}
+            icon={faStarHalfAlt}
+            className="text-yellow-500"
+          />
+        );
+      } else {
+        stars.push(
+          <FontAwesomeIcon key={i} icon={farStar} className="text-gray-300" />
+        );
+      }
+    }
+
+    return stars;
+  };
+
   const handleAddToWishList = () => {
     props.onAddToWishList(props.post.id, props.utilisateur.id); // Appelle la fonction du parent avec les IDs
 };
+
   return (
-      <div className="w-full bg-white rounded">
-        
+    <div className="w-full bg-white rounded">
       <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2  border-b border-grey-300">
         <div className="flex gap-2 items-center">
           <img
@@ -25,6 +138,88 @@ export default function PostCard(props) {
           <div>
             <h3>{props.utilisateur.prenom + " " + props.utilisateur.nom}</h3>
             <p>{props.post.datePublication}</p>
+
+            {props.utilisateur.role == "tailleur" && (
+              <>
+                <div className="mt-4 flex items-center">
+                  {renderStars(averageRating)}
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({averageRating.toFixed(1)})
+                  </span>
+                </div>
+
+                <button
+                  onClick={toggleRating}
+                  className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
+                >
+                  {showRating ? "Terminer" : "Noter"}
+                </button>
+
+                {showRating && (
+                  <div className="mt-2 flex items-center">
+                    <span className="mr-2 text-sm text-gray-600">
+                    Votre note :
+                  </span>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <FontAwesomeIcon
+                        key={star}
+                        icon={star <= userRating ? fasStar : farStar}
+                        className={`cursor-pointer ${
+                          star <= userRating
+                            ? "text-yellow-500"
+                            : "text-gray-300"
+                        }`}
+                        onClick={() => handleRating(star)}
+                      />
+                    ))}
+                  </div>
+                )}
+                {notification.message && (
+                  <div
+                    className={`mt-2 p-2 text-sm ${
+                      notification.type === "success"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {notification.message}
+                  </div>
+                )}
+              </>
+              // <div className="mt-4 flex">
+              //   {[...Array(5)].map((_, index) => (
+              //     <svg
+              //       // key={index}
+              //       // xmlns="http://www.w3.org/2000/svg"
+              //       // fill={index < currentRating ? "currentColor" : "none"}
+              //       // viewBox="0 0 24 24"
+              //       // strokeWidth="1.5"
+              //       // stroke="currentColor"
+              //       // className={`h-4 w-4 cursor-pointer ${
+              //       //   index < currentRating ? "text-yellow-500" : "text-gray-300"
+              //       key={index}
+              //       xmlns="http://www.w3.org/2000/svg"
+              //       fill={index < notes ? "currentColor" : "none"}
+              //       viewBox="0 0 24 24"
+              //       strokeWidth="1.5"
+              //       stroke="currentColor"
+              //       className={`h-4 w-4 ${
+              //         index < notes
+              //           ? "text-yellow-500"
+              //           : "text-gray-300" /* Coloration conditionnelle */
+              //       }`}
+              //       onClick={() => handleRating(index + 1)}
+              //     >
+              //       <path
+              //         strokeLinecap="round"
+              //         strokeLinejoin="round"
+              //         d="M12 17.25l-6.172 3.246 1.178-6.872-4.993-4.87 6.897-1.002L12 2.75l3.09 6.002 6.897 1.002-4.993 4.87 1.178 6.872L12 17.25z"
+              //       />
+              //     </svg>
+              //   ))}
+              // </div>
+            )}
+            {/* <p>{noteErrorMsg}</p> */}
           </div>
         </div>
         <div>
@@ -41,15 +236,6 @@ export default function PostCard(props) {
               </li>
               <li>
                 <button>Signaler</button>
-              </li>
-              <li>
-                <button
-                  onClick={() =>
-                    document.getElementById("my_modal_3").showModal()
-                  }
-                >
-                  ✔️ Noter
-                </button>
               </li>
             </ul>
           </div>
@@ -146,55 +332,6 @@ export default function PostCard(props) {
               <p>{props.post.datePublication}</p>
             </div>
           </div>
-          <div className="mt-4 flex">
-          {[...Array(5)].map((_, index) => (
-            <svg
-              key={index}
-              xmlns="http://www.w3.org/2000/svg"
-              fill={index < props.utilisateur.rank ? "currentColor" : "none"}
-              viewBox="0 0 24 24"
-              strokeWidth="1.5"
-              stroke="currentColor"
-              className={`h-5 w-5 ${
-                index < props.utilisateur.rank ? "text-yellow-500" : "text-gray-300"
-              }`}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 17.25l-6.172 3.246 1.178-6.872-4.993-4.87 6.897-1.002L12 2.75l3.09 6.002 6.897 1.002-4.993 4.87 1.178 6.872L12 17.25z"
-              />
-            </svg>
-          ))}
-        </div>
-          {/* <div class="rating">
-            <input
-              type="radio"
-              name="rating-2"
-              class="mask mask-star-2 bg-orange-400"
-            />
-            <input
-              type="radio"
-              name="rating-2"
-              class="mask mask-star-2 bg-orange-400"
-              checked="checked"
-            />
-            <input
-              type="radio"
-              name="rating-2"
-              class="mask mask-star-2 bg-orange-400"
-            />
-            <input
-              type="radio"
-              name="rating-2"
-              class="mask mask-star-2 bg-orange-400"
-            />
-            <input
-              type="radio"
-              name="rating-2"
-              class="mask mask-star-2 bg-orange-400"
-            />
-          </div> */}
         </div>
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
