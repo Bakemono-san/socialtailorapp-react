@@ -9,6 +9,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
 
 export default function PostCard(props) {
+  const handleAddToWishList = () => {
+    props.onAddToWishList(props.post.id, props.utilisateur.id); // Appelle la fonction du parent avec les IDs
+};
   return (
       <div className="w-full bg-white rounded">
         
@@ -105,7 +108,7 @@ export default function PostCard(props) {
       </div>
       <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
         <span className="flex gap-2 items-baseline">
-          <button className="btn btn-warning rounded h-10 text-white">
+          <button className="btn btn-warning rounded h-10 text-white" onClick={handleAddToWishList} >
             <FontAwesomeIcon icon={faClipboard} />
             <p>Add to WishList</p>
           </button>
