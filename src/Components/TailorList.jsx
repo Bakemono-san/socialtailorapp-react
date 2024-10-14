@@ -3,7 +3,7 @@ import { FaComments, FaUserPlus, FaCheckCircle } from 'react-icons/fa'; // Impor
 
 export default function TailorList({ tailors }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 h-96 overflow-y-auto">
+    <div className="bg-white shadow-md rounded-lg p-4 h-96">
       {/* Barre de recherche */}
       <input
         type="text"
@@ -12,7 +12,7 @@ export default function TailorList({ tailors }) {
       />
       
       {/* Liste des tailleurs */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 pb-12 overflow-y-auto h-full">
         {tailors.map(tailor => (
           <div key={tailor.id} className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm transition-transform hover:scale-105">
             {/* Informations sur le tailleur */}
