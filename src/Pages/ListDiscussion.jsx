@@ -37,7 +37,7 @@ export default function ListDiscussion() {
                 {
                     discussions.map((message, index) => {
 
-                        return <Discussion key={message.Users_UsersDiscussions_receiverIdToUsers.id} id={message.Users_UsersDiscussions_receiverIdToUsers.id} profile={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile} />
+                        return <Discussion key={message.Users_UsersDiscussions_receiverIdToUsers.id} id={message.id} profile={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile} />
                     }
                     )
                 }
