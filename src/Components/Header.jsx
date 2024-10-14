@@ -87,7 +87,7 @@ export default function Header() {
               {value.user.badges && (
                 <FontAwesomeIcon
                   icon={faCertificate}
-                  className="text-green -300"
+                  className="text-green-300"
                 />
               )}
             </div>
