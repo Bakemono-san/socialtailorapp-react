@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-export default function Discussion(props) {
+export default function     Discussion(props) {
     return (
         <div className='flex items-center px-4'>
             <Link to={`/discussion/${props.id}`} className='flex items-center gap-4 w-full p-4'>

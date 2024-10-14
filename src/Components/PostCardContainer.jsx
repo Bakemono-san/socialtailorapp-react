@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PostCard from './PostCard'
 import { useContext } from 'react'
 import { DataContext } from '../App'
@@ -64,6 +64,22 @@ export default function PostCardContainer() {
   };
 
   const [posts, setPost] = useState(value.posts);
+
+export default function PostCardContainer() {
+  const { value, setValue } = useContext(DataContext);
+  const [posts,setPost] = useState([]);
+
+
+  useEffect(() => {
+    DataHandler.getDatas('http://localhost:3004/post')
+     .then(data => {
+        setPost(data)
+      })
+     .catch(error => {
+        console.error('Erreur lors de la récupération des posts :', error)
+      })
+  },[])
+
   return (
     <div className='flex justify-between flex-col w-full gap-10 md:pb-63 md:px-0 pb-40  overflow-y-scroll'>
       {
@@ -71,6 +87,10 @@ export default function PostCardContainer() {
           (post) => {
             console.log(post, value.user);
             return <PostCard key={post.id} post={post} utilisateur={value.user} onAddToWishList={handleAddToWishList} />
+
+          (post,index) => {
+
+           return <PostCard key={post.id} post={post} utilisateur={post.Users} />
           }
         )
       }
