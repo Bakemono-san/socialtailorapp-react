@@ -32,10 +32,7 @@ const Modal = ({ isOpen, onClose, title, message, onConfirm, type = "confirm" })
                 Annuler
               </button>
               <button
-                onClick={() => {
-                  onConfirm();
-                  onClose();
-                }}
+                onClick={onConfirm}
                 className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
               >
                 Confirmer
@@ -58,7 +55,7 @@ const Modal = ({ isOpen, onClose, title, message, onConfirm, type = "confirm" })
 export default function ListeSouhaits() {
   const { value } = useContext(DataContext);
   const userId = value?.user?.id;
-  const [wishlistItems, setWishlistItems] = useState([]);
+  const [userPosts, setUserPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [modalConfig, setModalConfig] = useState({
     isOpen: false,
@@ -67,6 +64,7 @@ export default function ListeSouhaits() {
     type: "confirm",
     onConfirm: null
   });
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const showModal = (config) => {
     setModalConfig({ ...config, isOpen: true });
@@ -76,21 +74,25 @@ export default function ListeSouhaits() {
     setModalConfig({ ...modalConfig, isOpen: false });
   };
 
-  const fetchWishlistItems = async () => {
+  const fetchUserPosts = async () => {
     try {
       setIsLoading(true);
-      const response = await DataHandler.getDatas("http://localhost:3004/user/listeSouhaits");
-      // Assurez-vous que response est un tableau, sinon utilisez un tableau vide
-      const data = Array.isArray(response) ? response : [];
-      setWishlistItems(data);
+      const data = await DataHandler.getDatas("http://localhost:3004/user/listeSouhaits");
+
+      let formattedPosts = [];
+      if (data && data.length > 0) {
+        formattedPosts = data.map(item => item.Posts);
+        setUserPosts(formattedPosts);
+      } else {
+        setUserPosts([]);
+      }
     } catch (error) {
-      console.error("Erreur lors de la récupération de la liste de souhaits:", error);
+      console.error("Erreur lors de la récupération des posts:", error);
       showModal({
         title: "Erreur",
         message: "Une erreur est survenue lors de la récupération des articles.",
         type: "error"
       });
-      setWishlistItems([]); // En cas d'erreur, définir un tableau vide
     } finally {
       setIsLoading(false);
     }
@@ -98,10 +100,7 @@ export default function ListeSouhaits() {
 
   useEffect(() => {
     if (userId) {
-      fetchWishlistItems();
-    } else {
-      setWishlistItems([]); // Réinitialiser la liste si l'utilisateur n'est pas connecté
-      setIsLoading(false);
+      fetchUserPosts();
     }
   }, [userId]);
 
@@ -117,7 +116,7 @@ export default function ListeSouhaits() {
     console.log(`Commande passée pour ${post.titre} par l'utilisateur ${userId}`);
   };
 
-  const handleSupprimer = async (wishlistItem) => {
+  const handleSupprimer = async (post) => {
     if (!userId) {
       showModal({
         title: "Connexion requise",
@@ -127,14 +126,15 @@ export default function ListeSouhaits() {
       return;
     }
 
+    setSelectedPost(post);
     showModal({
       title: "Confirmer la suppression",
       message: "Êtes-vous sûr de vouloir retirer cet article de votre liste de souhaits ?",
       type: "confirm",
       onConfirm: async () => {
         try {
-          await DataHandler.deleteData(`http://localhost:3004/souhaits/${wishlistItem.id}`);
-          await fetchWishlistItems();
+          await DataHandler.deleteData(`http://localhost:3004/souhaits/${post.id}`);
+          await fetchUserPosts();
           showModal({
             title: "Succès",
             message: "L'article a été retiré de votre liste de souhaits.",
@@ -170,7 +170,7 @@ export default function ListeSouhaits() {
     );
   }
 
-  if (!Array.isArray(wishlistItems) || wishlistItems.length === 0) {
+  if (userPosts.length === 0) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
@@ -196,7 +196,7 @@ export default function ListeSouhaits() {
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-extrabold text-blue-900">Ma Liste de Souhaits</h1>
           <div className="flex items-center gap-2 bg-blue-100 px-6 py-2 rounded-full">
-            <span className="text-blue-800 font-medium">{wishlistItems.length} articles</span>
+            <span className="text-blue-800 font-medium">{userPosts.length} articles</span>
             <span className="text-red-500 text-lg">❤️</span>
           </div>
         </div>
@@ -213,60 +213,60 @@ export default function ListeSouhaits() {
             1024: { slidesPerView: 4 }
           }}
         >
-          {wishlistItems.map((item) => (
-            <SwiperSlide key={item.id}>
+          {userPosts.map((post) => (
+            <SwiperSlide key={post.id}>
               <div className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200">
                 <div className="relative group">
                   <img
-                    src={item.Posts?.image || 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg'}
-                    alt={item.Posts?.titre}
+                    src={post.image || 'https://www.boutiquesenegal.com/public/public/storage/article/1666978472.jpg'}
+                    alt={post.titre}
                     className="w-full h-48 object-cover group-hover:opacity-95 transition-all duration-300"
                   />
-                  {item.Posts?.reduction && (
+                  {post.reduction && (
                     <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-0.5 rounded-full text-xs font-semibold">
-                      -{item.Posts.reduction}%
+                      -{post.reduction}%
                     </div>
                   )}
                 </div>
 
                 <div className="p-4">
                   <h2 className="text-base font-bold text-blue-900 mb-1 hover:text-blue-600 transition-colors duration-200">
-                    {item.Posts?.titre}
+                    {post.titre}
                   </h2>
                   <p className="text-sm text-blue-700">
-                    {item.Posts?.description}
+                    {post.description}
                   </p>
 
                   <div className="flex items-center mt-2 mb-3">
                     <span className="text-xs text-gray-600">
-                      Publié le {item.Posts?.datePublication ? new Date(item.Posts.datePublication).toLocaleDateString() : 'Date inconnue'}
+                      Publié le {new Date(post.datePublication).toLocaleDateString()}
                     </span>
                   </div>
 
                   <div className="flex items-baseline mb-3">
-                    {item.Posts?.prix && (
+                    {post.prix && (
                       <>
-                        <span className="text-lg font-bold text-blue-600">{item.Posts.prix}€</span>
-                        {item.Posts.prixOriginal && (
-                          <span className="text-sm text-gray-500 line-through ml-2">{item.Posts.prixOriginal}€</span>
+                        <span className="text-lg font-bold text-blue-600">{post.prix}€</span>
+                        {post.prixOriginal && (
+                          <span className="text-sm text-gray-500 line-through ml-2">{post.prixOriginal}€</span>
                         )}
                       </>
                     )}
                   </div>
 
                   <div className="flex items-center mb-4">
-                    <span className="text-sm text-blue-600 mr-4">Vues: {item.Posts?.vues || 0}</span>
+                    <span className="text-sm text-blue-600 mr-4">Vues: {post.vues}</span>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <button
-                      onClick={() => handleCommander(item.Posts)}
+                      onClick={() => handleCommander(post)}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center gap-2"
                     >
                       🛒 Commander
                     </button>
                     <button
-                      onClick={() => handleSupprimer(item)}
+                      onClick={() => handleSupprimer(post)}
                       className="w-full bg-gray-100 hover:bg-red-100 text-red-600 py-2 rounded-lg transition-colors duration-200 font-semibold flex items-center justify-center gap-2"
                     >
                       🗑 Retirer
