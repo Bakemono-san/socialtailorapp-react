@@ -15,11 +15,13 @@ export default function ModelPage() {
     const fetchModels = async () => {
         try {
             const response = await DataHandler.getDatas(`/model/${value.user.id}/getModels`);
+            console.log("Réponse des modèles :", response);
             setModels(response);
         } catch (error) {
             console.error("Erreur lors de la récupération des modèles :", error);
         }
     };
+    
 
     const handleSubmit = async (formData) => {
         if (selectedModelId) {
@@ -37,10 +39,11 @@ export default function ModelPage() {
             quantite: formData.quantite,
             photos: formData.contenu,
         };
-
+    
         try {
-            await DataHandler.postData(`/model/${value.user.id}`, newModel);
-            fetchModels();
+            const response = await DataHandler.postData(`/model/${value.user.id}`, newModel);
+            // Mettre à jour directement l'état avec le modèle créé
+            setModels((prevModels) => [...prevModels, response]);  // On ajoute le nouveau modèle à la liste des modèles
         } catch (error) {
             console.error("Erreur lors de la création du modèle :", error);
         }
@@ -90,10 +93,11 @@ export default function ModelPage() {
             <h1 className="text-center text-4xl font-bold text-blue-600 mb-8">Gestion des Modèles</h1>
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <div className="shadow-lg p-6 bg-white rounded-lg lg:col-span-1">
-                    <Form 
-                        onSubmit={handleSubmit} 
-                        selectedModel={models.find(model => model.id === selectedModelId)} 
+                <Form 
+                    onSubmit={handleSubmit} 
+                    selectedModel={models.find(model => model.id === selectedModelId)} 
                     />
+
                 </div>
 
                 <div className="shadow-lg p-6 bg-white rounded-lg lg:col-span-1">

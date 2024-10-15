@@ -52,24 +52,20 @@ export default function Form({ onSubmit, selectedModel }) {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        
         // Validation des champs du formulaire
         const errors = validateModel(libelle, prix, quantite, contenu);
         setFormErrors(errors);
-
         // Vérifie si le formulaire est valide (pas d'erreurs)
         if (Object.keys(errors).length === 0) {
             try {
                 // Télécharge les images sur Cloudinary ou autre service d'hébergement
                 const uploadedImages = await uploadImagesToCloudinary(contenu);
-                
                 // Prépare les données du formulaire à envoyer
                 const formData = { libelle, prix, quantite, contenu: uploadedImages };
-
                 // Si selectedModel est défini, c'est une mise à jour, sinon c'est une création
                 if (selectedModel) {
                     // Mise à jour du modèle existant
-                    const response = await DataHandler.putData(`http://localhost:3004/model/update/${selectedModel.id}`, formData);
+                    const response = await DataHandler.updateData(`http://localhost:3004/model/${selectedModel.id}/update/`, formData);
                     console.log("Réponse du serveur pour la mise à jour:", response);
                 } else {
                     // Création d'un nouveau modèle
