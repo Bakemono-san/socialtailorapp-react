@@ -12,6 +12,8 @@ export default function Header() {
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
+    if (value.user.badges) return; // Disable click if user already has a badge
+
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
         method: "POST",
@@ -68,8 +70,12 @@ export default function Header() {
 
           {/* Bouton pour acheter un badge */}
           <div
-            className="badge p-2 cursor-pointer hover:text-yellow-400 flex items-center"
-            onClick={acheterBadge}
+            className={`badge p-2 cursor-pointer flex items-center ${
+              value.user.badges
+                ? "animate-bounce text-yellow-700 cursor-not-allowed" // Animate and change color if user has a badge
+                : "hover:text-yellow-400" // Otherwise, keep it clickable
+            }`}
+            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
             <FontAwesomeIcon icon={faMedal} size="lg" />
           </div>
@@ -81,13 +87,7 @@ export default function Header() {
               src={value.user.photoProfile}
               alt="Profile"
             />
-            {value.user.badges && (
-              <FontAwesomeIcon
-                icon={faMedal}
-                className="absolute -bottom-1 -right-1 text-blue-500"
-                size="lg"
-              />
-            )}
+            
             <div className="text-sm">
               <h2>{value.user.prenom}</h2>
               <p className="hidden">Active</p>
