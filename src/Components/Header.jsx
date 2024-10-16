@@ -1,4 +1,4 @@
-import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import React, { useContext, useState } from "react";
@@ -8,7 +8,7 @@ export default function Header() {
   const { value } = useContext(DataContext);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
@@ -69,28 +69,31 @@ export default function Header() {
           </div>
 
           {/* Bouton pour acheter un badge */}
-          <div
-            className={`badge p-2 cursor-pointer flex items-center ${
-              value.user.badges
-                ? "animate-bounce text-yellow-700 cursor-not-allowed" // Animate and change color if user has a badge
-                : "hover:text-yellow-400" // Otherwise, keep it clickable
-            }`}
-            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
+
+          {value.user.badges ??  <div
+            // className="badge p-2 cursor-pointer hover:text-yellow-400 flex items-center"
+            onClick={acheterBadge}
           >
-            <FontAwesomeIcon icon={faMedal} size="lg" />
-          </div>
+            <FontAwesomeIcon icon={faMedal} />
+          </div>}
+          
 
           {/* Photo de profil avec icône de certification */}
-          <div className="relative flex justify-between items-center">
+          <div className="relative flex justify-between items-center gap-2">
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={value.user.photoProfile}
               alt="Profile"
             />
-            
-            <div className="text-sm">
+
+            <div className="text-sm flex gap-1 justify-center items-center">
               <h2>{value.user.prenom}</h2>
-              <p className="hidden">Active</p>
+              {value.user.badges && (
+                <FontAwesomeIcon
+                  icon={faCertificate}
+                  className="text-green-300"
+                />
+              )}
             </div>
           </div>
         </div>

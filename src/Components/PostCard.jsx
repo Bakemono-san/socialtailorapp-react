@@ -217,7 +217,25 @@ export default function PostCard(props) {
     }
   };
 
-  // Effet pour masquer la notification
+
+  const addToCart = () => {
+    let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
+
+    const existingCommande = commandes.find(commande => commande.id === props.post.id);
+
+    if (existingCommande) {
+        existingCommande.quantite++;
+    } else {
+        const newCommande = { ...props.post, quantite: 1 };
+        commandes.push(newCommande);
+    }
+
+    // Update localStorage
+    localStorage.setItem("commandes", JSON.stringify(commandes));
+}
+
+
+  // Effet pour masquer la notification après 3 secondes
   useEffect(() => {
     if (notification.message) {
       const timer = setTimeout(() => {
@@ -308,6 +326,71 @@ export default function PostCard(props) {
         isOpen={isShareModalOpen}
         onClose={closeShareModal}
       />
+        <div className="py-2 px-6 md:p-6 flex flex-col md:gap-6 gap-4 w-full bg-white rounded-lg">
+          <h2 className="xl:text-3xl font-bold text-center text-gray-800">
+            {props.post.description}
+          </h2>
+        </div>
+      </main>
+      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
+        <div className="flex gap-2 items-baseline  ">
+          <FontAwesomeIcon icon={faSmile} />
+          <p>Like</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <FontAwesomeIcon icon={faComment} />
+          <p>Comment</p>
+        </div>
+        <div className="flex gap-2 items-baseline">
+          <FontAwesomeIcon icon={faShare} />
+          <p>Share</p>
+        </div>
+      </div>
+      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
+        <span className="flex gap-2 items-baseline">
+          <button className="btn btn-warning rounded h-10 text-white" onClick={handleAddToWishList} >
+            <FontAwesomeIcon icon={faClipboard} />
+            <p>Add to WishList</p>
+          </button>
+        </span>
+        <span className="flex gap-2 items-baseline">
+          <button className="btn rounded  h-10 text-white bg-blue-500" onClick={addToCart}>
+            <FontAwesomeIcon icon={faCartPlus} />
+            <p>Add to cart</p>
+          </button>
+        </span>
+      </div>
+
+      <div className="px-4 flex justify-center items-center py-4 bg-white">
+        <div className="w-full bg-blue-100 rounded">
+          <input
+            type="text"
+            className="p-2 bg-transparent w-full border-none"
+            placeholder="comment..."
+          />
+        </div>
+      </div>
+      {/* Open the modal using document.getElementById('ID').showModal() method */}
+
+      <dialog id="my_modal_3" className="modal">
+        {/* {console.log(props.utilisateur)} */}
+        <div className="modal-box bg-white">
+          <div className="flex gap-2 items-center">
+            <img
+              src={props.utilisateur.photoProfile}
+              alt=""
+              className="w-8 h-8 rounded-full"
+            />
+            <div>
+              <h3>{props.utilisateur.prenom + " " + props.utilisateur.nom}</h3>
+              <p>{props.post.datePublication}</p>
+            </div>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
+      </dialog>
     </div>
   );
 }
