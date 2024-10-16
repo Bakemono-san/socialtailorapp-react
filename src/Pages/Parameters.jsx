@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faRuler } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faRuler, faUserShield } from '@fortawesome/free-solid-svg-icons';
 
 export default function Parameters() {
   const navigate = useNavigate(); // Hook pour la navigation
@@ -11,6 +11,10 @@ export default function Parameters() {
   const handleMeasurementsClick = () => {
     navigate('/measurements');
   };
+
+  const handleRoleClick = () => {
+    navigate("/changeRole");
+  }
 
   return (
     <div className="p-4">
@@ -27,6 +31,12 @@ export default function Parameters() {
             <FontAwesomeIcon icon={faRuler} />
           </span>
           <span className="text-xl font-semibold">Mesures</span>
+        </li>
+        <li className="flex items-center cursor-pointer p-2 rounded-md hover:bg-blue-100 transition-colors">
+          <span className="bg-blue-400 text-white rounded-md p-2 mr-2">
+            <FontAwesomeIcon icon={faUserShield} />
+          </span>
+          <span className="text-xl font-semibold" onClick={handleRoleClick}>Changer Role</span>
         </li>
       </ul>
     </div>

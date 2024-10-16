@@ -14,6 +14,7 @@ import { faClipboard } from "@fortawesome/free-solid-svg-icons/faClipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import DataHandler from "../DataHandler";
+import { Link } from "react-router-dom";
 
 export default function PostCard(props) {
   const { notes } = props; // Déstructurer les props pour plus de lisibilité
@@ -26,6 +27,14 @@ export default function PostCard(props) {
   const [userRating, setUserRating] = useState(0);
 
   const [showRating, setShowRating] = useState(false);
+
+  const [message, setMessage] = useState("");
+  const [messageColor, setMessageColor] = useState("");
+
+  const [isModalOpen, setIsModalOpen] = useState(false); // Contrôle du modal
+  const [reason, setReason] = useState(""); // Raison du signalement
+  const [responseMessage, setResponseMessage] = useState(null); // Stocker le message de réponse
+  const [responseSuccess, setResponseSuccess] = useState(null); // Stocker le statut de succès ou d'échec
 
   useEffect(() => {
     if (typeof notes === "number") {
@@ -124,7 +133,66 @@ export default function PostCard(props) {
 
   const handleAddToWishList = () => {
     props.onAddToWishList(props.post.id, props.utilisateur.id); // Appelle la fonction du parent avec les IDs
-};
+  };
+
+  const handleAddToFavoris = async () => {
+    try {
+      console.log("Début de handleAddToFavoris pour le post:", props.post.id);
+      const response = await props.onAddToFavoris(props.post.id);
+      console.log("Réponse reçue dans le composant enfant:", response);
+      console.log("Type de response:", typeof response);
+      console.log("Status de la réponse:", response.status);
+      console.log("Data de la réponse:", response.data);
+
+      if (response.status === 201) {
+        console.log("Entré dans le bloc 201");
+        setMessage(response.data || "Ajouté aux favoris !");
+        setMessageColor("green");
+      } else if (response.status === 400) {
+        console.log("Entré dans le bloc 400");
+        setMessage(response.data || "Ce post est déjà dans vos favoris.");
+        setMessageColor("orange");
+      } else if (response.status === 404) {
+        console.log("Entré dans le bloc 404");
+        setMessage(response.data || "Post non trouvé.");
+        setMessageColor("red");
+      } else {
+        console.log("Entré dans le bloc else");
+        setMessage(response.data || "Une erreur inattendue s'est produite.");
+        setMessageColor("red");
+      }
+    } catch (error) {
+      console.error("Erreur détaillée dans le composant enfant:", error);
+      setMessage("Erreur lors de l'ajout aux favoris.");
+      setMessageColor("red");
+    }
+
+    setTimeout(() => {
+      setMessage("");
+    }, 5000);
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   props.onReportUser(props.post.id, props.utilisateur.id, reason); // Appel de la fonction du parent
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await props.onReportUser(
+      props.post.id,
+      props.utilisateur.id,
+      reason
+    ); // Appel de la fonction du parent
+    setResponseMessage(response.message); // Stocker le message de réponse
+    setResponseSuccess(response.success); // Stocker le statut de succès ou d'échec
+    setReason(""); // Réinitialiser la raison après soumission
+
+    setTimeout(() => {
+      setResponseMessage(null);
+      setResponseSuccess(null);
+    }, 3000); // 3000ms = 3 secondes
+  };
 
   return (
     <div className="w-full bg-white rounded">
@@ -158,8 +226,8 @@ export default function PostCard(props) {
                 {showRating && (
                   <div className="mt-2 flex items-center">
                     <span className="mr-2 text-sm text-gray-600">
-                    Votre note :
-                  </span>
+                      Votre note :
+                    </span>
                     {[1, 2, 3, 4, 5].map((star) => (
                       <FontAwesomeIcon
                         key={star}
@@ -186,40 +254,7 @@ export default function PostCard(props) {
                   </div>
                 )}
               </>
-              // <div className="mt-4 flex">
-              //   {[...Array(5)].map((_, index) => (
-              //     <svg
-              //       // key={index}
-              //       // xmlns="http://www.w3.org/2000/svg"
-              //       // fill={index < currentRating ? "currentColor" : "none"}
-              //       // viewBox="0 0 24 24"
-              //       // strokeWidth="1.5"
-              //       // stroke="currentColor"
-              //       // className={`h-4 w-4 cursor-pointer ${
-              //       //   index < currentRating ? "text-yellow-500" : "text-gray-300"
-              //       key={index}
-              //       xmlns="http://www.w3.org/2000/svg"
-              //       fill={index < notes ? "currentColor" : "none"}
-              //       viewBox="0 0 24 24"
-              //       strokeWidth="1.5"
-              //       stroke="currentColor"
-              //       className={`h-4 w-4 ${
-              //         index < notes
-              //           ? "text-yellow-500"
-              //           : "text-gray-300" /* Coloration conditionnelle */
-              //       }`}
-              //       onClick={() => handleRating(index + 1)}
-              //     >
-              //       <path
-              //         strokeLinecap="round"
-              //         strokeLinejoin="round"
-              //         d="M12 17.25l-6.172 3.246 1.178-6.872-4.993-4.87 6.897-1.002L12 2.75l3.09 6.002 6.897 1.002-4.993 4.87 1.178 6.872L12 17.25z"
-              //       />
-              //     </svg>
-              //   ))}
-              // </div>
             )}
-            {/* <p>{noteErrorMsg}</p> */}
           </div>
         </div>
         <div>
@@ -232,10 +267,25 @@ export default function PostCard(props) {
               className="dropdown-content menu bg-red-100 rounded-box z-[1] w-52 p-2 shadow"
             >
               <li>
-                <button href="#">marquer favori</button>
+                <button onClick={handleAddToFavoris}>marquer favori</button>
+              </li>
+              {message && (
+                <p style={{ color: messageColor, marginTop: "10px" }}>
+                  {message}
+                </p>
+              )}
+              <li>
+                <button
+                  onClick={() =>
+                    document.getElementById("my_modal_5").showModal()
+                  }
+                >
+                  Signaler
+                </button>
               </li>
               <li>
-                <button>Signaler</button>
+                <Link to="/favorisPosts">Mes Favoris</Link>
+                {/* <button Link to='/favorisPosts'>Mes Favoris</button> */}
               </li>
             </ul>
           </div>
@@ -294,7 +344,10 @@ export default function PostCard(props) {
       </div>
       <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
         <span className="flex gap-2 items-baseline">
-          <button className="btn btn-warning rounded h-10 text-white" onClick={handleAddToWishList} >
+          <button
+            className="btn btn-warning rounded h-10 text-white"
+            onClick={handleAddToWishList}
+          >
             <FontAwesomeIcon icon={faClipboard} />
             <p>Add to WishList</p>
           </button>
@@ -336,6 +389,48 @@ export default function PostCard(props) {
         <form method="dialog" className="modal-backdrop">
           <button>close</button>
         </form>
+      </dialog>
+
+      {/* MODAL SIGNALEMENT UTILISATEUR */}
+
+      <dialog id="my_modal_5" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+
+          <form onSubmit={handleSubmit}>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">
+                  Indiquez la raison du signalement
+                </span>
+              </div>
+              <input
+                type="text"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Raison Signalement"
+                className="input input-bordered w-full max-w-xs"
+              />
+            </label>
+            <button type="submit" className="btn btn-success">
+              Signaler
+            </button>
+          </form>
+          {responseMessage && (
+            <div
+              className={`mt-4 text-center ${
+                responseSuccess ? "text-green-500" : "text-red-500"
+              }`}
+            >
+              {responseMessage}
+            </div>
+          )}
+        </div>
       </dialog>
     </div>
   );
