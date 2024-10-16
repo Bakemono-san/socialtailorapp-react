@@ -12,6 +12,8 @@
   import Panier from "./Pages/Panier";
   import Ranking from "./Pages/Ranking";
   import ListDiscussion from "./Pages/ListDiscussion";
+  import Article from "./Pages/Article"; // make sure this path is correct
+
  
   import RightSideBar from "./Components/RightSideBar";
   import Login from "./Pages/Login";
@@ -48,6 +50,7 @@
                       <Route path="/achatcredit" element={<AchatCredit />} />
                       <Route path="/listesouhait" element={<ListeSouhait />} />
                       <Route path="/Models" element={<Models />} />
+                      <Route path="/article" element={<Article />} /> {/* New Route */}
                       <Route path="/panier" element={<Panier />} />
                       <Route path="/rang" element={<Ranking />} />
                       <Route path="/discussion" element={<ListDiscussion />} />

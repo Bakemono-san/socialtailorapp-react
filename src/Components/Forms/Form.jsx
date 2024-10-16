@@ -9,7 +9,7 @@ export default function Form({ onSubmit, selectedModel }) {
     const [contenu, setContenu] = useState([]);
     const [formErrors, setFormErrors] = useState({});
     const form = useRef();
-
+     
     useEffect(() => {
         if (selectedModel) {
             setLibelle(selectedModel.libelle);
@@ -23,30 +23,30 @@ export default function Form({ onSubmit, selectedModel }) {
 
     const uploadImagesToCloudinary = async (files) => {
         const uploadedImages = [];
-        const uploadPreset = 'mpf2ua6x';
-
+        const uploadPreset = process.env.REACT_APP_UPLOAD_PRESET;
+    
         for (const file of files) {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('upload_preset', uploadPreset);
-
+    
             try {
-                const response = await fetch('https://api.cloudinary.com/v1_1/dtke1hwnj/image/upload', {
+                const response = await fetch(process.env.REACT_APP_CLOUDINARY_URL, {
                     method: 'POST',
                     body: formData,
                 });
                 const data = await response.json();
-
+    
                 if (!response.ok) {
                     throw new Error(data.message || 'Erreur inconnue');
                 }
-
+    
                 uploadedImages.push(data.secure_url);
             } catch (error) {
                 console.error("Erreur lors de l'upload de l'image :", error);
             }
         }
-
+    
         return uploadedImages;
     };
 
