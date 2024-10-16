@@ -79,6 +79,23 @@ export default function PostCard(props) {
     }
   };
 
+  const addToCart = () => {
+    let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
+
+    const existingCommande = commandes.find(commande => commande.id === props.post.id);
+
+    if (existingCommande) {
+        existingCommande.quantite++;
+    } else {
+        const newCommande = { ...props.post, quantite: 1 };
+        commandes.push(newCommande);
+    }
+
+    // Update localStorage
+    localStorage.setItem("commandes", JSON.stringify(commandes));
+}
+
+
   // Effet pour masquer la notification après 3 secondes
   useEffect(() => {
     if (notification.message) {
@@ -252,30 +269,6 @@ export default function PostCard(props) {
           <h2 className="xl:text-3xl font-bold text-center text-gray-800">
             {props.post.description}
           </h2>
-
-          {/* <div className="flex justify-between md:text-lg">
-                        <div>
-                            <h3 className="font-semibold text-gray-700 mb-2">Tissus</h3>
-                            <ul className="list-disc list-inside text-gray-600">
-                                {props.tissu.map((element, index) => (
-                                    <li key={index}>{element} <input type="radio" name="tissu" value={element} /></li>
-                                ))}
-                            </ul>
-                        </div>
-
-
-                        <div>
-                            <h3 className="font-semibold text-gray-700 mb-2">Materials</h3>
-                            <ul className="list-disc list-inside text-gray-600">
-                                {props.materials.map((element, index) => (
-                                    <li key={index}>{element}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div> */}
-          {/* <div className="bg-gradient-to-r from-blue-500 to-red-500 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out w-fit self-center">
-                    15000 fr
-                </div> */}
         </div>
       </main>
       <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
@@ -300,7 +293,7 @@ export default function PostCard(props) {
           </button>
         </span>
         <span className="flex gap-2 items-baseline">
-          <button className="btn rounded  h-10 text-white bg-blue-500">
+          <button className="btn rounded  h-10 text-white bg-blue-500" onClick={addToCart}>
             <FontAwesomeIcon icon={faCartPlus} />
             <p>Add to cart</p>
           </button>

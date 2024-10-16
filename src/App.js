@@ -28,7 +28,6 @@ function App() {
   const [datas, setDatas] = useState({});
   return (
     <DataContext.Provider value={{ value: datas, setValue: setDatas }}>
-
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
