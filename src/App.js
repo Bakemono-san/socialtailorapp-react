@@ -12,7 +12,9 @@ import ListeSouhait from "./Pages/ListeSouhait";
 import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
-import ProfilePage from "./Pages/ProfilePage";
+  import Article from "./Pages/Article"; // make sure this path is correct
+
+ import ProfilePage from "./Pages/ProfilePage";
 
   import RightSideBar from "./Components/RightSideBar";
   import Login from "./Pages/Login";
@@ -48,8 +50,7 @@ function App() {
                       <Route path="/" element={<MainPage />} />
 
                     <Route path="/tailleurs" element={<TailleursListe />} />
-                    {/* <Route path="/profile" element={<ProfilePage />} /> */}
-                    {/* <Route path="/profile" element={<ProfilePage />} /> */}
+                    <Route path="/article" element={<Article />} /> {/* New Route */}
                     <Route path="/profile" element={<ProfilePage />} />
 
                     <Route path="/params" element={<Parameters />} />
