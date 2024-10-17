@@ -99,7 +99,7 @@ export default function PostCardContainer() {
 
       fetchAuthorNotes();
     }
-  }, [posts]);
+  }, []);
 
   return (
     <div className="flex justify-between flex-col w-full gap-10 md:pb-63 md:px-0 pb-40  overflow-y-scroll">
