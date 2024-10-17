@@ -100,7 +100,7 @@ export default function PostCardContainer() {
 
       fetchAuthorNotes();
     }
-  }, [posts]);
+  }, []);
 
   const handleAddToFavoris = async (postId) => {
     try {

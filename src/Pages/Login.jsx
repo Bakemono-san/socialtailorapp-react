@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../App";
 import DataHandler from "../DataHandler";
+import LocalStorage from "../Utils/LocalStorage";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,11 +20,12 @@ function Login() {
       .then((data) => {
         if (data) {
           setValue(data);
-
+          
           localStorage.setItem("token", data.token);
           localStorage.setItem("isAuthenticated", "true");
           localStorage.setItem("userId", data.user.id); // Store user ID
-          localStorage.setItem("userName", data.user.name); // Store user name
+          // console.log(JSON.stringify(data.user));
+          localStorage.setItem("user", JSON.stringify(data.user)); // Store user name
           navigate("/");
         }
       })
