@@ -3,7 +3,7 @@ import { FaComments, FaUserPlus, FaCheckCircle } from 'react-icons/fa'; // Impor
 
 export default function TailorList({ tailors }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 h-96">
+    <div className="bg-white shadow-md rounded-lg p-4 h-96 hidden lg:block">
       {/* Barre de recherche */}
       <input
         type="text"

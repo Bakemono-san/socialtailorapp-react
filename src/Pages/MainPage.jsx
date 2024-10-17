@@ -49,7 +49,7 @@ export default function MainPage() {
           <Post />
           <PostCardContainer />
         </div>
-        <div className='flex flex-col gap-4 h-full w-full'>
+        <div className='flex-col gap-4 h-full w-full hidden lg:flex'>
           <StatsCard title="Stats" />
           <TailorList tailors={tailors} />
         </div>
