@@ -1,200 +1,247 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faComment, faShare } from '@fortawesome/free-solid-svg-icons';
-import Picker from '@emoji-mart/react';
-import data from '@emoji-mart/data';
-import StoryItem from './StoryItem';
+import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
+import { DataContext } from '../App';
+import DataHandler from '../DataHandler';
+
+const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = false }) => (
+  <div 
+    className="flex flex-col items-center space-y-1 cursor-pointer"
+    onClick={onClick}
+  >
+    <div className={`relative w-20 h-20 rounded-full overflow-hidden ${
+      isCurrentUser
+        ? 'border-4 border-blue-500'
+        : isViewed
+        ? 'border-4 border-gray-300'
+        : 'border-4 border-green-500'
+    } bg-white p-0.5`}>
+      <div className="w-full h-full rounded-full overflow-hidden">
+        {isAdd ? (
+          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+            <FontAwesomeIcon icon={faPlus} className="text-gray-600 text-xl" />
+          </div>
+        ) : (
+          <>
+            <img src={image} alt={title} className="w-full h-full object-cover" />
+            {isCurrentUser && (
+              <div className="absolute bottom-0 right-0 bg-blue-500 rounded-full p-1">
+                <FontAwesomeIcon icon={faUser} className="text-white text-xs" />
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+    <p className="text-xs text-center w-16 truncate">{isAdd ? "Ajouter" : title}</p>
+  </div>
+);
 
 
-export default function StoryContainer(props) {
-  
-  const [storiesData, setStoriesData] = useState(props.stories || [
-    {
-      Models: {
-        contenu: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQSsG6tsv7jBEEZbHs0UTvAa4pmL8X31von1A&s",
-        titre: "Josephine Water"
-      }
-    }
-  ]);
+export default function StoryContainer() {
+  const { value } = useContext(DataContext);
+  const [models, setModels] = useState(value.models);
+  const [userStories, setUserStories] = useState([]);
+  const [otherUserStories, setOtherUserStories] = useState([]);
+  const [viewedStories, setViewedStories] = useState(new Set());
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentStoryIndex, setCurrentStoryIndex] = useState(null);
-  const [likesCount, setLikesCount] = useState(Array(storiesData.length).fill(0));
-  const [isCommentInputVisible, setCommentInputVisible] = useState(false);
-  const [commentText, setCommentText] = useState('');
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [viewedStories, setViewedStories] = useState([]); // Pour gérer les stories vues
-
   const [selectedModel, setSelectedModel] = useState("");
+  const [isCurrentUserStory, setIsCurrentUserStory] = useState(false);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    fetchUserStories();
+    fetchOtherUserStories();
+    // Charger les stories vues depuis le localStorage
+    const storedViewedStories = JSON.parse(localStorage.getItem('viewedStories') || '[]');
+    setViewedStories(new Set(storedViewedStories));
+  }, []);
+
+  const fetchUserStories = async () => {
+    try {
+      const stories = await DataHandler.getDatas("/story/user-stories");
+      setUserStories(stories);
+    } catch (error) {
+      console.error("Error fetching user stories:", error);
+    }
+  };
+
+  const fetchOtherUserStories = async () => {
+    try {
+      const stories = await DataHandler.getDatas("/story/other-user-stories");
+      setOtherUserStories(stories);
+    } catch (error) {
+      console.error("Error fetching other user stories:", error);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedModel) {
       alert("Veuillez sélectionner un modèle.");
       return;
     }
-    console.log("Modèle partagé :", selectedModel);
-    document.getElementById("my_modal_2").close(); // Fermer le modal après partage
+
+    try {
+      await DataHandler.postData("/story/create", {
+        model: selectedModel.id
+      });
+      fetchUserStories();
+      document.getElementById("my_modal_2").close();
+    } catch (error) {
+      console.error("Error creating story:", error);
+      alert("Une erreur s'est produite lors de la création de la story.");
+    }
   };
 
-  const openModal = (index) => {
-    moveStoryToEnd(index);
-    setCurrentStoryIndex(storiesData.length - 1); // Pointe vers la dernière story
+  const openModal = (index, isCurrentUser = false) => {
+    setCurrentStoryIndex(index);
     setIsModalOpen(true);
-    setCommentInputVisible(false);
-  };
+    setIsCurrentUserStory(isCurrentUser);
 
-  const moveStoryToEnd = (index) => {
-    const storyToMove = storiesData[index];
-
-    // Nouvelle liste sans la story vue
-    const updatedStories = storiesData.filter((_, i) => i !== index);
-
-    // Ajoute la story vue à la fin
-    setStoriesData([...updatedStories, storyToMove]);
-
-    // Marque la story comme vue
-    setViewedStories([...viewedStories, storyToMove.id]);
+    if (!isCurrentUser) {
+      const storyId = otherUserStories[index].id;
+      incrementStoryView(storyId);
+      setViewedStories(prev => {
+        const newSet = new Set(prev);
+        newSet.add(storyId);
+        // Sauvegarder dans le localStorage
+        localStorage.setItem('viewedStories', JSON.stringify([...newSet]));
+        return newSet;
+      });
+    }
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
     setCurrentStoryIndex(null);
-    setShowEmojiPicker(false);
   };
 
-  const handleLike = (index) => {
-    const newLikesCount = [...likesCount];
-    newLikesCount[index] += 1;
-    setLikesCount(newLikesCount);
+  const handleDeleteStory = async (storyId) => {
+    try {
+      await DataHandler.deleteData(`/story/${storyId}`);
+      fetchUserStories();
+      closeModal();
+    } catch (error) {
+      console.error("Error deleting story:", error);
+      alert("Une erreur s'est produite lors de la suppression de la story.");
+    }
   };
 
-  const handleComment = () => {
-    setCommentInputVisible(!isCommentInputVisible);
-  };
-
-  const addEmoji = (emoji) => {
-    setCommentText(commentText + emoji.native);
+  const incrementStoryView = async (storyId) => {
+    try {
+      await DataHandler.postData(`/story/${storyId}/view`);
+    } catch (error) {
+      console.error("Error incrementing story view:", error);
+    }
   };
 
   return (
-    <div className="flex gap-4 w-full py-4 px-2">
-      <button className="rounded md:w-28 w-28 md:h-28 max-h-28 bg-white flex flex-col justify-between p-1.5 min-w-26" onClick={() => document.getElementById('my_modal_2').showModal()} >
-        <div className="bg-blue-400/50 flex flex-col justify-center w-full h-full items-center gap-2 bg-cover bg-center bg-no-repeat rounded-md cursor-pointer">
-          <div className="w-6 h-6 p-4 rounded-full bg-blue-400 flex items-center justify-center">+</div>
-          <p>Add Story</p>
+    <div className="flex flex-col w-full bg-gray-100">
+      <div className="bg-white p-4 shadow-md">
+        <h2 className="text-lg font-semibold mb-4">Stories</h2>
+        <div className="flex space-x-4 overflow-x-auto pb-2">
+          <StoryItem
+            isAdd={true}
+            onClick={() => document.getElementById('my_modal_2').showModal()}
+          />
+          {userStories.map((story, index) => (
+            <StoryItem
+              key={story.id}
+              image={story.Models.contenu}
+              title={story.Models.titre}
+              isCurrentUser={true}
+              isViewed={false}
+              onClick={() => openModal(index, true)}
+            />
+          ))}
+          {otherUserStories.map((story, index) => (
+            <StoryItem
+              key={story.id}
+              image={story.Models.contenu}
+              title={story.Models.titre}
+              isCurrentUser={false}
+              isViewed={viewedStories.has(story.id)}
+              onClick={() => openModal(index)}
+            />
+          ))}
         </div>
-      </button>
-
-      <dialog id="my_modal_2" className="modal">
-            <div className="modal-box">
-              <h3 className="font-bold text-lg">Créer une story</h3>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label
-                    htmlFor="model"
-                    className="block text-gray-700 font-semibold mb-2"
-                  >
-                    Sélectionnez un modèle :
-                  </label>
-                  <select
-                    id="model"
-                    value={selectedModel}
-                    onChange={(e) => setSelectedModel(e.target.value)}
-                    className="w-full p-2 border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">-- Choisir un modèle --</option>
-                    <option value="Model 1">Modèle 1</option>
-                    <option value="Model 2">Modèle 2</option>
-                    <option value="Model 3">Modèle 3</option>
-                  </select>
-                </div>
-
-                <div className="flex justify-end gap-2">
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById("my_modal_2").close()}
-                    className="btn bg-red-500 text-white hover:bg-red-600"
-                  >
-                    Fermer
-                  </button>
-                  <button type="submit" className="btn btn-primary">
-                    Partager le modèle
-                  </button>
-                </div>
-              </form>
-            </div>
-          </dialog>
-
-      <div className="flex gap-4 overflow-x-scroll w-full">
-        {storiesData.map((story, index) => (
-          <StoryItem key={story.id} bg={story.Models.contenu} onClick={() => openModal(index)} title={story.Models.titre} />
-        ))}
       </div>
 
-      {/* Modal */}
       {isModalOpen && currentStoryIndex !== null && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-90">
-          <div className="relative w-full h-full flex items-center justify-center">
-            <button
-              className="absolute left-0 p-4 text-white text-3xl"
-              onClick={() => setCurrentStoryIndex((prevIndex) => (prevIndex - 1 + storiesData.length) % storiesData.length)}
-            >
-              &#8249;
-            </button>
-            <div className="flex justify-center items-center w-[500px] h-[500px] bg-black">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="bg-white rounded-lg overflow-hidden shadow-xl max-w-lg w-full h-[80vh] flex flex-col">
+            <div className="relative flex-grow">
               <img
-                src={storiesData[currentStoryIndex].Models.contenu}
-                alt={storiesData[currentStoryIndex].Models.titre}
-                className="w-[500px] h-[880px] object-cover rounded-lg"
+                src={(isCurrentUserStory ? userStories[currentStoryIndex] : otherUserStories[currentStoryIndex]).Models.contenu}
+                alt={(isCurrentUserStory ? userStories[currentStoryIndex] : otherUserStories[currentStoryIndex]).Models.titre}
+                className="w-full h-full object-cover"
               />
+              <button
+                className="absolute top-4 right-4 text-white text-2xl hover:text-gray-300"
+                onClick={closeModal}
+              >
+                ✕
+              </button>
             </div>
-            <button
-              className="absolute right-0 p-4 text-white text-3xl"
-              onClick={() => setCurrentStoryIndex((prevIndex) => (prevIndex + 1) % storiesData.length)}
-            >
-              &#8250;
-            </button>
-            <button
-              className="absolute top-4 right-4 p-2 text-white text-lg"
-              onClick={closeModal}
-            >
-              ✕
-            </button>
-          </div>
-
-          
-
-          {/* Interactions */}
-          <div className="flex gap-4 justify-center items-center mt-6 w-full">
-            <button className="flex items-center gap-2 text-white" onClick={() => handleLike(currentStoryIndex)}>
-              <FontAwesomeIcon icon={faThumbsUp} className="text-2xl" />
-              <span>Like</span>
-              <span>{likesCount[currentStoryIndex]}</span>
-            </button>
-            <button className="flex items-center gap-2 text-white" onClick={handleComment}>
-              <FontAwesomeIcon icon={faComment} className="text-2xl" />
-              <span>Comment</span>
-            </button>
-            <button className="flex items-center gap-2 text-white">
-              <FontAwesomeIcon icon={faShare} className="text-2xl" />
-              <span>Share</span>
-            </button>
-          </div>
-
-          {isCommentInputVisible && (
-            <div className="mt-4">
-              <textarea
-                className="p-2 border rounded w-full bg-white"
-                rows="3"
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-              />
-              <button className="mt-2 px-4 py-2 bg-blue-500 text-white rounded" onClick={() => setShowEmojiPicker(true)}>Add Emoji</button>
-              {showEmojiPicker && <Picker data={data} onEmojiSelect={addEmoji} />}
+            <div className="p-4 bg-white">
+              <h3 className="text-lg font-semibold mb-2">
+                {(isCurrentUserStory ? userStories[currentStoryIndex] : otherUserStories[currentStoryIndex]).Models.titre}
+              </h3>
+              {isCurrentUserStory && (
+                <div className="flex justify-between items-center">
+                  <p className="text-sm text-gray-600">
+                    {userStories[currentStoryIndex].Views} vues
+                  </p>
+                  <button 
+                    className="btn btn-error btn-sm"
+                    onClick={() => handleDeleteStory(userStories[currentStoryIndex].id)}
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="mr-2" />
+                    Supprimer
+                  </button>
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       )}
+
+      <dialog id="my_modal_2" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Créer une story</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="model" className="block text-gray-700 font-semibold mb-2">
+                Sélectionnez un modèle :
+              </label>
+              <select
+                id="model"
+                value={selectedModel ? selectedModel.libelle : ""}
+                onChange={(e) => {
+                  const model = models.find(m => m.libelle === e.target.value);
+                  setSelectedModel(model);
+                }}
+                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">-- Choisir un modèle --</option>
+                {models.map(model => (
+                  <option key={model.id} value={model.libelle}>{model.libelle}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button type="button" onClick={() => document.getElementById("my_modal_2").close()} className="btn btn-outline">
+                Fermer
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Partager le modèle
+              </button>
+            </div>
+          </form>
+        </div>
+      </dialog>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DataContext } from "../App";
 import DataHandler from "../DataHandler";
+import LocalStorage from "../Utils/LocalStorage";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -19,9 +20,12 @@ function Login() {
       .then((data) => {
         if (data) {
           setValue(data);
-
+          
           localStorage.setItem("token", data.token);
           localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("userId", data.user.id); // Store user ID
+          // console.log(JSON.stringify(data.user));
+          localStorage.setItem("user", JSON.stringify(data.user)); // Store user name
           navigate("/");
         }
       })
@@ -88,6 +92,13 @@ function Login() {
               {loading ? "Loading..." : "Sign in"}
             </button>
           </form>
+
+          <p className="text-center mt-4 text-gray-500">
+            Don't have an account?{" "}
+            <span className="text-blue-600 underline hover:text-purple-700" onClick={handleSignupRedirect}>
+              Sign up now
+            </span>
+          </p>
         </div>
 
         {/* Right part: Welcome message */}
