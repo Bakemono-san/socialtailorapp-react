@@ -1,7 +1,9 @@
 // PostCard.jsx
 import { useEffect, useState } from "react";
 import DataHandler from "../DataHandler";
-import ShareModal from "/home/abdou-aziz/mon-projet-node/ProjetTailleur/socialtailorapp-react/src/Components/ShareModal.tsx";
+// Remplacez l'import actuel de .tsx par .jsx
+import ShareModal from './ShareModal.jsx'; // Mise à jour correcte
+
 import { PostHeader } from "./PostHeader";
 import { PostImage } from "./PostImage";
 import { PostReactions } from "./PostReactions";
@@ -10,8 +12,7 @@ import { Comments } from "./Comments";
 import {
   faStar as fasStar,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  faStar as farStar,
+import {faStar as farStar,
   faStarHalfAlt,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

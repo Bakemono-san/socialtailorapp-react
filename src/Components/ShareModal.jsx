@@ -2,36 +2,26 @@ import React, { useEffect, useState } from 'react';
 import DataHandler from '../DataHandler';
 import Swal from 'sweetalert2';
 
-interface ShareModalProps {
-  postId: number;
-  isOpen: boolean;
-  onClose: () => void;
-}
+// Composant fonctionnel pour le modal de partage
+const ShareModal = ({ postId, isOpen, onClose }) => {
+  const [users, setUsers] = useState([]); // Liste des utilisateurs à partager
+  const [selectedUser, setSelectedUser] = useState(null); // Utilisateur sélectionné pour le partage
 
-interface User {
-  id: number;
-  prenom: string;
-  nom: string;
-}
-
-const ShareModal: React.FC<ShareModalProps> = ({ postId, isOpen, onClose }) => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<number | null>(null);
-
+  // Récupérer la liste des utilisateurs lorsqu'on ouvre le modal
   useEffect(() => {
     if (isOpen) {
-      // Récupérer la liste des utilisateurs à partir de /rang
       DataHandler.getDatas('http://localhost:3004/rang')
         .then((data) => setUsers(data))
         .catch((err) => console.error('Erreur lors du chargement des utilisateurs', err));
     }
   }, [isOpen]);
 
+  // Gérer le partage du post
   const handleShare = async () => {
     if (!selectedUser) return;
 
     try {
-      const response = await DataHandler.postData(
+      await DataHandler.postData(
         `/post/${postId}/share`,
         { utilisateurCible: selectedUser }
       );
@@ -43,6 +33,7 @@ const ShareModal: React.FC<ShareModalProps> = ({ postId, isOpen, onClose }) => {
     }
   };
 
+  // Si le modal n'est pas ouvert, ne rien afficher
   if (!isOpen) return null;
 
   return (
