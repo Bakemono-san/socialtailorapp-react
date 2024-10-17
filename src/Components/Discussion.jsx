@@ -15,6 +15,7 @@ export default function     Discussion(props) {
                     </div>
                 </div>
             </Link>
+            
             <div>
                 <button className='btn text-white bg-red-500 rounded-full flex w-fit'>
                     <FontAwesomeIcon icon={faTrash} />

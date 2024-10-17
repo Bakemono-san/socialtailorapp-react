@@ -88,6 +88,7 @@ export default function Header() {
               alt="Profile"
             />
             
+            
             <div className="text-sm">
               <h2>{value.user.prenom}</h2>
               <p className="hidden">Active</p>

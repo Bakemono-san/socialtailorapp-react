@@ -24,6 +24,7 @@ const PanierComponent = (props) => {
           </div>
         </div>
       </div>
+      
 
       <div className="flex flex-col items-center gap-2">
         <p className="text-gray-800 font-semibold">10.000 Fr</p>

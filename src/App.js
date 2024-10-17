@@ -19,7 +19,6 @@
   import { createContext,useState } from "react";
 import Notation from "./Pages/Notation";
 
-
   // Create a context
   export const DataContext = createContext();
 

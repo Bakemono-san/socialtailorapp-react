@@ -17,6 +17,7 @@ import {faStar as farStar,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+
 export default function PostCard(props) {
   // États
   const { notes } = props;
