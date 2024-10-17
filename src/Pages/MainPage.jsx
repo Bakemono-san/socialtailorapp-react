@@ -11,31 +11,31 @@ export default function MainPage() {
       id: 1,
       name: "Alioune Ndiaye",
       photo: "https://randomuser.me/api/portraits/men/1.jpg",
-     
+
     },
     {
       id: 2,
       name: "Fatou Diop",
       photo: "https://randomuser.me/api/portraits/women/2.jpg",
- 
+
     },
     {
       id: 3,
       name: "Moussa Ba",
       photo: "https://randomuser.me/api/portraits/men/3.jpg",
-  
+
     },
     {
       id: 4,
       name: "Awa Sarr",
       photo: "https://randomuser.me/api/portraits/women/4.jpg",
-    
+
     },
     {
       id: 5,
       name: "Cheikh Sow",
       photo: "https://randomuser.me/api/portraits/men/5.jpg",
-     
+
     },
   ];
 
@@ -49,7 +49,7 @@ export default function MainPage() {
           <Post />
           <PostCardContainer />
         </div>
-        <div className='flex flex-col gap-4 h-full w-full md:w-1/3'>
+        <div className='flex-col gap-4 h-full w-full hidden lg:flex'>
           <StatsCard title="Stats" />
           <TailorList tailors={tailors} />
         </div>

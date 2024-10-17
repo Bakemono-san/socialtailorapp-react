@@ -8,10 +8,12 @@ export default function Header() {
   const { value } = useContext(DataContext);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
+    if (value.user.badges) return; // Disable click if user already has a badge
+
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
         method: "POST",
@@ -44,8 +46,9 @@ export default function Header() {
 
   return (
     <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between items-center w-full">
-      <div className="flex items-center gap-24 flex-1">
-        <h1 className="font-bold animate-pulse">Social Tailor</h1>
+      <div className="flex items-center gap-4 flex-1">
+        <img src={process.env.PUBLIC_URL + '/favicon.ico'} className="rounded" alt="" />
+        <h1 className="font-bold animate-pulse hidden md:flex">Social Tailor</h1>
       </div>
 
       <div className="flex items-center gap-12 flex-1 justify-end">
@@ -67,29 +70,25 @@ export default function Header() {
           </div>
 
           {/* Bouton pour acheter un badge */}
-          {value.user.badges ??  <div
-            // className="badge p-2 cursor-pointer hover:text-yellow-400 flex items-center"
-            onClick={acheterBadge}
+          <div
+            className={` p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
+            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
-            <FontAwesomeIcon icon={faMedal} />
-          </div>}
-          
+            <FontAwesomeIcon icon={faMedal} size="sm" />
+          </div>
 
           {/* Photo de profil avec icône de certification */}
-          <div className="relative flex justify-between items-center gap-2">
+          <div className="relative flex justify-between items-center">
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={value.user.photoProfile}
               alt="Profile"
             />
-            <div className="text-sm flex gap-1 justify-center items-center">
-              <h2>{value.user.prenom}</h2>
-              {value.user.badges && (
-                <FontAwesomeIcon
-                  icon={faCertificate}
-                  className="text-green -300"
-                />
-              )}
+            
+            
+            <div className="text-sm md:ml-1">
+              <h2>{value.user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${value.user.badges ? '' : 'hidden'}`} /> </h2>
+              <p className="hidden">Active</p>
             </div>
           </div>
         </div>
