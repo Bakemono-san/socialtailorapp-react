@@ -1,4 +1,4 @@
-import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import React, { useContext, useState } from "react";
@@ -71,14 +71,10 @@ export default function Header() {
 
           {/* Bouton pour acheter un badge */}
           <div
-            className={`badge p-2 cursor-pointer flex items-center ${
-              value.user.badges
-                ? "animate-bounce text-yellow-700 cursor-not-allowed" // Animate and change color if user has a badge
-                : "hover:text-yellow-400" // Otherwise, keep it clickable
-            }`}
+            className={` p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
             onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
-            <FontAwesomeIcon icon={faMedal} size="lg" />
+            <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
 
           {/* Photo de profil avec icône de certification */}
@@ -90,8 +86,8 @@ export default function Header() {
             />
             
             
-            <div className="text-sm">
-              <h2>{value.user.prenom}</h2>
+            <div className="text-sm md:ml-1">
+              <h2>{value.user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${value.user.badges ? '' : 'hidden'}`} /> </h2>
               <p className="hidden">Active</p>
             </div>
           </div>

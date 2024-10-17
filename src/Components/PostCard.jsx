@@ -10,15 +10,20 @@ import { PostReactions } from "./PostReactions";
 import { PostActions } from "./PostActions";
 import { Comments } from "./Comments";
 import {
+  faCartPlus,
+  faClipboard,
+  faComment,
+  faShare,
+  faSmile,
   faStar as fasStar,
 } from "@fortawesome/free-solid-svg-icons";
-import {faStar as farStar,
+import {
+  faStar as farStar,
   faStarHalfAlt,
 } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import DataHandler from "../DataHandler";
 import { Link } from "react-router-dom";
+import ModalResponse from "./Modals/ModalResponse.jsx";
 
 export default function PostCard(props) {
   // États
@@ -40,6 +45,22 @@ export default function PostCard(props) {
   // Fonction pour gérer l'ouverture/fermeture du modal de partage
   const openShareModal = () => setIsShareModalOpen(true);
   const closeShareModal = () => setIsShareModalOpen(false);
+
+  const addToCart = () => {
+    let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
+
+    const existingCommande = commandes.find(commande => commande.id === props.post.id);
+
+    if (existingCommande) {
+        existingCommande.quantite++;
+    } else {
+        const newCommande = { ...props.post, quantite: 1 };
+        commandes.push(newCommande);
+    }
+
+    // Update localStorage
+    localStorage.setItem("commandes", JSON.stringify(commandes));
+}
 
   // Effet pour récupérer les likes existants
   useEffect(() => {
@@ -143,8 +164,10 @@ export default function PostCard(props) {
         const response = await DataHandler.getDatas(
           `/post/${props.post.id}/comments`
         );
-        if (response && response.comments && Array.isArray(response.comments)) {
-          setComments(response.comments);
+        console.log(response);
+        
+        if (response && response && Array.isArray(response)) {
+          setComments(response);
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des commentaires", error);
@@ -162,7 +185,9 @@ export default function PostCard(props) {
           `/post/${props.post.id}/comments/create`,
           { content: commentText }
         );
-        setComments([...comments, response.newComment]);
+
+        
+        setComments([...comments, response]);
         setCommentText("");
       } catch (error) {
         console.error("Erreur lors de l'ajout du commentaire", error);
@@ -185,7 +210,6 @@ export default function PostCard(props) {
   const [message, setMessage] = useState("");
   const [messageColor, setMessageColor] = useState("");
 
-  const [isModalOpen, setIsModalOpen] = useState(false); // Contrôle du modal
   const [reason, setReason] = useState(""); // Raison du signalement
   const [responseMessage, setResponseMessage] = useState(null); // Stocker le message de réponse
   const [responseSuccess, setResponseSuccess] = useState(null); // Stocker le statut de succès ou d'échec
@@ -350,8 +374,15 @@ export default function PostCard(props) {
         handleRating={handleRating}
         notification={notification}
         renderStars={renderStars}
+        handleSubmit={handleSubmit}
+        handleAddToFavoris={handleAddToFavoris}
+        reason={reason}
+        setReason={setReason}
+        responseMessage={responseMessage}
+        responseSuccess={responseSuccess}
       />
 
+      {message && <ModalResponse message={message} />}
       <PostImage post={props.post} />
 
       <PostReactions
@@ -381,128 +412,37 @@ export default function PostCard(props) {
         onClose={closeShareModal}
       />
 
-                {showRating && (
-                  <div className="mt-2 flex items-center">
-                    <span className="mr-2 text-sm text-gray-600">
-                      Votre note :
-                    </span>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FontAwesomeIcon
-                        key={star}
-                        icon={star <= userRating ? fasStar : farStar}
-                        className={`cursor-pointer ${
-                          star <= userRating
-                            ? "text-yellow-500"
-                            : "text-gray-300"
-                        }`}
-                        onClick={() => handleRating(star)}
-                      />
-                    ))}
-                  </div>
-                )}
-                {notification.message && (
-                  <div
-                    className={`mt-2 p-2 text-sm ${
-                      notification.type === "success"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {notification.message}
-                  </div>
-                )}
-              </>
-            )}
-          </div>
+      {showRating && (
+        <div className="mt-2 flex items-center">
+          <span className="mr-2 text-sm text-gray-600">
+            Votre note :
+          </span>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FontAwesomeIcon
+              key={star}
+              icon={star <= userRating ? fasStar : farStar}
+              className={`cursor-pointer ${star <= userRating
+                ? "text-yellow-500"
+                : "text-gray-300"
+                }`}
+              onClick={() => handleRating(star)}
+            />
+          ))}
         </div>
-        <div>
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn m-1">
-              ...
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-red-100 rounded-box z-[1] w-52 p-2 shadow"
-            >
-              <li>
-                <button onClick={handleAddToFavoris}>marquer favori</button>
-              </li>
-              {message && (
-                <p style={{ color: messageColor, marginTop: "10px" }}>
-                  {message}
-                </p>
-              )}
-              <li>
-                <button
-                  onClick={() =>
-                    document.getElementById("my_modal_5").showModal()
-                  }
-                >
-                  Signaler
-                </button>
-              </li>
-              <li>
-                <Link to="/favorisPosts">Mes Favoris</Link>
-                {/* <button Link to='/favorisPosts'>Mes Favoris</button> */}
-              </li>
-            </ul>
-          </div>
+      )}
+      {notification.message && (
+        <div
+          className={`mt-2 p-2 text-sm ${notification.type === "success"
+            ? "text-green-600"
+            : "text-red-600"
+            }`}
+        >
+          {notification.message}
         </div>
-      </div>
-      <main className="flex flex-col">
-        <img
-          className="min-w-86 h-80 object-cover lg:object-fill"
-          src={props.post.Models.contenu}
-          alt=""
-        />
+      )}
 
-        <div className="py-2 px-6 md:p-6 flex flex-col md:gap-6 gap-4 w-full bg-white rounded-lg">
-          <h2 className="xl:text-3xl font-bold text-center text-gray-800">
-            {props.post.description}
-          </h2>
-        </div>
-      </main>
-      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
-        <div className="flex gap-2 items-baseline  ">
-          <FontAwesomeIcon icon={faSmile} />
-          <p>Like</p>
-        </div>
-        <div className="flex gap-2 items-baseline">
-          <FontAwesomeIcon icon={faComment} />
-          <p>Comment</p>
-        </div>
-        <div className="flex gap-2 items-baseline">
-          <FontAwesomeIcon icon={faShare} />
-          <p>Share</p>
-        </div>
-      </div>
-      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
-        <span className="flex gap-2 items-baseline">
-          <button
-            className="btn btn-warning rounded h-10 text-white"
-            onClick={handleAddToWishList}
-          >
-            <FontAwesomeIcon icon={faClipboard} />
-            <p>Add to WishList</p>
-          </button>
-        </span>
-        <span className="flex gap-2 items-baseline">
-          <button className="btn rounded  h-10 text-white bg-blue-500" onClick={addToCart}>
-            <FontAwesomeIcon icon={faCartPlus} />
-            <p>Add to cart</p>
-          </button>
-        </span>
-      </div>
+      
 
-      <div className="px-4 flex justify-center items-center py-4 bg-white">
-        <div className="w-full bg-blue-100 rounded">
-          <input
-            type="text"
-            className="p-2 bg-transparent w-full border-none"
-            placeholder="comment..."
-          />
-        </div>
-      </div>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_3" className="modal">
@@ -527,45 +467,6 @@ export default function PostCard(props) {
 
       {/* MODAL SIGNALEMENT UTILISATEUR */}
 
-      <dialog id="my_modal_5" className="modal">
-        <div className="modal-box">
-          <form method="dialog">
-            {/* if there is a button in form, it will close the modal */}
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
-            </button>
-          </form>
-
-          <form onSubmit={handleSubmit}>
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">
-                  Indiquez la raison du signalement
-                </span>
-              </div>
-              <input
-                type="text"
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                placeholder="Raison Signalement"
-                className="input input-bordered w-full max-w-xs"
-              />
-            </label>
-            <button type="submit" className="btn btn-success">
-              Signaler
-            </button>
-          </form>
-          {responseMessage && (
-            <div
-              className={`mt-4 text-center ${
-                responseSuccess ? "text-green-500" : "text-red-500"
-              }`}
-            >
-              {responseMessage}
-            </div>
-          )}
-        </div>
-      </dialog>
     </div>
-  );
+  )
 }

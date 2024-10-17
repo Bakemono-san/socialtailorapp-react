@@ -3,6 +3,8 @@ import React, { useState } from "react";
 const MyFollowersCompo = ({ follower }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
+  console.log(follower);
+  
   const handleFollowToggle = () => {
     setIsFollowing(!isFollowing); // Toggle entre Follow et Unfollow
   };

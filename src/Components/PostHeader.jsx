@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar, faStarHalfAlt } from "@fortawesome/free-regular-svg-icons";
 export function PostHeader({ utilisateur, post, averageRating, showRating, toggleRating, 
-  userRating, handleRating, notification, renderStars }) {
+  userRating, handleRating, notification, renderStars , handleAddToFavoris , handleSubmit ,reason , setReason , responseMessage , responseSuccess}) {
   return (
     <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2 border-b border-grey-300">
       <div className="flex gap-2 items-center">
@@ -75,14 +75,55 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
             className="dropdown-content menu bg-red-100 rounded-box z-[1] w-52 p-2 shadow"
           >
             <li>
-              <button href="#">marquer favori</button>
+              <button onClick={handleAddToFavoris}>marquer favori</button>
             </li>
             <li>
-              <button>Signaler</button>
+              <button onClick={() => document.getElementById("my_modal_5").showModal()}>Signaler</button>
             </li>
           </ul>
         </div>
       </div>
+
+      <dialog id="my_modal_5" className="modal">
+        <div className="modal-box">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+
+          <form onSubmit={handleSubmit}>
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">
+                  Indiquez la raison du signalement
+                </span>
+              </div>
+              <input
+                type="text"
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+                placeholder="Raison Signalement"
+                className="input input-bordered w-full max-w-xs"
+              />
+            </label>
+            <button type="submit" className="btn btn-success">
+              Signaler
+            </button>
+          </form>
+          {responseMessage && (
+            <div
+              className={`mt-4 text-center ${responseSuccess ? "text-green-500" : "text-red-500"
+                }`}
+            >
+              {responseMessage}
+            </div>
+          )}
+        </div>
+      </dialog>
     </div>
+
+
   );
 }

@@ -1,6 +1,9 @@
 // components/post/Comments.jsx
 export function Comments({ comments, commentText, setCommentText, handleComment, 
     handleKeyPress, isModalOpen, setIsModalOpen }) {
+
+      console.log(comments);
+      
     return (
       <div className="comments-section px-4 py-4 bg-white">
         <button
