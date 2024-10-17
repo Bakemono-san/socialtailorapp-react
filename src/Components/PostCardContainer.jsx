@@ -23,7 +23,7 @@ export default function PostCardContainer() {
         `/user/listeSouhaits/${postId}`,
         requestData
       );
-      if (response) {
+      if (response) { 
         // Mettre à jour le context
         const updatedValue = {
           ...value,
