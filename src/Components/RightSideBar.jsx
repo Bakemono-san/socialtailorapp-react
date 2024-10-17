@@ -17,7 +17,7 @@ export default function Sidebar(props) {
         {
           value.message.map((message, index) => {
             return <div className='tv:flex justify-between gap-4  items-center tv:gap-8'>
-              <SidebarItem key={message.Users_UsersDiscussions_receiverIdToUsers.id} image={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile} path={`/discussion/${index}`} />
+              <SidebarItem key={message.Users_UsersDiscussions_receiverIdToUsers.id} image={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile} path={`/discussion/${message.id}`} />
               <p className='max-w-32 truncate text-xl'>Moustapha diagne</p>
             </div>
           }

@@ -2,7 +2,7 @@ import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
 import DiscussionPage from "./Pages/DiscussionPage";
 import Models from "./Pages/Models";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import MainPage from "./Pages/MainPage";
 import TailleursListe from "./Pages/TailleursListe";
 import Parameters from "./Pages/Parameters";
@@ -28,7 +28,6 @@ function App() {
   const [datas, setDatas] = useState({});
   return (
     <DataContext.Provider value={{ value: datas, setValue: setDatas }}>
-
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -38,7 +37,7 @@ function App() {
               <Header />
               <div className="flex flex-1 md:flex-row flex-col-reverse overflow-hidden md:p-4 md:gap-8 lg:gap-24">
                 {/* Sidebar */}
-                <Sidebar color="bg-[#3b5999]" />
+                <Sidebar color="bg-[#3b5999]"/>
 
                 <div className="flex flex-col flex-1 overflow-hidden h-full">
                   <Routes>

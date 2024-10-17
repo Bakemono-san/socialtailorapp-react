@@ -44,8 +44,9 @@ export default function Header() {
 
   return (
     <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between items-center w-full">
-      <div className="flex items-center gap-24 flex-1">
-        <h1 className="font-bold animate-pulse">Social Tailor</h1>
+      <div className="flex items-center gap-4 flex-1">
+        <img src={process.env.PUBLIC_URL + '/favicon.ico'} className="rounded" alt="" />
+        <h1 className="font-bold animate-pulse hidden md:flex">Social Tailor</h1>
       </div>
 
       <div className="flex items-center gap-12 flex-1 justify-end">
