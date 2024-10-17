@@ -13,10 +13,10 @@ import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
 
-import RightSideBar from "./Components/RightSideBar";
-import Login from "./Pages/Login";
-import Signup from "./Pages/Signup";
-import { createContext, useState } from "react";
+  import RightSideBar from "./Components/RightSideBar";
+  import Login from "./Pages/Login";
+  import Signup from "./Pages/Signup";
+  import { createContext,useState } from "react";
 import Notation from "./Pages/Notation";
 import FavorisPosts from "./Pages/FavorisPosts";
 import MyFollowers from "./Pages/MyFollowers";
@@ -42,9 +42,9 @@ function App() {
                 {/* Sidebar */}
                 <Sidebar color="bg-[#3b5999]"/>
 
-                <div className="flex flex-col flex-1 overflow-hidden h-full">
-                  <Routes>
-                    <Route path="/" element={<MainPage />} />
+                  <div className="flex flex-col flex-1 overflow-hidden h-full">
+                    <Routes>
+                      <Route path="/" element={<MainPage />} />
 
                     <Route path="/tailleurs" element={<TailleursListe />} />
                     <Route path="/params" element={<Parameters />} />
@@ -63,7 +63,8 @@ function App() {
                   </Routes>
                 </div>
 
-                <RightSideBar color="bg-white"/>
+                  <RightSideBar color="bg-white" />
+                </div>
               </div>
             }
           />
@@ -71,7 +72,7 @@ function App() {
       </Router>
     </DataContext.Provider>
 
-  );
-}
+    );
+  }
 
-export default App;
+  export default App;

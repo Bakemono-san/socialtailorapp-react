@@ -1,4 +1,4 @@
-import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import React, { useContext, useState } from "react";
@@ -8,10 +8,12 @@ export default function Header() {
   const { value } = useContext(DataContext);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
+    if (value.user.badges) return; // Disable click if user already has a badge
+
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
         method: "POST",
@@ -68,29 +70,29 @@ export default function Header() {
           </div>
 
           {/* Bouton pour acheter un badge */}
-          {value.user.badges ??  <div
-            // className="badge p-2 cursor-pointer hover:text-yellow-400 flex items-center"
-            onClick={acheterBadge}
+          <div
+            className={`badge p-2 cursor-pointer flex items-center ${
+              value.user.badges
+                ? "animate-bounce text-yellow-700 cursor-not-allowed" // Animate and change color if user has a badge
+                : "hover:text-yellow-400" // Otherwise, keep it clickable
+            }`}
+            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
-            <FontAwesomeIcon icon={faMedal} />
-          </div>}
-          
+            <FontAwesomeIcon icon={faMedal} size="lg" />
+          </div>
 
           {/* Photo de profil avec icône de certification */}
-          <div className="relative flex justify-between items-center gap-2">
+          <div className="relative flex justify-between items-center">
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={value.user.photoProfile}
               alt="Profile"
             />
-            <div className="text-sm flex gap-1 justify-center items-center">
+            
+            
+            <div className="text-sm">
               <h2>{value.user.prenom}</h2>
-              {value.user.badges && (
-                <FontAwesomeIcon
-                  icon={faCertificate}
-                  className="text-green-300"
-                />
-              )}
+              <p className="hidden">Active</p>
             </div>
           </div>
         </div>
