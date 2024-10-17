@@ -1,5 +1,17 @@
+// PostCard.jsx
+import { useEffect, useState } from "react";
+import DataHandler from "../DataHandler";
+// Remplacez l'import actuel de .tsx par .jsx
+import ShareModal from './ShareModal.jsx'; // Mise à jour correcte
+
+import { PostHeader } from "./PostHeader";
+import { PostImage } from "./PostImage";
+import { PostReactions } from "./PostReactions";
+import { PostActions } from "./PostActions";
+import { Comments } from "./Comments";
 import {
   faCartPlus,
+  faClipboard,
   faComment,
   faShare,
   faSmile,
@@ -9,30 +21,203 @@ import {
   faStar as farStar,
   faStarHalfAlt,
 } from "@fortawesome/free-regular-svg-icons";
-
-import { faClipboard } from "@fortawesome/free-solid-svg-icons/faClipboard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
-import DataHandler from "../DataHandler";
+import { Link } from "react-router-dom";
+import ModalResponse from "./Modals/ModalResponse.jsx";
 
 export default function PostCard(props) {
-  const { notes } = props; // Déstructurer les props pour plus de lisibilité
+  // États
+  const { notes } = props;
   const [currentRating, setCurrentRating] = useState(notes);
-  //
   const [notification, setNotification] = useState({ message: "", type: "" });
-
-  //
   const [averageRating, setAverageRating] = useState(0);
   const [userRating, setUserRating] = useState(0);
-
   const [showRating, setShowRating] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(null);
+  const [isDisliked, setIsDisliked] = useState(false);
+  const [commentText, setCommentText] = useState("");
+  const [comments, setComments] = useState([]);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [dislikeID, setDislikeID] = useState(null);
+
+  // Fonction pour gérer l'ouverture/fermeture du modal de partage
+  const openShareModal = () => setIsShareModalOpen(true);
+  const closeShareModal = () => setIsShareModalOpen(false);
+
+  const addToCart = () => {
+    let commandes = JSON.parse(localStorage.getItem("commandes")) || [];
+
+    const existingCommande = commandes.find(commande => commande.id === props.post.id);
+
+    if (existingCommande) {
+        existingCommande.quantite++;
+    } else {
+        const newCommande = { ...props.post, quantite: 1 };
+        commandes.push(newCommande);
+    }
+
+    // Update localStorage
+    localStorage.setItem("commandes", JSON.stringify(commandes));
+}
+
+  // Effet pour récupérer les likes existants
+  useEffect(() => {
+    const fetchLikes = async () => {
+      try {
+        const response = await DataHandler.getData(`/post/${props.post.id}/likes`);
+        const userHasLiked = response.data.likes.some(
+          (like) => like.userId === props.utilisateur.id
+        );
+        setIsLiked(userHasLiked);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des likes", error);
+      }
+    };
+    fetchLikes();
+  }, [props.post.id]);
+
+  // Effet pour récupérer le nombre de likes
+  useEffect(() => {
+    const fetchLikeCount = async () => {
+      try {
+        const response = await DataHandler.getData(
+          `/post/${props.post.id}/likes/count`
+        );
+        setLikeCount(response.data.likeCount);
+      } catch (error) {
+        console.error("Erreur lors de la récupération du nombre de likes", error);
+      }
+    };
+    fetchLikeCount();
+  }, [props.post.id]);
+
+  // Gestion des likes
+  const handleLike = async () => {
+    try {
+      if (isLiked) {
+        await DataHandler.postData(
+          `/post/${props.post.id}/like/${props.utilisateur.id}/unlike`
+        );
+        setIsLiked(false);
+        setLikeCount(likeCount - 1);
+      } else {
+        if (isDisliked) {
+          await handleDislike();
+        }
+        await DataHandler.postData(`/post/${props.post.id}/like`);
+        setIsLiked(true);
+        setLikeCount(likeCount + 1);
+      }
+    } catch (error) {
+      console.error("Erreur lors du like/unlike", error);
+    }
+  };
+
+  // Effet pour récupérer les dislikes
+  useEffect(() => {
+    const fetchDislikes = async () => {
+      try {
+        const response = await DataHandler.getData(
+          `/post/${props.post.id}/dislike`
+        );
+        const userDislike = response.data.dislikes.find(
+          (dislike) => dislike.userId === props.utilisateur.id
+        );
+        if (userDislike) {
+          setIsDisliked(true);
+          setDislikeID(userDislike.id);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des dislikes", error);
+      }
+    };
+    fetchDislikes();
+  }, [props.post.id]);
+
+  // Gestion des dislikes
+  const handleDislike = async () => {
+    try {
+      if (isDisliked) {
+        await DataHandler.postData(`/post/${props.post.id}/undislike`);
+        setIsDisliked(false);
+      } else {
+        if (isLiked) {
+          await handleLike();
+        }
+        const response = await DataHandler.postData(
+          `/post/${props.post.id}/dislike`
+        );
+        setIsDisliked(true);
+        setDislikeID(response.data.dislike.id);
+      }
+    } catch (error) {
+      console.error("Erreur lors du dislike/undislike", error);
+    }
+  };
+
+  // Effet pour récupérer les commentaires
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await DataHandler.getDatas(
+          `/post/${props.post.id}/comments`
+        );
+        console.log(response);
+        
+        if (response && response && Array.isArray(response)) {
+          setComments(response);
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des commentaires", error);
+        setComments([]);
+      }
+    };
+    fetchComments();
+  }, [isModalOpen]);
+
+  // Gestion des commentaires
+  const handleComment = async () => {
+    if (commentText.trim()) {
+      try {
+        const response = await DataHandler.postData(
+          `/post/${props.post.id}/comments/create`,
+          { content: commentText }
+        );
+
+        
+        setComments([...comments, response]);
+        setCommentText("");
+      } catch (error) {
+        console.error("Erreur lors de l'ajout du commentaire", error);
+        setNotification({
+          message: "Erreur lors de l'ajout du commentaire",
+          type: "error",
+        });
+      }
+    }
+  };
+
+  // Gestion des touches pour les commentaires
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleComment();
+    }
+  };
+
+  // Effet pour calculer la moyenne des notes
+  const [message, setMessage] = useState("");
+  const [messageColor, setMessageColor] = useState("");
+
+  const [reason, setReason] = useState(""); // Raison du signalement
+  const [responseMessage, setResponseMessage] = useState(null); // Stocker le message de réponse
+  const [responseSuccess, setResponseSuccess] = useState(null); // Stocker le statut de succès ou d'échec
 
   useEffect(() => {
     if (typeof notes === "number") {
-      // Si notes est déjà une moyenne
       setAverageRating(Math.round(notes * 2) / 2);
     } else if (Array.isArray(notes) && notes.length > 0) {
-      // Si notes est un tableau de notes individuelles
       const sum = notes.reduce(
         (acc, curr) => acc + (typeof curr === "number" ? curr : curr.rate),
         0
@@ -40,38 +225,27 @@ export default function PostCard(props) {
       const avg = sum / notes.length;
       setAverageRating(Math.round(avg * 2) / 2);
     } else {
-      // Si notes n'est ni un nombre ni un tableau valide
       setAverageRating(0);
     }
   }, [notes]);
 
+  // Gestion des notes
   const handleRating = async (newRating) => {
     try {
-      const response = await DataHandler.postData(
-        `/notes/${props.post.Users.id}`,
-        { rate: newRating }
-      );
+      const response = await DataHandler.postData(`/notes/${props.post.Users.id}`, {
+        rate: newRating,
+      });
       setCurrentRating(newRating);
-      setAverageRating(
-        (prev) => Math.round(((prev * 5 + newRating) / 6) * 2) / 2
-      );
-
-      // Mettre à jour la notification en vert en cas de succès
+      setAverageRating((prev) => Math.round(((prev * 5 + newRating) / 6) * 2) / 2);
       setNotification({
         message: "Note ajoutée avec succès",
         type: "success",
       });
-
-      // alert("Note ajoutée avec succès");
     } catch (error) {
-      //
-      // console.error("Erreur lors de la notation:", error.response.data);
       const errorMessage =
         typeof error.response.data === "object"
           ? JSON.stringify(error.response.data)
           : error.response.data;
-      // alert(`Erreur Notation: ${errorMessage}`);
-      // Mettre à jour la notification en rouge en cas d'erreur
       setNotification({
         message: `Erreur Notation: ${errorMessage}`,
         type: "error",
@@ -79,21 +253,22 @@ export default function PostCard(props) {
     }
   };
 
-  // Effet pour masquer la notification après 3 secondes
+  // Effet pour masquer la notification
   useEffect(() => {
     if (notification.message) {
       const timer = setTimeout(() => {
         setNotification({ message: "", type: "" });
-      }, 3000); // 3 secondes
-
-      return () => clearTimeout(timer); // Nettoie le timer si le composant est démonté
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   }, [notification]);
 
+  // Toggle du système de notation
   const toggleRating = () => {
     setShowRating(!showRating);
   };
 
+  // Fonction pour rendre les étoiles
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -122,200 +297,152 @@ export default function PostCard(props) {
     return stars;
   };
 
+  // Gestion de l'ajout à la liste de souhaits
   const handleAddToWishList = () => {
+
     props.onAddToWishList(props.post.id, props.utilisateur.id); // Appelle la fonction du parent avec les IDs
-};
+  };
+
+  const handleAddToFavoris = async () => {
+    try {
+      console.log("Début de handleAddToFavoris pour le post:", props.post.id);
+      const response = await props.onAddToFavoris(props.post.id);
+      console.log("Réponse reçue dans le composant enfant:", response);
+      console.log("Type de response:", typeof response);
+      console.log("Status de la réponse:", response.status);
+      console.log("Data de la réponse:", response.data);
+
+      if (response.status === 201) {
+        console.log("Entré dans le bloc 201");
+        setMessage(response.data || "Ajouté aux favoris !");
+        setMessageColor("green");
+      } else if (response.status === 400) {
+        console.log("Entré dans le bloc 400");
+        setMessage(response.data || "Ce post est déjà dans vos favoris.");
+        setMessageColor("orange");
+      } else if (response.status === 404) {
+        console.log("Entré dans le bloc 404");
+        setMessage(response.data || "Post non trouvé.");
+        setMessageColor("red");
+      } else {
+        console.log("Entré dans le bloc else");
+        setMessage(response.data || "Une erreur inattendue s'est produite.");
+        setMessageColor("red");
+      }
+    } catch (error) {
+      console.error("Erreur détaillée dans le composant enfant:", error);
+      setMessage("Erreur lors de l'ajout aux favoris.");
+      setMessageColor("red");
+    }
+
+    setTimeout(() => {
+      setMessage("");
+    }, 5000);
+  };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   props.onReportUser(props.post.id, props.utilisateur.id, reason); // Appel de la fonction du parent
+  // };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await props.onReportUser(
+      props.post.id,
+      props.utilisateur.id,
+      reason
+    ); // Appel de la fonction du parent
+    setResponseMessage(response.message); // Stocker le message de réponse
+    setResponseSuccess(response.success); // Stocker le statut de succès ou d'échec
+    setReason(""); // Réinitialiser la raison après soumission
+
+    setTimeout(() => {
+      setResponseMessage(null);
+      setResponseSuccess(null);
+    }, 3000); // 3000ms = 3 secondes
+  };
 
   return (
     <div className="w-full bg-white rounded">
-      <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2  border-b border-grey-300">
-        <div className="flex gap-2 items-center">
-          <img
-            src={props.utilisateur.photoProfile}
-            alt=""
-            className="w-8 h-8 rounded-full"
-          />
-          <div>
-            <h3>{props.utilisateur.prenom + " " + props.utilisateur.nom}</h3>
-            <p>{props.post.datePublication}</p>
+      <PostHeader
+        utilisateur={props.utilisateur}
+        post={props.post}
+        averageRating={averageRating}
+        showRating={showRating}
+        toggleRating={toggleRating}
+        userRating={userRating}
+        handleRating={handleRating}
+        notification={notification}
+        renderStars={renderStars}
+        handleSubmit={handleSubmit}
+        handleAddToFavoris={handleAddToFavoris}
+        reason={reason}
+        setReason={setReason}
+        responseMessage={responseMessage}
+        responseSuccess={responseSuccess}
+      />
 
-            {props.utilisateur.role == "tailleur" && (
-              <>
-                <div className="mt-4 flex items-center">
-                  {renderStars(averageRating)}
-                  <span className="ml-2 text-sm text-gray-600">
-                    ({averageRating.toFixed(1)})
-                  </span>
-                </div>
+      {message && <ModalResponse message={message} />}
+      <PostImage post={props.post} />
 
-                <button
-                  onClick={toggleRating}
-                  className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                  {showRating ? "Terminer" : "Noter"}
-                </button>
+      <PostReactions
+        isLiked={isLiked}
+        likeCount={likeCount}
+        isDisliked={isDisliked}
+        handleLike={handleLike}
+        handleDislike={handleDislike}
+        openShareModal={openShareModal}
+      />
 
-                {showRating && (
-                  <div className="mt-2 flex items-center">
-                    <span className="mr-2 text-sm text-gray-600">
-                    Votre note :
-                  </span>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <FontAwesomeIcon
-                        key={star}
-                        icon={star <= userRating ? fasStar : farStar}
-                        className={`cursor-pointer ${
-                          star <= userRating
-                            ? "text-yellow-500"
-                            : "text-gray-300"
-                        }`}
-                        onClick={() => handleRating(star)}
-                      />
-                    ))}
-                  </div>
-                )}
-                {notification.message && (
-                  <div
-                    className={`mt-2 p-2 text-sm ${
-                      notification.type === "success"
-                        ? "text-green-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {notification.message}
-                  </div>
-                )}
-              </>
-              // <div className="mt-4 flex">
-              //   {[...Array(5)].map((_, index) => (
-              //     <svg
-              //       // key={index}
-              //       // xmlns="http://www.w3.org/2000/svg"
-              //       // fill={index < currentRating ? "currentColor" : "none"}
-              //       // viewBox="0 0 24 24"
-              //       // strokeWidth="1.5"
-              //       // stroke="currentColor"
-              //       // className={`h-4 w-4 cursor-pointer ${
-              //       //   index < currentRating ? "text-yellow-500" : "text-gray-300"
-              //       key={index}
-              //       xmlns="http://www.w3.org/2000/svg"
-              //       fill={index < notes ? "currentColor" : "none"}
-              //       viewBox="0 0 24 24"
-              //       strokeWidth="1.5"
-              //       stroke="currentColor"
-              //       className={`h-4 w-4 ${
-              //         index < notes
-              //           ? "text-yellow-500"
-              //           : "text-gray-300" /* Coloration conditionnelle */
-              //       }`}
-              //       onClick={() => handleRating(index + 1)}
-              //     >
-              //       <path
-              //         strokeLinecap="round"
-              //         strokeLinejoin="round"
-              //         d="M12 17.25l-6.172 3.246 1.178-6.872-4.993-4.87 6.897-1.002L12 2.75l3.09 6.002 6.897 1.002-4.993 4.87 1.178 6.872L12 17.25z"
-              //       />
-              //     </svg>
-              //   ))}
-              // </div>
-            )}
-            {/* <p>{noteErrorMsg}</p> */}
-          </div>
+      <PostActions handleAddToWishList={handleAddToWishList} />
+
+      <Comments
+        comments={comments}
+        commentText={commentText}
+        setCommentText={setCommentText}
+        handleComment={handleComment}
+        handleKeyPress={handleKeyPress}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
+
+      <ShareModal
+        postId={props.post.id}
+        isOpen={isShareModalOpen}
+        onClose={closeShareModal}
+      />
+
+      {showRating && (
+        <div className="mt-2 flex items-center">
+          <span className="mr-2 text-sm text-gray-600">
+            Votre note :
+          </span>
+          {[1, 2, 3, 4, 5].map((star) => (
+            <FontAwesomeIcon
+              key={star}
+              icon={star <= userRating ? fasStar : farStar}
+              className={`cursor-pointer ${star <= userRating
+                ? "text-yellow-500"
+                : "text-gray-300"
+                }`}
+              onClick={() => handleRating(star)}
+            />
+          ))}
         </div>
-        <div>
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn m-1">
-              ...
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu bg-red-100 rounded-box z-[1] w-52 p-2 shadow"
-            >
-              <li>
-                <button href="#">marquer favori</button>
-              </li>
-              <li>
-                <button>Signaler</button>
-              </li>
-            </ul>
-          </div>
+      )}
+      {notification.message && (
+        <div
+          className={`mt-2 p-2 text-sm ${notification.type === "success"
+            ? "text-green-600"
+            : "text-red-600"
+            }`}
+        >
+          {notification.message}
         </div>
-      </div>
-      <main className="flex flex-col">
-        <img
-          className="min-w-86 h-80 object-cover lg:object-fill"
-          src={props.post.Models.contenu}
-          alt=""
-        />
+      )}
 
-        <div className="py-2 px-6 md:p-6 flex flex-col md:gap-6 gap-4 w-full bg-white rounded-lg">
-          <h2 className="xl:text-3xl font-bold text-center text-gray-800">
-            {props.post.description}
-          </h2>
+      
 
-          {/* <div className="flex justify-between md:text-lg">
-                        <div>
-                            <h3 className="font-semibold text-gray-700 mb-2">Tissus</h3>
-                            <ul className="list-disc list-inside text-gray-600">
-                                {props.tissu.map((element, index) => (
-                                    <li key={index}>{element} <input type="radio" name="tissu" value={element} /></li>
-                                ))}
-                            </ul>
-                        </div>
-
-
-                        <div>
-                            <h3 className="font-semibold text-gray-700 mb-2">Materials</h3>
-                            <ul className="list-disc list-inside text-gray-600">
-                                {props.materials.map((element, index) => (
-                                    <li key={index}>{element}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div> */}
-          {/* <div className="bg-gradient-to-r from-blue-500 to-red-500 text-white font-bold px-6 py-2 rounded-full shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out w-fit self-center">
-                    15000 fr
-                </div> */}
-        </div>
-      </main>
-      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
-        <div className="flex gap-2 items-baseline  ">
-          <FontAwesomeIcon icon={faSmile} />
-          <p>Like</p>
-        </div>
-        <div className="flex gap-2 items-baseline">
-          <FontAwesomeIcon icon={faComment} />
-          <p>Comment</p>
-        </div>
-        <div className="flex gap-2 items-baseline">
-          <FontAwesomeIcon icon={faShare} />
-          <p>Share</p>
-        </div>
-      </div>
-      <div className="reactions flex justify-between items-center px-4 py-2 md:py-4 border-y border-grey-300  bg-white">
-        <span className="flex gap-2 items-baseline">
-          <button className="btn btn-warning rounded h-10 text-white" onClick={handleAddToWishList} >
-            <FontAwesomeIcon icon={faClipboard} />
-            <p>Add to WishList</p>
-          </button>
-        </span>
-        <span className="flex gap-2 items-baseline">
-          <button className="btn rounded  h-10 text-white bg-blue-500">
-            <FontAwesomeIcon icon={faCartPlus} />
-            <p>Add to cart</p>
-          </button>
-        </span>
-      </div>
-
-      <div className="px-4 flex justify-center items-center py-4 bg-white">
-        <div className="w-full bg-blue-100 rounded">
-          <input
-            type="text"
-            className="p-2 bg-transparent w-full border-none"
-            placeholder="comment..."
-          />
-        </div>
-      </div>
       {/* Open the modal using document.getElementById('ID').showModal() method */}
 
       <dialog id="my_modal_3" className="modal">
@@ -337,6 +464,9 @@ export default function PostCard(props) {
           <button>close</button>
         </form>
       </dialog>
+
+      {/* MODAL SIGNALEMENT UTILISATEUR */}
+
     </div>
-  );
+  )
 }

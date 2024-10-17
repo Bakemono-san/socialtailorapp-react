@@ -110,7 +110,7 @@ export default function Form({ onSubmit, selectedModel }) {
                     type="file"
                     id="photo"
                     onChange={handlePhotoChange}
-                    className={`file-input file-input-bordered file-input-primary w-full max-w-xs ${formErrors.photo ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`file-input file-input-bordered w-full max-w-xs ${formErrors.photo ? 'border-red-500' : 'border-gray-300'}`}
                 />
                 {getValidationIcon('photo', photo)}
                 {formErrors.photo && <span className="text-red-500 text-sm">{formErrors.photo}</span>}
@@ -120,10 +120,11 @@ export default function Form({ onSubmit, selectedModel }) {
             {/* Submit Button */}
             <button
                 type="submit"
-                className="w-full p-3 bg-blue-600 text-white rounded hover:bg-blue-500 transition duration-200 text-lg"
+                className="w-full p-3 bg-[#3b5999] text-white rounded hover:bg-blue-500 transition duration-200 text-lg"
             >
                 {selectedModel ? 'Mettre à jour le modèle' : 'Créer un modèle'}
             </button>
         </form>
     );
 }
+

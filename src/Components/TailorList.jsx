@@ -114,7 +114,8 @@ export default function TailorList() {
   };
 
   return (
-    <div className="bg-white shadow-md lg:block hidden rounded-lg p-4 h-96">
+
+    <div className="bg-white shadow-md rounded-lg p-4 h-96 hidden lg:block">
       {/* Barre de recherche */}
       <div className="flex justify-between items-center mb-4 overflow-hidden">
         <input

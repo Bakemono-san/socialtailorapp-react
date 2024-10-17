@@ -8,3 +8,4 @@ export default function MessageItem({color,position,message}) {
         </div>
     )
 }
+
