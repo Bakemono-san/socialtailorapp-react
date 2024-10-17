@@ -204,7 +204,7 @@ export default function PostCard(props) {
       setAverageRating(0);
     }
   }, [notes]);
-
+  //test
   // Gestion des notes
   const handleRating = async (newRating) => {
     try {
