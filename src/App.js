@@ -18,8 +18,10 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup";
 import { createContext, useState } from "react";
 import Notation from "./Pages/Notation";
+import FavorisPosts from "./Pages/FavorisPosts";
+import MyFollowers from "./Pages/MyFollowers";
+import ChangeRole from "./Components/Forms/ChangeRole";
 import ErrorBoundary from "./Pages/ErrorBoundary";
-
 
 // Create a context
 export const DataContext = createContext();
@@ -32,6 +34,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+
           <Route path="*" element={
             <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
               <Header />
@@ -54,13 +57,16 @@ function App() {
                     <Route path="/discussion" element={<ErrorBoundary ><ListDiscussion /></ErrorBoundary>} />
                     <Route path="/discussion/:id" element={<DiscussionPage />} />
                     <Route path="/note" element={<Notation />} />
+                    <Route path="/favorisPosts" element={<FavorisPosts />} />
+                    <Route path="/myFollowers" element={<MyFollowers />} />
+                    <Route path="/changeRole" element={<ChangeRole/>} />
                   </Routes>
                 </div>
 
                 <RightSideBar color="bg-white"/>
               </div>
-            </div>
-          } />
+            }
+          />
         </Routes>
       </Router>
     </DataContext.Provider>
