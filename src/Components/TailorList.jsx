@@ -8,28 +8,14 @@ export default function TailorList() {
   const [followedTailors, setFollowedTailors] = useState(new Set());
   const [successMessage, setSuccessMessage] = useState('');
   const [showCertifiedTailors, setShowCertifiedTailors] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState(null); // État pour stocker l'ID de l'utilisateur connecté
-  const [currentUserRole, setCurrentUserRole] = useState(''); // État pour stocker le rôle de l'utilisateur connecté
+  const [isUserTailor, setIsUserTailor] = useState(false); // Indique si l'utilisateur connecté est un tailleur
 
-  // Récupération de l'utilisateur connecté
-  useEffect(() => {
-    async function fetchCurrentUser() {
-      try {
-        const response = await DataHandler.getDatas('/currentUser'); // Remplacez par votre endpoint
-        setCurrentUserId(response.id); // Assurez-vous que la réponse contient l'ID de l'utilisateur
-        setCurrentUserRole(response.role); // Assurez-vous que la réponse contient le rôle de l'utilisateur
-      } catch (error) {
-        console.error('Erreur lors de la récupération de l\'utilisateur connecté:', error);
-      }
-    }
-    fetchCurrentUser();
-  }, []);
 
   // Récupération des tailleurs depuis l'API lors du montage du composant
   useEffect(() => {
     async function fetchTailors() {
       try {
-        const data = await DataHandler.getDatas('/listeTailleurs');
+        const data = await DataHandler.getDatas('http://localhost:3004/listeTailleurs');
         setTailors(data);
       } catch (error) {
         console.error('Erreur lors de la récupération des tailleurs:', error);
@@ -38,14 +24,15 @@ export default function TailorList() {
     fetchTailors();
   }, []);
 
-  // Vérification des tailleurs suivis par l'utilisateur
+  // Récupération des tailleurs suivis par l'utilisateur
   useEffect(() => {
     async function checkFollowedTailors() {
       try {
-        const response = await DataHandler.getDatas('/myFollowings');
+        const response = await DataHandler.getDatas('http://localhost:3004/myFollowings');
         const followed = response.followers || [];
         const followedSet = new Set(followed.map(follower => follower.Users_Followers_followerIdToUsers.id));
         setFollowedTailors(followedSet);
+        setIsUserTailor(true)
       } catch (error) {
         console.error('Erreur lors de la récupération des tailleurs suivis:', error);
       }
@@ -53,10 +40,11 @@ export default function TailorList() {
     checkFollowedTailors();
   }, []);
 
-  // Filtrage par nom et prénom, en excluant l'utilisateur connecté si son rôle est "tailleur"
-  const filteredTailors = tailors.filter((tailor) => {
-    const isCurrentUserTailor = currentUserId === tailor.id && currentUserRole === 'tailleur';
-    return !isCurrentUserTailor && `${tailor.prenom} ${tailor.nom}`.toLowerCase().includes(searchTerm.toLowerCase());
+  // Filtrage des tailleurs, en excluant l'utilisateur connecté s'il est un tailleur
+  const filteredTailors = tailors.filter(tailor => {
+    const currentUserId = parseInt(localStorage.getItem('userId'), 10); // ID de l'utilisateur connecté stocké en local
+    const isCurrentUser = isUserTailor && tailor.id === currentUserId; // Vérifie si c'est le tailleur connecté
+    return !isCurrentUser && `${tailor.nom} ${tailor.prenom}`.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   // Fonction pour suivre un tailleur
@@ -94,12 +82,9 @@ export default function TailorList() {
   };
 
   // Fonction pour signaler un tailleur
-
-
   const handleSignal = async (tailorId) => {
     try {
       await DataHandler.postData(`/signale/${tailorId}`, { reason: "mauvais contenu" });
-      //showModal("Le tailleur a été signalé.");
       setSuccessMessage('Le tailleur a été signalé.');
     } catch (error) {
       console.error("Erreur lors du signalement :", error);
@@ -131,7 +116,7 @@ export default function TailorList() {
   return (
     <div className="bg-white shadow-md lg:block hidden rounded-lg p-4 h-96">
       {/* Barre de recherche */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 overflow-hidden">
         <input
           type="text"
           placeholder="Rechercher un tailleur par nom ou prénom..."
@@ -163,11 +148,10 @@ export default function TailorList() {
             </button>
           </div>
         </div>
-      
       )}
 
       {/* Liste des tailleurs */}
-      <div className="flex flex-col gap-4 pb-12 overflow-y-auto h-full">
+      <div className="flex flex-col gap-4 pb-12">
         {filteredTailors.map(tailor => (
           <div key={tailor.id} className="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-sm transition-transform hover:scale-105">
             <div className="flex items-center gap-4">
