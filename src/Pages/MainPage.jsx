@@ -43,7 +43,7 @@ export default function MainPage() {
 
   return (
     <main className="text-sm md:w-full flex flex-col md:gap-8 h-full max-w-6xl">
-      <StoryContainer stories={value.stories} />
+      <StoryContainer stories={[]} />
       <div className='flex gap-4 h-full 2xl:gap-12'>
         <div className='flex flex-col gap-4 h-full w-full'>
           <Post />

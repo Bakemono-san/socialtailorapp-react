@@ -1,5 +1,6 @@
 
 import React from 'react'
+import ProfileItem from './ProfileItem';  
 import SidebarItem from './SidebarItem'
 import { faCog, faCoins, faHome, faMessage, faVest, faTrophy } from '@fortawesome/free-solid-svg-icons';
 
@@ -18,6 +19,9 @@ export default function Sidebar(props) {
         <SidebarItem icon={faMessage} name="Discussion" path="/discussion" />
         <SidebarItem icon={faCoins} name="achatcredit" path="/achatcredit" />
         <SidebarItem icon={faCog} name="Params" path="/params" />
+        <ProfileItem 
+          profilePicture="https://via.placeholder.com/150" 
+          name="Mon profile" path="/profile"/>
       </div>
     </div>
   );
