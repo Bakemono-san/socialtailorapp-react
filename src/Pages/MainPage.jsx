@@ -1,3 +1,4 @@
+
 import React, { useState, useContext } from 'react';
 import StoryContainer from '../Components/StoryContainer';
 import PostCardContainer from '../Components/PostCardContainer';
@@ -50,7 +51,7 @@ export default function MainPage() {
         </div>
         <div className='flex-col gap-4 h-full w-full hidden lg:flex'>
           <StatsCard title="Stats" />
-          <TailorList tailors={tailors} />
+          <TailorList />
         </div>
       </div>
     </main>

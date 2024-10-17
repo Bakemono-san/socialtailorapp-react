@@ -2,7 +2,7 @@
 import React from 'react'
 import ProfileItem from './ProfileItem';  
 import SidebarItem from './SidebarItem'
-import { faCog, faCoins, faHome, faMessage, faVest, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCoins, faHome, faMessage, faVest, faTrophy, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
 
@@ -15,6 +15,7 @@ export default function Sidebar(props) {
     {icon: faCoins, name:"achatcredit" , path:'/achatcredit'},
     {icon: faCog, name:"Params" , path:'/params'},
     {icon: faNewspaper, name:"Article" , path:'/article'},
+    {icon: faUser, name:"Tailleurs" , path:'/tailleurs'},
         
   ]
   const location = useLocation();
