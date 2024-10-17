@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { DataContext } from '../App';
-import ProfileCard from '../Components/ProfileCard'; 
+import ProfileCard from '../Components/ProfileCard';
 // import Post from '../Components/Forms/Post';
 import PostCardContainer from '../Components/PostCardContainer';
 import Ranking from '../Components/Ranking.jsx'; // Utiliser Notifications ici
@@ -27,12 +27,12 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center p-6 bg-gray-100">
       <div className="relative w-full h-48 bg-gray-300 rounded-lg shadow-md">
         {/* Le bouton Achat Crédit */}
         <div className="absolute bottom-4 right-4">
-          <button 
-            onClick={handleAchatClick} 
+          <button
+            onClick={handleAchatClick}
             className="bg-white text-blue-500 px-4 py-2 rounded-lg font-semibold shadow hover:bg-blue-100"
           >
             Achat Crédit
@@ -46,9 +46,9 @@ const ProfilePage = () => {
           <div className="w-full lg:w-2/3 space-y-6">
             <ProfileCard user={value.user} role={role} onAchatClick={handleAchatClick} />
             <div className='flex flex-col gap-4 h-full w-full'>
-          <PostCardContainer />
-          {/* <Post /> */}
-        </div>
+              <PostCardContainer />
+              {/* <Post /> */}
+            </div>
           </div>
 
           <div className="w-full lg:w-1/3">
@@ -57,7 +57,7 @@ const ProfilePage = () => {
           </div>
         </div>
       </div>
-      
+
     </div>
   );
 };
