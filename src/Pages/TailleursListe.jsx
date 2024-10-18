@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import TailorCard from '../Components/TailorCard';
 import TailorTable from '../Components/TailorTable';
-import DataHandler from '../DataHandler';
 import { FaCertificate, FaCheckCircle } from 'react-icons/fa';
+import {
+  fetchTailors,
+  checkUserStatus,
+  filterTailors,
+  handleToggleFollow,
+  handleSignal,
+} from '../Utils/TailorUtils';
 
 export default function TailleursListe() {
   const [tailors, setTailors] = useState([]);
@@ -15,46 +21,18 @@ export default function TailleursListe() {
   const [isCertifiedFilter, setIsCertifiedFilter] = useState(false);
   const [modalMessage, setModalMessage] = useState(null);
 
-  // Récupération des tailleurs
+  // Récupération des tailleurs et gestion du filtre certifié
   useEffect(() => {
-    async function fetchTailors() {
-      try {
-        const url = isCertifiedFilter 
-          ? '/filterTailleurByCertificat' 
-          : '/listeTailleurs';
-        const data = await DataHandler.getDatas(url);
-        setTailors(data);
-      } catch (error) {
-        console.error("Erreur lors de la récupération des tailleurs :", error);
-      }
-    }
-
-    fetchTailors();
+    fetchTailors(isCertifiedFilter, setTailors);
   }, [isCertifiedFilter]);
 
-  // Vérification si l'utilisateur est tailleur et récupération des tailleurs suivis
+  // Vérification du statut utilisateur et récupération des tailleurs suivis
   useEffect(() => {
-    const checkUserStatus = async () => {
-      try {
-        const userData = await DataHandler.getDatas('/myFollowings');
-        setIsUserTailor(true); // Supposons que l'utilisateur est un tailleur
-        const followedTailors = userData.followings ? userData.followings.map(following => following.id) : [];
-        setUserFollowedTailors(followedTailors); // Mettez à jour avec les IDs des tailleurs suivis
-        console.log(userData);
-      } catch (error) {
-        console.error("Erreur lors de la vérification de l'utilisateur :", error);
-      }
-    };
-
-    checkUserStatus();
+    checkUserStatus(setIsUserTailor, setUserFollowedTailors);
   }, []);
 
-  // Filtrage des tailleurs en fonction du filtre de recherche et du fait que l'utilisateur soit tailleur ou non
-  const filteredTailors = tailors.filter(tailor => {
-    const currentUserId = parseInt(localStorage.getItem('userId'), 10);
-    const isCurrentUser = isUserTailor && tailor.id === currentUserId;
-    return !isCurrentUser && `${tailor.nom} ${tailor.prenom}`.toLowerCase().includes(filter.toLowerCase());
-  });
+  // Filtrage des tailleurs
+  const filteredTailors = filterTailors(tailors, filter, isUserTailor);
 
   // Pagination des tailleurs
   const currentTailorsForTable = filteredTailors.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -62,41 +40,7 @@ export default function TailleursListe() {
   // Affichage d'une modal pour les messages
   const showModal = (message) => {
     setModalMessage(message);
-    setTimeout(() => setModalMessage(null), 5000); // Ferme la modal après 5 secondes
-  };
-
-  // Gestion du suivi/désuivi d'un tailleur
-  const handleToggleFollow = async (tailorId) => {
-    try {
-      if (userFollowedTailors.includes(tailorId)) {
-        console.log(`Unfollowing tailor with ID: ${tailorId}`);
-        await DataHandler.postData('/unfollowUser', { followerId: tailorId });
-        setUserFollowedTailors(prev => prev.filter(id => id !== tailorId)); // Retirer de la liste suivie
-        showModal("Vous avez arrêté de suivre ce tailleur.");
-      } else {
-        console.log(`Following tailor with ID: ${tailorId}`);
-        await DataHandler.postData('/followUser', { followerId: tailorId });
-        setUserFollowedTailors(prev => [...prev, tailorId]); // Ajouter à la liste suivie
-        showModal("Vous suivez ce tailleur !");
-      }
-    } catch (error) {
-      console.error("Erreur lors du toggle follow :", error);
-    }
-  };
-
-  // Gestion du signalement d'un tailleur
-  const handleSignal = async (tailorId) => {
-    try {
-      await DataHandler.postData(`/signale/${tailorId}`, { reason: "mauvais contenu" });
-      showModal("Le tailleur a été signalé.");
-    } catch (error) {
-      console.error("Erreur lors du signalement :", error);
-    }
-  };
-
-  // Gestion du filtre des tailleurs certifiés
-  const toggleCertifiedFilter = () => {
-    setIsCertifiedFilter((prev) => !prev);
+    setTimeout(() => setModalMessage(null), 5000);
   };
 
   return (
@@ -128,7 +72,7 @@ export default function TailleursListe() {
         />
 
         <div
-          onClick={toggleCertifiedFilter}
+          onClick={() => setIsCertifiedFilter((prev) => !prev)}
           className={`cursor-pointer p-2 rounded-full ${isCertifiedFilter ? 'bg-green-500' : 'bg-gray-200'}`}
           title={isCertifiedFilter ? 'Afficher tous les tailleurs' : 'Afficher uniquement les certifiés'}
         >
@@ -152,9 +96,9 @@ export default function TailleursListe() {
               key={tailor.id}
               name={`${tailor.prenom} ${tailor.nom}`}
               photo={`${tailor.photoProfile}`}
-              onToggleFollow={() => handleToggleFollow(tailor.id)}
-              onSignal={() => handleSignal(tailor.id)} // Utilisation de handleSignal
-              isFollowed={userFollowedTailors.includes(tailor.id)}  // Vérification si tailleur est suivi
+              onFollowUnfollow={() => handleToggleFollow(tailor.id, userFollowedTailors, setUserFollowedTailors, showModal)}
+              onSignal={() => handleSignal(tailor.id, showModal)}
+              isFollowed={userFollowedTailors.includes(tailor.id)}
             />
           ))}
         </div>
@@ -162,8 +106,8 @@ export default function TailleursListe() {
         <>
           <TailorTable
             tailors={currentTailorsForTable}
-            handleToggleFollow={handleToggleFollow}
-            handleSignal={handleSignal}
+            handleToggleFollow={(tailorId) => handleToggleFollow(tailorId, userFollowedTailors, setUserFollowedTailors, showModal)}
+            handleSignal={(tailorId) => handleSignal(tailorId, showModal)}
             userFollowedTailors={userFollowedTailors}
           />
           <div className="flex justify-center mt-4">
