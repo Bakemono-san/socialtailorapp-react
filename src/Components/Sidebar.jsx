@@ -13,7 +13,6 @@ export default function Sidebar(props) {
     {icon: faVest, name:"Models" , path:'/Models'},
     {icon: faMessage, name:"Discussion" , path:'/discussion'},
     {icon: faCoins, name:"achatcredit" , path:'/achatcredit'},
-    {icon: faCog, name:"Params" , path:'/params'},
     {icon: faNewspaper, name:"Article" , path:'/article'},
         
   ]
