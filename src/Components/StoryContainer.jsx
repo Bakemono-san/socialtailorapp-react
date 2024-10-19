@@ -9,12 +9,12 @@ const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = fal
     className="flex flex-col items-center space-y-1 cursor-pointer"
     onClick={onClick}
   >
-    <div className={`relative w-20 h-20 rounded-full overflow-hidden ${
+    <div className={`relative md:w-20 md:h-20 w-14 h-14 rounded-full overflow-hidden ${
       isCurrentUser
-        ? 'border-4 border-blue-500'
+        ? 'md:border-4 border-2 border-blue-500'
         : isViewed
-        ? 'border-4 border-gray-300'
-        : 'border-4 border-green-500'
+        ? 'md:border-4 border-2 border-gray-300'
+        : 'md:border-4 border-2 border-green-500'
     } bg-white p-0.5`}>
       <div className="w-full h-full rounded-full overflow-hidden">
         {isAdd ? (
@@ -137,9 +137,8 @@ export default function StoryContainer() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-gray-100">
-      <div className="bg-white p-4 shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Stories</h2>
+    <div className="flex flex-col w-full shadow-md bg-white md:rounded-md rounded-lg ">
+      <div className="p-4 shadow-md md:rounded-md rounded-md">
         <div className="flex space-x-4 overflow-x-auto pb-2">
           <StoryItem
             isAdd={true}

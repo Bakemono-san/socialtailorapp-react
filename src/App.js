@@ -25,6 +25,7 @@ import FavorisPosts from "./Pages/FavorisPosts";
 import MyFollowers from "./Pages/MyFollowers";
 import ChangeRole from "./Components/Forms/ChangeRole";
 import ErrorBoundary from "./Pages/ErrorBoundary";
+import ParamButton from "./Components/ParamButton";
 
 // Create a context
 export const DataContext = createContext();
@@ -40,6 +41,7 @@ function App() {
 
           <Route path="*" element={
             <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
+              <ParamButton />
               <Header />
               <div className="flex flex-1 md:flex-row flex-col-reverse overflow-hidden md:p-4 md:gap-8 lg:gap-24">
                 {/* Sidebar */}

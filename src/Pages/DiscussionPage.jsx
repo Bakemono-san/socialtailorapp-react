@@ -4,6 +4,8 @@ import DataHandler from '../DataHandler';
 import { useParams } from 'react-router-dom';
 import LocalStorage from '../Utils/LocalStorage';
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPaperclip } from '@fortawesome/free-solid-svg-icons';
 
 export default function DiscussionPage() {
   const { id: discussionId } = useParams();
@@ -69,7 +71,7 @@ export default function DiscussionPage() {
   return (
     <div className='flex flex-col justify-between h-full w-full'>
       <div className='flex flex-col gap-4 w-full h-full'>
-        {textos && textos.Users_UsersDiscussions_receiverIdToUsers && (
+        {textos && textos.Users_UsersDiscussions_receiverIdToUsers  && (
           <div>
             <h1 className='lg:text-2xl hidden font-bold'>Discussion</h1>
             <div className='flex items-center gap-4 w-full lg:p-4 p-2 bg-white'>
@@ -116,10 +118,20 @@ export default function DiscussionPage() {
             className="input input-bordered w-full"
             onChange={(e) => setNewMessage(e.target.value)}
           />
+          <label htmlFor="image" className='flex items-center cursor-pointer'>
+            <FontAwesomeIcon icon={faPaperclip} className='text-gray-500 w-6 h-6' />
+          </label>
+          {
+            file &&
+            <div className={`preview w-fit `} >
+              <img src={URL.createObjectURL(file)} alt="preview" className='w-10 h-10 rounded-full object-cover' />
+            </div>
+          }
           <input
             type="file"
             name='image'
-            className="file-input w-full max-w-xs"
+            id='image'
+            className="file-input w-full max-w-xs hidden"
             onChange={(e) => setFile(e.target.files[0])}
           />
           <button type="submit" className="btn btn-primary">Send</button>
