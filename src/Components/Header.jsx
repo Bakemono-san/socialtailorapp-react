@@ -1,4 +1,4 @@
-import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate, faClipboardList } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import React, { useContext, useState } from "react";
@@ -67,6 +67,12 @@ export default function Header() {
 
           <div className="notif p-2 cursor-pointer">
             <FontAwesomeIcon icon={faBell} />
+          </div>
+
+          <div className="notif p-2 cursor-pointer hover:text-blue-500">
+            <Link to={"/mes-commandes"}>
+              <FontAwesomeIcon icon={faClipboardList} />
+            </Link>
           </div>
 
           {/* Bouton pour acheter un badge */}

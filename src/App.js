@@ -26,6 +26,7 @@ import MyFollowers from "./Pages/MyFollowers";
 import ChangeRole from "./Components/Forms/ChangeRole";
 import ErrorBoundary from "./Pages/ErrorBoundary";
 import ParamButton from "./Components/ParamButton";
+import ListCommandes from "./Pages/ListCommandes";
 
 // Create a context
 export const DataContext = createContext();
@@ -68,6 +69,7 @@ function App() {
                     <Route path="/favorisPosts" element={<FavorisPosts />} />
                     <Route path="/myFollowers" element={<MyFollowers />} />
                     <Route path="/changeRole" element={<ChangeRole/>} />
+                    <Route path="/mes-commandes" element={<ListCommandes />} />
                   </Routes>
                 </div>
 
