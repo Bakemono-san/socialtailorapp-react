@@ -45,7 +45,7 @@ export default function PostCard(props) {
   useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const response = await DataHandler.getData(`/post/${props.post.id}/likes`);
+        const response = await DataHandler.getDatas(`/post/${props.post.id}/likes`);
         const userHasLiked = response.data.likes.some(
           (like) => like.userId === props.utilisateur.id
         );
@@ -61,16 +61,15 @@ export default function PostCard(props) {
   useEffect(() => {
     const fetchLikeCount = async () => {
       try {
-        const response = await DataHandler.getData(
-          `/post/${props.post.id}/likes/count`
-        );
-        setLikeCount(response.data.likeCount);
+        const response = await DataHandler.getData(`/post/${props.post.id}/likes`);
+        setLikeCount(response.data.likes.length); // Correction ici
       } catch (error) {
-        console.error("Erreur lors de la récupération du nombre de likes", error);
+        console.error("Erreur lors de la récupération des likes", error);
       }
     };
+    
     fetchLikeCount();
-  }, [props.post.id]);
+  },[props.post.id]);
 
   // Gestion des likes
   const handleLike = async () => {
@@ -80,15 +79,15 @@ export default function PostCard(props) {
           `/post/${props.post.id}/like/${props.utilisateur.id}/unlike`
         );
         setIsLiked(false);
-        setLikeCount(likeCount - 1);
+        setLikeCount((prev) => Math.max(prev - 1, 0));  // Empêche d’avoir un compteur négatif
       } else {
         if (isDisliked) {
-          await handleDislike();
+          await handleDislike();  // Retirer le dislike avant de liker
         }
         await DataHandler.postData(`/post/${props.post.id}/like`);
         setIsLiked(true);
-        setLikeCount(likeCount + 1);
-      }
+        setLikeCount((prev) => prev + 1);
+      }      
     } catch (error) {
       console.error("Erreur lors du like/unlike", error);
     }
@@ -119,7 +118,7 @@ export default function PostCard(props) {
   const handleDislike = async () => {
     try {
       if (isDisliked) {
-        await DataHandler.postData(`/post/${props.post.id}/undislike`);
+        await DataHandler.postData(`/post/${props.post.id}/dislike/${dislikeID}/undislike`);
         setIsDisliked(false);
       } else {
         if (isLiked) {
@@ -362,6 +361,7 @@ export default function PostCard(props) {
         handleDislike={handleDislike}
         openShareModal={openShareModal}
       />
+
 
       <PostActions handleAddToWishList={handleAddToWishList} />
 
