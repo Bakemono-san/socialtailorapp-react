@@ -380,6 +380,9 @@ export default function PostCard(props) {
         setReason={setReason}
         responseMessage={responseMessage}
         responseSuccess={responseSuccess}
+        isFollowing={props.isFollowing}
+        onFollowUser={props.onFollowUser}
+        connectedUser={props.connectedUser}
       />
 
       {message && <ModalResponse message={message} />}
