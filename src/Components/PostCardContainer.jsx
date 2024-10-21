@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { DataContext } from "../App";
 import DataHandler from "../DataHandler";
 import Swal from "sweetalert2";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function PostCardContainer() {
   const { value, setValue } = useContext(DataContext);
@@ -15,7 +16,7 @@ export default function PostCardContainer() {
       // Inclure les données nécessaires dans le corps de la requête
       const requestData = {
         postId: postId,
-        userId: value.user.id, // Ajouter l'ID de l'utilisateur si nécessaire
+        userId: LocalStorage.get("userId"), // Ajouter l'ID de l'utilisateur si nécessaire
       };
 
       console.log("Sending request with data:", requestData); // Pour le débogage
@@ -158,7 +159,7 @@ export default function PostCardContainer() {
 
   return (
     <div className="flex justify-between flex-col w-full gap-10 md:pb-63 md:px-0 pb-40 h-full overflow-y-scroll">
-      {posts.map((post, index) => {
+      {posts.length > 0 ? posts.map((post, index) => {
         const notes = authorNotes[post.id] || "O";
         return (
           <PostCard
@@ -171,7 +172,11 @@ export default function PostCardContainer() {
             onReportUser={handleReportUser}
           />
         );
-      })}
+      }) :
+       <div >
+          <p>It's quite there... </p>
+       </div>
+      }
     </div>
   );
 }

@@ -28,8 +28,8 @@ export default function Sidebar(props) {
       <div className='flex-1 md:flex-col md:gap-8 justify-between md:justify-normal flex'>
 
         {
-          items.map((link) => {
-            return <SidebarItem icon={link.icon} name={link.name} path={link.path} active={location.pathname === link.path} />
+          items.map((link,index) => {
+            return <SidebarItem key={index} icon={link.icon} name={link.name} path={link.path} active={location.pathname === link.path} />
           })
         }
 <ProfileItem 

@@ -3,16 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { DataContext } from "../App";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function Header() {
   const { value } = useContext(DataContext);
+  const [user,setUser] = useState(LocalStorage.get("user"))
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
-    if (value.user.badges) return; // Disable click if user already has a badge
+    if (user.badges) return; // Disable click if user already has a badge
 
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
@@ -21,7 +23,7 @@ export default function Header() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ajouter JWT si nécessaire
         },
-        body: JSON.stringify({ badgeId: value.badgeId }),
+        body: JSON.stringify({ badgeId: user.badges }),
       });
 
       const data = await response.json();
@@ -71,8 +73,8 @@ export default function Header() {
 
           {/* Bouton pour acheter un badge */}
           <div
-            className={` p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
-            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
+            className={` p-2 cursor-pointer flex items-center ${user.badges == null ? '' : ' hidden' }`}
+            onClick={user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
             <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
@@ -81,13 +83,13 @@ export default function Header() {
           <div className="relative flex justify-between items-center">
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
-              src={value.user.photoProfile}
+              src={user.photoProfile}
               alt="Profile"
             />
             
             
             <div className="text-sm md:ml-1">
-              <h2>{value.user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${value.user.badges ? '' : 'hidden'}`} /> </h2>
+              <h2>{user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${user.badges ? '' : 'hidden'}`} /> </h2>
               <p className="hidden">Active</p>
             </div>
           </div>

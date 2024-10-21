@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { DataContext } from '../App';
 import DataHandler from '../DataHandler';
+import LocalStorage from '../Utils/LocalStorage';
 
 const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = false }) => (
   <div 
@@ -39,8 +40,7 @@ const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = fal
 
 
 export default function StoryContainer() {
-  const { value } = useContext(DataContext);
-  const [models, setModels] = useState(value.models);
+  const [models, setModels] = useState([]);
   const [userStories, setUserStories] = useState([]);
   const [otherUserStories, setOtherUserStories] = useState([]);
   const [viewedStories, setViewedStories] = useState(new Set());
@@ -48,6 +48,7 @@ export default function StoryContainer() {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(null);
   const [selectedModel, setSelectedModel] = useState("");
   const [isCurrentUserStory, setIsCurrentUserStory] = useState(false);
+  const [user, setUser] = useState(LocalStorage.get("user"));
 
   useEffect(() => {
     fetchUserStories();
@@ -56,6 +57,19 @@ export default function StoryContainer() {
     const storedViewedStories = JSON.parse(localStorage.getItem('viewedStories') || '[]');
     setViewedStories(new Set(storedViewedStories));
   }, []);
+
+  useEffect(() => {
+    fetchModels();
+}, []);
+
+const fetchModels = async () => {
+    try {
+        const response = await DataHandler.getDatas(`/model/${user.id}/getModels`);
+        setModels(response);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des modèles :", error);
+    }
+};
 
   const fetchUserStories = async () => {
     try {
@@ -224,9 +238,10 @@ export default function StoryContainer() {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-- Choisir un modèle --</option>
-                {models.map(model => (
+                {models.length > 0 ? models.map(model => (
                   <option key={model.id} value={model.libelle}>{model.libelle}</option>
-                ))}
+                )):
+                <option disabled>Aucun modèle disponible</option>}
               </select>
             </div>
 
