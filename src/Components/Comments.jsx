@@ -2,10 +2,9 @@
 export function Comments({ comments, commentText, setCommentText, handleComment, 
     handleKeyPress, isModalOpen, setIsModalOpen }) {
 
-      console.log(comments);
       
     return (
-      <div className="comments-section px-4 py-4 bg-white">
+      <div className="comments-section px-4 py-4 bg-white rounded-b-xl">
         <button
           className="btn btn-outline btn-primary mb-4"
           onClick={() => setIsModalOpen(true)}

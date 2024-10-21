@@ -31,6 +31,7 @@ import MyFollowers from "./Pages/MyFollowers";
 import ChangeRole from "./Components/Forms/ChangeRole";
 import ErrorBoundary from "./Pages/ErrorBoundary";
 import Followings from "./Pages/Followings";
+import ParamButton from "./Components/ParamButton";
 
 // Create a context
 export const DataContext = createContext();
@@ -44,14 +45,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
 
-          <Route
-            path="*"
-            element={
-              <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
-                <Header />
-                <div className="flex flex-1 md:flex-row flex-col-reverse overflow-hidden md:p-4 md:gap-8 lg:gap-24">
-                  {/* Sidebar */}
-                  <Sidebar color="bg-[#3b5999]" />
+
+          <Route path="*" element={
+            <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
+              <ParamButton />
+              <Header />
+              <div className="flex flex-1 md:flex-row flex-col-reverse overflow-hidden md:p-4 md:gap-8 lg:gap-24">
+                {/* Sidebar */}
+                <Sidebar color="bg-[#3b5999]"/>
 
                   <div className="flex flex-col flex-1 overflow-hidden h-full">
                     <Routes>

@@ -2,7 +2,7 @@
 import React from 'react'
 import ProfileItem from './ProfileItem';  
 import SidebarItem from './SidebarItem'
-import { faCog, faCoins, faHome, faMessage, faVest, faTrophy } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faCoins, faHome, faMessage, faVest, faTrophy, faUser } from '@fortawesome/free-solid-svg-icons';
 import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
 
@@ -13,8 +13,8 @@ export default function Sidebar(props) {
     {icon: faVest, name:"Models" , path:'/Models'},
     {icon: faMessage, name:"Discussion" , path:'/discussion'},
     {icon: faCoins, name:"achatcredit" , path:'/achatcredit'},
-    {icon: faCog, name:"Params" , path:'/params'},
     {icon: faNewspaper, name:"Article" , path:'/article'},
+    {icon: faUser, name:"Tailleurs" , path:'/tailleurs'},
         
   ]
   const location = useLocation();
@@ -28,8 +28,8 @@ export default function Sidebar(props) {
       <div className='flex-1 md:flex-col md:gap-8 justify-between md:justify-normal flex'>
 
         {
-          items.map((link) => {
-            return <SidebarItem icon={link.icon} name={link.name} path={link.path} active={location.pathname === link.path} />
+          items.map((link,index) => {
+            return <SidebarItem key={index} icon={link.icon} name={link.name} path={link.path} active={location.pathname === link.path} />
           })
         }
 <ProfileItem 

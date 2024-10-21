@@ -1,14 +1,16 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../App';
 import DataHandler from '../../DataHandler';
+import LocalStorage from '../../Utils/LocalStorage';
 
 const ModelForm = () => {
-    const { value, setValue } = useContext(DataContext);
-    const [models, setModels] = useState(value.models);
+    // const { value, setValue } = useContext(DataContext);
+    const [models, setModels] = useState([]);
     const [modelId, setModelId] = useState();
     const [selectedModel,setSelectedModel] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [title,setTitle] = useState("");
+    const [user,setUser] = useState(LocalStorage.get("user"))
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -26,6 +28,18 @@ const ModelForm = () => {
         });
     }
 
+    useEffect(() => {
+        fetchModels();
+    }, []);
+
+    const fetchModels = async () => {
+        try {
+            const response = await DataHandler.getDatas(`/model/${user.id}/getModels`);
+            setModels(response);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des modèles :", error);
+        }
+    };
 
     const handleSelectModel = (model,id) => {
         setSelectedModel(model);
@@ -82,7 +96,7 @@ const ModelForm = () => {
                         <h3 className="font-bold text-lg">Choose a Model</h3>
                         <div className="py-4">
 
-                            {models.map((model) => {
+                            {models.length > 0 ? models.map((model) => {
                                 return <button
                                     key={model.id}
                                     type="button"
@@ -92,7 +106,11 @@ const ModelForm = () => {
                                     <img src={model.contenu} alt={model.libelle} className='w-12 h-12 rounded'/>
                                     {/* {model.libelle} */}
                                 </button>
-                            })}
+                            }):
+                            <div>
+                                <p>pas de model disponible veuillez en creer un</p>
+                            </div>
+                            }
                             {/* Add more model options as needed */}
                         </div>
                         <div className="modal-action mt-4">

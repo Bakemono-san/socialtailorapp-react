@@ -54,12 +54,12 @@ export function PostHeader({
   
 
   return (
-    <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2 border-b border-grey-300">
+    <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2 border-b border-grey-300 rounded-t-xl">
       <div className="flex gap-2 items-center">
         <img
           src={utilisateur.photoProfile}
           alt=""
-          className="w-8 h-8 rounded-full"
+          className="w-8 h-8 rounded-full shadow-lg"
         />
         <div>
           <h3>{utilisateur.prenom + " " + utilisateur.nom}</h3>
@@ -105,6 +105,7 @@ export function PostHeader({
           )}
 
           {utilisateur.role === "tailleur" && (
+          {/* {utilisateur.role === "tailleur" && (
             <>
               <div className="mt-4 flex items-center">
                 {renderStars(averageRating)}
@@ -151,7 +152,7 @@ export function PostHeader({
                 </div>
               )}
             </>
-          )}
+          )} */}
         </div>
       </div>
       <div>
