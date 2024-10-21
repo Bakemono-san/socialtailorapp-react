@@ -17,6 +17,7 @@ import ListeSouhait from "./Pages/ListeSouhait";
 import Panier from "./Pages/Panier";
 import Ranking from "./Pages/Ranking";
 import ListDiscussion from "./Pages/ListDiscussion";
+
 import Article from "./Pages/Article"; // make sure this path is correct
 
 import ProfilePage from "./Pages/ProfilePage";
@@ -30,6 +31,7 @@ import FavorisPosts from "./Pages/FavorisPosts";
 import MyFollowers from "./Pages/MyFollowers";
 import ChangeRole from "./Components/Forms/ChangeRole";
 import ErrorBoundary from "./Pages/ErrorBoundary";
+import NotificationList from "./Pages/NotificationList"; 
 import Followings from "./Pages/Followings";
 import ParamButton from "./Components/ParamButton";
 
@@ -44,7 +46,6 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-
 
           <Route path="*" element={
             <div className="bg-[#f0f3f9] h-screen flex flex-col overflow-hidden">
@@ -85,18 +86,21 @@ function App() {
                       <Route path="/myFollowers" element={<MyFollowers />} />
                       <Route path="/changeRole" element={<ChangeRole />} />
                       <Route path="/following" element={<Followings />} />
+                        
+                    <Route path="/notifications" element={<NotificationList />} /> {/* Nouvelle route pour les notifications */}
                     </Routes>
                   </div>
 
                   <RightSideBar color="bg-white" />
                 </div>
               </div>
-            }
-          />
+            </div>
+          } />
         </Routes>
       </Router>
     </DataContext.Provider>
   );
 }
+
 
 export default App;

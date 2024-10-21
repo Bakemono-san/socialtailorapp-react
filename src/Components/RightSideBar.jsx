@@ -20,6 +20,7 @@ export default function Sidebar(props) {
 
   return (
 
+
     <div className={props.color + ` hidden md:flex md:py-4 md:px-5 md:flex-col md:gap-10 md:h-full text-white md:rounded w-full min-h-12 shadow md:w-fit tv:w-max  2xl:w-full`}>
       {/* <div className='hidden md:block bg-[#3b5999] rounded'>
         <SidebarItem icon={faSearch} path="/" />
@@ -46,7 +47,7 @@ export default function Sidebar(props) {
               <div className='max-w-32 truncate md:flex flex-col justify-between gap-2 hidden'>
                 <p className="text-xl font-bold">{message.Users_UsersDiscussions_receiverIdToUsers.prenom}</p>
                 <p>{message.Users_UsersDiscussions_receiverIdToUsers.nom}</p>
-              </div>
+              </div>Notifi
             </div>
           
         })}

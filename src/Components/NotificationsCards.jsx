@@ -1,13 +1,20 @@
 import React from 'react';
-import DataHandler from "../DataHandler"; // Pour gérer les appels API
 
-const NotificationsCard = ({ notification, onMarkAsRead }) => {
+const NotificationsCards = ({ notification, onMarkAsRead, onDelete }) => {
   const handleMarkAsRead = async () => {
     try {
       // Appelle la fonction pour marquer la notification comme lue
       await onMarkAsRead(notification.id);
     } catch (err) {
       console.error("Erreur lors de la mise à jour de la notification :", err);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await onDelete(notification.id); // Appeler la fonction de suppression
+    } catch (err) {
+      console.error("Erreur lors de la suppression de la notification :", err);
     }
   };
 
@@ -28,9 +35,14 @@ const NotificationsCard = ({ notification, onMarkAsRead }) => {
             Marquer comme lue
           </button>
         )}
+        <button 
+          onClick={handleDelete}
+          className="text-red-500 underline ml-2">
+          Supprimer
+        </button>
       </div>
     </li>
   );
 };
 
-export default NotificationsCard;
+export default NotificationsCards;

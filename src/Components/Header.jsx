@@ -1,7 +1,9 @@
 import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import DataHandler from "../DataHandler";
 import { Link, useNavigate } from "react-router-dom";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState ,useEffect} from "react";
 import { DataContext } from "../App";
 import LocalStorage from "../Utils/LocalStorage";
 
@@ -11,6 +13,25 @@ export default function Header() {
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
+  const [unreadNotifications, setUnreadNotifications] = useState(0); // Stocke le nombre de notifications non lues
+
+ // Récupérer les notifications non lues via DataHandler dans le header
+useEffect(() => {
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await DataHandler.getDatas("/notifications/unread");
+      if (response.unreadCount !== undefined) {
+        setUnreadNotifications(response.unreadCount); // Mettre à jour le nombre de notifications non lues
+      } else {
+        console.error("Erreur lors de la récupération des notifications non lues");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion au serveur:", error);
+    }
+  };
+
+  fetchUnreadNotifications();
+}, []);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Gérer l'état du menu déroulant
   const navigate = useNavigate();
 
@@ -103,9 +124,24 @@ export default function Header() {
             <FontAwesomeIcon icon={faHeart} />
           </Link>
 
-          <FontAwesomeIcon icon={faBell} className="notif p-2" />
+        {/* Icone de cloche avec le nombre de notifications non lues */}
+<div className="relative notif p-2 cursor-pointer">
+  <Link to={"/notifications"}>
+    <FontAwesomeIcon icon={faBell} />
+  </Link>
+  
+  {/* <FontAwesomeIcon icon={faBell} /> */}
+  {unreadNotifications > 0 && (
+    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+      {unreadNotifications}
+    </span>
+  )}
+</div>
+
+
 
           <div
+
 
             className={` p-2 cursor-pointer flex items-center ${user.badges == null ? '' : ' hidden' }`}
             onClick={user.badges ? null : acheterBadge} // Disable click if user has a badge
@@ -113,7 +149,14 @@ export default function Header() {
             <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
 
-          <div className="relative flex justify-center items-center">
+          {/* Photo de profil avec icône de certification */}
+          <div className="relative flex justify-between items-center">
+            {/* lien pour le profil */}
+            <Link to={"/profil"}>
+            </Link>
+
+
+
             <img
 
               src={user.photoProfile}

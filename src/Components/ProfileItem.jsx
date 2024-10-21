@@ -1,15 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Import de Link
+import { Link } from 'react-router-dom';
 
 export default function ProfileItem({ profilePicture, name, path }) {
   return (
-    <Link to={path} className="flex items-center gap-4 p-4 hover:bg-[#334477] cursor-pointer rounded-lg transition-all duration-200">
-      <img
-        src={profilePicture || "https://via.placeholder.com/50"}
-        alt="Profile"
-        className="w-12 h-12 rounded-full border-2 border-white"
-      />
-      <span className="text-lg font-semibold">{name || "Username"}</span>
+    <Link
+      to={path}
+      className="flex items-center gap-3 mt-auto p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-300 ease-in-out"
+    >
+      <img src={profilePicture} alt={name} className="w-10 h-10 rounded-full border-2 border-blue-400" />
+      <div className="hidden md:block">
+        <p className="text-gray-800 font-semibold">{name}</p>
+      </div>
     </Link>
   );
 }
