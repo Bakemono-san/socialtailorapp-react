@@ -1,11 +1,13 @@
-import { faBasketShopping, faBell, faHeart, faMedal } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, useNavigate } from "react-router-dom";
 import React, { useContext, useState } from "react";
 import { DataContext } from "../App";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function Header() {
   const { value, setValue } = useContext(DataContext); // Récupérer setValue du contexte
+  const [user,setUser] = useState(LocalStorage.get("user"))
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
@@ -52,7 +54,7 @@ export default function Header() {
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
-    if (value.user.badges) return; // Disable click if user already has a badge
+    if (user.badges) return; // Disable click if user already has a badge
 
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
@@ -61,7 +63,7 @@ export default function Header() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ajouter JWT si nécessaire
         },
-        body: JSON.stringify({ badgeId: value.badgeId }),
+        body: JSON.stringify({ badgeId: user.badges }),
       });
 
       const data = await response.json();
@@ -104,19 +106,18 @@ export default function Header() {
           <FontAwesomeIcon icon={faBell} className="notif p-2" />
 
           <div
-            className={`badge p-2 cursor-pointer flex items-center ${
-              value.user.badges
-                ? "animate-bounce text-yellow-700 cursor-not-allowed"
-                : "hover:text-yellow-400"
-            }`}
-            onClick={value.user.badges ? null : acheterBadge}
+
+            className={` p-2 cursor-pointer flex items-center ${user.badges == null ? '' : ' hidden' }`}
+            onClick={user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
-            <FontAwesomeIcon icon={faMedal} size="lg" />
+            <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
 
           <div className="relative">
             <img
-              src={value.user.photoProfile}
+
+              className="w-6 h-6 md:w-12 rounded-full md:h-12"
+              src={user.photoProfile}
               alt="Profile"
               className="w-6 h-6 md:w-12 md:h-12 rounded-full cursor-pointer"
               onClick={toggleDropdown}
@@ -133,6 +134,12 @@ export default function Header() {
                
               </div>
             )}
+            
+            
+            <div className="text-sm md:ml-1">
+              <h2>{user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${user.badges ? '' : 'hidden'}`} /> </h2>
+              <p className="hidden">Active</p>
+            </div>
           </div>
         </div>
       </div>

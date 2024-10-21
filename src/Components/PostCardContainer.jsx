@@ -4,18 +4,24 @@ import { useContext } from "react";
 import { DataContext } from "../App";
 import DataHandler from "../DataHandler";
 import Swal from "sweetalert2";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function PostCardContainer() {
   const { value, setValue } = useContext(DataContext);
   const [posts, setPost] = useState([]);
   const [authorNotes, setAuthorNotes] = useState({});
+  const [followings, setFollowings] = useState([]);
+  const [followingsList, setFollowingsList] = useState(followings); // Suivi local des utilisateurs suivis
+  
+  const connectedUser = value.user;
+    
 
   const handleAddToWishList = async (postId) => {
     try {
       // Inclure les données nécessaires dans le corps de la requête
       const requestData = {
         postId: postId,
-        userId: value.user.id, // Ajouter l'ID de l'utilisateur si nécessaire
+        userId: LocalStorage.get("userId"), // Ajouter l'ID de l'utilisateur si nécessaire
       };
 
       console.log("Sending request with data:", requestData); // Pour le débogage
@@ -23,7 +29,7 @@ export default function PostCardContainer() {
         `/user/listeSouhaits/${postId}`,
         requestData
       );
-      if (response) { 
+      if (response) {
         // Mettre à jour le context
         const updatedValue = {
           ...value,
@@ -102,6 +108,18 @@ export default function PostCardContainer() {
     }
   }, []);
 
+  useEffect(() => {
+    DataHandler.getDatas("/following")
+      .then((res) => {
+        const followingIds = res.followings.map(
+          (following) => following.Users_Followers_followerIdToUsers.id
+        );
+        // console.log(followingIds);
+        setFollowings(followingIds);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
   const handleAddToFavoris = async (postId) => {
     try {
       console.log("Début de l'appel à l'API pour le post:", postId);
@@ -156,10 +174,56 @@ export default function PostCardContainer() {
     }
   };
 
+  async function followUser(followerId) {
+    try {
+      const data = { followerId };
+      const response = await DataHandler.postData("/followUser", data);
+      console.log(response.message); // Affiche le message de succès ou d'erreur
+      // Mettre à jour l'interface utilisateur si nécessaire
+    } catch (error) {
+      console.error(
+        "Erreur lors de l'abonnement:",
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+
+  async function unfollowUser(followerId) {
+    try {
+      const data = { followerId };
+      const response = await DataHandler.postData("/unfollowUser", data); // Utilisation de postData au lieu de deleteData pour passer des données
+      console.log(response.message); // Affiche le message de succès ou d'erreur
+      // Mettre à jour l'interface utilisateur si nécessaire
+    } catch (error) {
+      console.error(
+        "Erreur lors du désabonnement:",
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+
+  async function onFollowUser(userId, isFollowing) {
+    let success;
+
+    if (isFollowing) {
+      success = await followUser(userId); // Appelle la fonction de suivi
+      
+    } else {
+      success = await unfollowUser(userId); // Appelle la fonction de désabonnement
+    }
+    if (success) {
+      setFollowingsList((prev) =>
+        isFollowing ? [...prev, userId] : prev.filter((id) => id !== userId)
+      );
+    }
+  }
+
   return (
-    <div className="flex justify-between flex-col w-full gap-10 md:pb-63 md:px-0 pb-40  overflow-y-scroll">
-      {posts.map((post, index) => {
+    <div className="flex justify-between flex-col w-full gap-10 md:pb-63 md:px-0 pb-40 h-full overflow-y-scroll">
+      {posts.length > 0 ? posts.map((post, index) => {
         const notes = authorNotes[post.id] || "O";
+        const isFollowing = followings.includes(post.Users.id);
+
         return (
           <PostCard
             key={post.id}
@@ -169,10 +233,18 @@ export default function PostCardContainer() {
             notes={notes}
             onAddToFavoris={handleAddToFavoris}
             onReportUser={handleReportUser}
+            isFollowing={isFollowing}
+            onFollowUser={onFollowUser}
+            connectedUser={connectedUser}
+            // onFollowUser={followUser}
+            // onUnFollowUser={unfollowUser}
           />
         );
-      })}
+      }) :
+       <div >
+          <p>It's quite there... </p>
+       </div>
+      }
     </div>
   );
 }
-

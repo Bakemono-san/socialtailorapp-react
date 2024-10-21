@@ -31,6 +31,7 @@ export function Comments({
 
   const handleReply = async (parentCommentId) => {
     const replyContent = replyTexts[parentCommentId]?.trim();
+
   
     if (replyContent) {
       try {

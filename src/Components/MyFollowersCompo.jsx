@@ -3,10 +3,14 @@ import React, { useState } from "react";
 const MyFollowersCompo = ({ follower }) => {
   const [isFollowing, setIsFollowing] = useState(false);
 
+  console.log(follower);
+  
   const handleFollowToggle = () => {
     setIsFollowing(!isFollowing); // Toggle entre Follow et Unfollow
   };
   return (
+    <>
+    
     <div className="bg-white shadow-md rounded-lg overflow-hidden">
       {/* Entête : Nom et rôle */}
       <div className="flex justify-between items-center p-4 bg-gray-100">
@@ -41,6 +45,7 @@ const MyFollowersCompo = ({ follower }) => {
         </button>
       </div>
     </div>
+    </>
   );
 };
 

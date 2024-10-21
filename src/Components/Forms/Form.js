@@ -127,3 +127,4 @@ export default function Form({ onSubmit, selectedModel }) {
         </form>
     );
 }
+
