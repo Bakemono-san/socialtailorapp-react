@@ -113,10 +113,9 @@ export default function Header() {
             <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
 
-          <div className="relative">
+          <div className="relative flex justify-center items-center">
             <img
 
-              className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={user.photoProfile}
               alt="Profile"
               className="w-6 h-6 md:w-12 md:h-12 rounded-full cursor-pointer"
