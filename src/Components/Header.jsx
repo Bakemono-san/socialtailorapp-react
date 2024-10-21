@@ -23,11 +23,6 @@ export default function Header() {
         credentials: "include", // Important pour envoyer le cookie
         headers: { "Content-Type": "application/json" }, // Assurez-vous de cette ligne
       });
-      // setIsModalOpen(true); // Afficher le message de confirmation
-      // setIsSuccess(true); // Afficher le message de succès
-      // await response.json(); // Assurez-vous de cette ligne
-      // setValue(null); // Vider le contexte
-      // localStorage.removeItem("token"); // Supprimer le token du localStorage
      // navigate("/login"); // Rediriger vers la page de connexion
       if (response.ok) {
         localStorage.clear(); // Supprimer les données locales

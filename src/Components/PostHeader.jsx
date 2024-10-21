@@ -5,8 +5,35 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar, faStarHalfAlt } from "@fortawesome/free-regular-svg-icons";
-export function PostHeader({ utilisateur, post, averageRating, showRating, toggleRating, 
-  userRating, handleRating, notification, renderStars }) {
+export function PostHeader({ 
+  utilisateur, 
+  post, 
+  averageRating, 
+  showRating, 
+  toggleRating, 
+  userRating, 
+  handleRating, 
+  notification 
+})
+  {
+
+    const renderStars = (rating) => {
+      const stars = [];
+      const roundedRating = Math.round(rating * 2) / 2;
+  
+      for (let i = 1; i <= 5; i++) {
+        if (i <= roundedRating) {
+          stars.push(<FontAwesomeIcon key={i} icon={fasStar} className="text-yellow-500" />);
+        } else if (i - 0.5 === roundedRating) {
+          stars.push(<FontAwesomeIcon key={i} icon={faStarHalfAlt} className="text-yellow-500" />);
+        } else {
+          stars.push(<FontAwesomeIcon key={i} icon={farStar} className="text-gray-300" />);
+        }
+      }
+  
+      return stars;
+    };  
+  
   return (
     <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2 border-b border-grey-300">
       <div className="flex gap-2 items-center">
@@ -21,12 +48,12 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
 
           {utilisateur.role === "tailleur" && (
             <>
-              <div className="mt-4 flex items-center">
-                {renderStars(averageRating)}
-                <span className="ml-2 text-sm text-gray-600">
-                  ({averageRating.toFixed(1)})
-                </span>
-              </div>
+               <div className="mt-4 flex items-center">
+                  {renderStars(averageRating)}
+                  <span className="ml-2 text-sm text-gray-600">
+                    ({averageRating.toFixed(1)})
+                  </span>
+                </div>
 
               <button
                 onClick={toggleRating}
