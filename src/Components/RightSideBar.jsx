@@ -1,45 +1,61 @@
-// Components/Sidebar.js
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import SidebarItem from "./SidebarItem";
 import { faSearch, faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { DataContext } from "../App";
 import { Link } from "react-router-dom"; // Import de Link pour la redirection
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import DataHandler from "../DataHandler";
 
 export default function Sidebar(props) {
-  const { value, setDiscussion } = useContext(DataContext);
+  const [discussions,setDiscussions] = useState([]);
+
+  useEffect(() => {
+    DataHandler.getDatas("http://localhost:3004/user/discussions")
+        .then((data) => {
+
+            setDiscussions(data)
+        })
+        .catch((err) => { console.log(err) })
+}, [])
 
   return (
-    <div className={`${props.color} bg-white hidden md:flex md:py-6 md:px-4 flex-col gap-8 h-full text-white shadow-lg rounded-md md:w-24 lg:w-1/4 2xl:w-1/6 transition-all duration-300`}>
-      {/* Section de recherche */}
-      <div className="hidden md:flex items-center justify-center bg-blue-600 p-3 rounded-full hover:bg-blue-500 transition-colors duration-300">
-        <SidebarItem icon={faSearch} path="/" className="text-xl text-white" />
-      </div>
 
-      {/* Section Followers */}
-      <Link to="/myFollowers" className="hidden md:flex items-center justify-center bg-blue-600 p-3 rounded-full hover:bg-blue-500 transition-colors duration-300">
-        <FontAwesomeIcon icon={faUserFriends} className="text-xl text-white" />
-        <span className="ml-2 text-sm text-white hidden lg:block">Followers</span>
+
+    <div className={props.color + ` hidden md:flex md:py-4 md:px-5 md:flex-col md:gap-10 md:h-full text-white md:rounded w-full min-h-12 shadow md:w-fit tv:w-max  2xl:w-full`}>
+      {/* <div className='hidden md:block bg-[#3b5999] rounded'>
+        <SidebarItem icon={faSearch} path="/" />
+      </div> */}
+
+
+<Link to="/following" className="hidden md:block bg-[#3b5999] rounded">
+        <FontAwesomeIcon icon={faUserFriends} />
+        <span>Suivis</span>
       </Link>
+      <hr />
+      <Link to="/myFollowers" className="hidden md:block bg-[#3b5999] rounded p-4">
+          <FontAwesomeIcon icon={faUserFriends} />
+          <span>Followers</span>
+        </Link>
+      <hr />
 
-      {/* Ligne de séparation */}
-      <hr className="border-gray-200 w-full" />
-
-      {/* Liste des discussions */}
-      <div className="flex-1 flex flex-col gap-6 overflow-y-auto">
-        {value.message.map((message, index) => (
-          <div key={index} className="flex items-center gap-4 hover:bg-gray-100 p-2 rounded-md transition-all duration-300">
-            {/* Image de profil */}
-            <SidebarItem
-              key={message.Users_UsersDiscussions_receiverIdToUsers.id}
-              image={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile}
-              path={`/discussion/${message.id}`}
-              className="w-10 h-10 rounded-full object-cover shadow-md"
-            />
-            {/* Nom de l'utilisateur */}
-            <p className="text-lg font-semibold text-gray-800 truncate max-w-xs">{message.Users_UsersDiscussions_receiverIdToUsers.name}</p>
-          </div>
-        ))}
+      <div className='flex-1 md:flex-col md:gap-8 justify-between md:justify-normal flex'>
+        <h1 className="text-center font-bold text-lg bg-[#3b5999] rounded py-1 px-4">Discussions</h1>
+        {
+          discussions.length > 0 && discussions.map((message, index) => {
+            return <div className='tv:flex justify-between gap-4 items-center text-[#3b5999]  '>
+              <SidebarItem key={message.Users_UsersDiscussions_receiverIdToUsers.id} image={message.Users_UsersDiscussions_receiverIdToUsers.photoProfile} path={`/discussion/${message.id}`} />
+              <div className='max-w-32 truncate md:flex flex-col justify-between gap-2 hidden'>
+                <p className="text-xl font-bold">{message.Users_UsersDiscussions_receiverIdToUsers.prenom}</p>
+                <p>{message.Users_UsersDiscussions_receiverIdToUsers.nom}</p>
+              </div>Notifi
+            </div>
+          
+        })}
+        {/* <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/1" className="sm:hidden" />
+        <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/2" />
+        <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/3" />
+        <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/4" />
+        <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/5" /> */}
       </div>
     </div>
   );

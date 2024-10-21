@@ -3,18 +3,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faTrash, faUser } from '@fortawesome/free-solid-svg-icons';
 import { DataContext } from '../App';
 import DataHandler from '../DataHandler';
+import LocalStorage from '../Utils/LocalStorage';
 
 const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = false }) => (
   <div 
     className="flex flex-col items-center space-y-1 cursor-pointer"
     onClick={onClick}
   >
-    <div className={`relative w-20 h-20 rounded-full overflow-hidden ${
+    <div className={`relative md:w-20 md:h-20 w-14 h-14 rounded-full overflow-hidden ${
       isCurrentUser
-        ? 'border-4 border-blue-500'
+        ? 'md:border-4 border-2 border-blue-500'
         : isViewed
-        ? 'border-4 border-gray-300'
-        : 'border-4 border-green-500'
+        ? 'md:border-4 border-2 border-gray-300'
+        : 'md:border-4 border-2 border-green-500'
     } bg-white p-0.5`}>
       <div className="w-full h-full rounded-full overflow-hidden">
         {isAdd ? (
@@ -39,8 +40,7 @@ const StoryItem = ({ image, title, isCurrentUser, isViewed, onClick, isAdd = fal
 
 
 export default function StoryContainer() {
-  const { value } = useContext(DataContext);
-  const [models, setModels] = useState(value.models);
+  const [models, setModels] = useState([]);
   const [userStories, setUserStories] = useState([]);
   const [otherUserStories, setOtherUserStories] = useState([]);
   const [viewedStories, setViewedStories] = useState(new Set());
@@ -48,6 +48,7 @@ export default function StoryContainer() {
   const [currentStoryIndex, setCurrentStoryIndex] = useState(null);
   const [selectedModel, setSelectedModel] = useState("");
   const [isCurrentUserStory, setIsCurrentUserStory] = useState(false);
+  const [user, setUser] = useState(LocalStorage.get("user"));
 
   useEffect(() => {
     fetchUserStories();
@@ -56,6 +57,19 @@ export default function StoryContainer() {
     const storedViewedStories = JSON.parse(localStorage.getItem('viewedStories') || '[]');
     setViewedStories(new Set(storedViewedStories));
   }, []);
+
+  useEffect(() => {
+    fetchModels();
+}, []);
+
+const fetchModels = async () => {
+    try {
+        const response = await DataHandler.getDatas(`/model/${user.id}/getModels`);
+        setModels(response);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des modèles :", error);
+    }
+};
 
   const fetchUserStories = async () => {
     try {
@@ -137,9 +151,8 @@ export default function StoryContainer() {
   };
 
   return (
-    <div className="flex flex-col w-full bg-gray-100">
-      <div className="bg-white p-4 shadow-md">
-        <h2 className="text-lg font-semibold mb-4">Stories</h2>
+    <div className="flex flex-col w-full shadow-md bg-white md:rounded-md rounded-lg ">
+      <div className="p-4 shadow-md md:rounded-md rounded-md">
         <div className="flex space-x-4 overflow-x-auto pb-2">
           <StoryItem
             isAdd={true}
@@ -225,9 +238,10 @@ export default function StoryContainer() {
                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">-- Choisir un modèle --</option>
-                {models.map(model => (
+                {models.length > 0 ? models.map(model => (
                   <option key={model.id} value={model.libelle}>{model.libelle}</option>
-                ))}
+                )):
+                <option disabled>Aucun modèle disponible</option>}
               </select>
             </div>
 

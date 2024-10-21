@@ -2,20 +2,22 @@ import React from 'react';
 import ProfileItem from './ProfileItem';
 import SidebarItem from './SidebarItem';
 import { faCog, faCoins, faHome, faMessage, faVest, faTrophy, faBell } from '@fortawesome/free-solid-svg-icons'; // Ajoutez faBell ici
+
 import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
 
 export default function Sidebar(props) {
   const items = [
-    { icon: faTrophy, name: "Ranking", path: '/rang' },
-    { icon: faVest, name: "Models", path: '/models' },
-    { icon: faMessage, name: "Discussion", path: '/discussion' },
-    { icon: faCoins, name: "Achat Credit", path: '/achatcredit' },
-    { icon: faCog, name: "Params", path: '/params' },
-    { icon: faNewspaper, name: "Article", path: '/article' },
-    { icon: faBell, name: "Notifications", path: '/notifications' }, // Ajoutez cette ligne
-  ];
 
+    {icon: faTrophy, name:"Ranking" , path:'/rang' },
+    // {icon: faHome, name:"Home" , path:'/'},
+    {icon: faVest, name:"Models" , path:'/Models'},
+    {icon: faMessage, name:"Discussion" , path:'/discussion'},
+    {icon: faCoins, name:"achatcredit" , path:'/achatcredit'},
+    {icon: faNewspaper, name:"Article" , path:'/article'},
+    {icon: faUser, name:"Tailleurs" , path:'/tailleurs'},
+    { icon: faBell, name: "Notifications", path: '/notifications' }, // Ajoutez cette ligne
+  ]
   const location = useLocation();
 
   return (
@@ -26,15 +28,10 @@ export default function Sidebar(props) {
       <hr className="border-gray-300" />
       <div className='flex-1 md:flex-col md:gap-6 justify-between md:justify-normal flex'>
         {
-          items.map((link) => (
-            <SidebarItem
-              key={link.name}
-              icon={link.icon}
-              name={link.name}
-              path={link.path}
-              active={location.pathname === link.path}
-            />
-          ))
+
+          items.map((link,index) => {
+            return <SidebarItem key={index} icon={link.icon} name={link.name} path={link.path} active={location.pathname === link.path} />
+          })
         }
         <ProfileItem
           profilePicture="https://via.placeholder.com/150"

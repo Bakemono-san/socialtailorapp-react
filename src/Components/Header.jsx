@@ -1,12 +1,15 @@
 import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import React, { useContext, useState, useEffect } from "react";
-import { DataContext } from "../App";
+
 import DataHandler from "../DataHandler";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useState ,useEffect} from "react";
+import { DataContext } from "../App";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function Header() {
-  const { value } = useContext(DataContext);
+  const { value, setValue } = useContext(DataContext); // Récupérer setValue du contexte
+  const [user,setUser] = useState(LocalStorage.get("user"))
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
@@ -29,10 +32,50 @@ useEffect(() => {
 
   fetchUnreadNotifications();
 }, []);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Gérer l'état du menu déroulant
+  const navigate = useNavigate();
+
+  // Gérer l'affichage du menu déroulant
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+
+  // Fonction de déconnexion
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/logout", {
+        method: "POST",
+        credentials: "include", // Important pour envoyer le cookie
+        headers: { "Content-Type": "application/json" }, // Assurez-vous de cette ligne
+      });
+      // setIsModalOpen(true); // Afficher le message de confirmation
+      // setIsSuccess(true); // Afficher le message de succès
+      // await response.json(); // Assurez-vous de cette ligne
+      // setValue(null); // Vider le contexte
+      // localStorage.removeItem("token"); // Supprimer le token du localStorage
+     // navigate("/login"); // Rediriger vers la page de connexion
+      if (response.ok) {
+        localStorage.clear(); // Supprimer les données locales
+        setValue(null); // Réinitialiser le contexte utilisateur
+        setIsModalOpen(true); // Afficher le message de confirmation
+        setIsSuccess(true); // Afficher le message de succès
+        
+        
+        // Remplace l'historique au lieu de le pousser
+        navigate("/login", { replace: true }); 
+        //et affacer tous les données de l'historique
+        window.history.pushState({}, "", "/login");
+      } else {
+        console.error("Erreur lors de la déconnexion.");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion au serveur :", error);
+    }
+  };
+  
+  
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
-    if (value.user.badges) return; // Disable click if user already has a badge
+    if (user.badges) return; // Disable click if user already has a badge
 
     try {
       const response = await fetch("http://localhost:3004/user/acheterBadge", {
@@ -41,7 +84,7 @@ useEffect(() => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ajouter JWT si nécessaire
         },
-        body: JSON.stringify({ badgeId: value.badgeId }),
+        body: JSON.stringify({ badgeId: user.badges }),
       });
 
       const data = await response.json();
@@ -73,17 +116,13 @@ useEffect(() => {
 
       <div className="flex items-center gap-12 flex-1 justify-end">
         <div className="flex gap-4 items-center">
-          <div className="notif p-2 cursor-pointer hover:text-red-500">
-            <Link to={"/panier"}>
-              <FontAwesomeIcon icon={faBasketShopping} />
-            </Link>
-          </div>
+          <Link to={"/panier"} className="notif p-2 hover:text-red-500">
+            <FontAwesomeIcon icon={faBasketShopping} />
+          </Link>
 
-          <div className="notif p-2 cursor-pointer hover:text-red-500">
-            <Link to={"/listesouhait"}>
-              <FontAwesomeIcon icon={faHeart} />
-            </Link>
-          </div>
+          <Link to={"/listesouhait"} className="notif p-2 hover:text-red-500">
+            <FontAwesomeIcon icon={faHeart} />
+          </Link>
 
         {/* Icone de cloche avec le nombre de notifications non lues */}
 <div className="relative notif p-2 cursor-pointer">
@@ -100,10 +139,12 @@ useEffect(() => {
 </div>
 
 
-          {/* Bouton pour acheter un badge */}
+
           <div
-            className={`p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
-            onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
+
+
+            className={` p-2 cursor-pointer flex items-center ${user.badges == null ? '' : ' hidden' }`}
+            onClick={user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
             <FontAwesomeIcon icon={faMedal} size="sm" />
           </div>
@@ -115,22 +156,36 @@ useEffect(() => {
             </Link>
 
 
+
             <img
-              className="w-6 h-6 md:w-12 rounded-full md:h-12"
-              src={value.user.photoProfile}
+
+              src={user.photoProfile}
               alt="Profile"
+              className="w-6 h-6 md:w-12 md:h-12 rounded-full cursor-pointer"
+              onClick={toggleDropdown}
             />
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Déconnexion
+                </button>
+               
+              </div>
+            )}
             
             
             <div className="text-sm md:ml-1">
-              <h2>{value.user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${value.user.badges ? '' : 'hidden'}`} /> </h2>
+              <h2>{user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${user.badges ? '' : 'hidden'}`} /> </h2>
               <p className="hidden">Active</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modal pour les messages d'erreur ou succès */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white w-96 p-8 rounded-lg shadow-lg">
