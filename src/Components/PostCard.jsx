@@ -1,4 +1,3 @@
-  // PostCard.jsx
   import { useEffect, useState } from "react";
   import DataHandler from "../DataHandler";
   // Remplacez l'import actuel de .tsx par .jsx
