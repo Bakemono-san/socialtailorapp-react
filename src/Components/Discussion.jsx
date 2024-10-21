@@ -10,11 +10,12 @@ export default function Discussion(props) {
                 <img src={props.profile} alt="" className='rounded-full md:w-20 md:h-20 w-16 h-16 object-cover' />
                 <div className='flex justify-between h-full border-b md:gap-6 gap-2 p-2 border-gray-300 w-full'>
                     <div className='flex flex-col md:gap-4 gap-2'>
-                        <h1 className='text-xl font-semibold'>Username</h1>
+                        <h1 className='text-xl font-semibold'>{props.prenom + " " + props.nom}</h1>
                         <p>il y'a 10 jours</p>
                     </div>
                 </div>
             </Link>
+            
             <div>
                 <button className='btn text-white bg-red-500 rounded-full flex w-fit'>
                     <FontAwesomeIcon icon={faTrash} />

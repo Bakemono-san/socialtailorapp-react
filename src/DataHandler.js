@@ -13,7 +13,6 @@ export default class DataHandler {
                 
                 if (token) {
                     config.headers["Authorization"] = `Bearer ${token}`;
-                    console.log(config.headers);
                 }
 
                 return config;
@@ -45,15 +44,25 @@ export default class DataHandler {
         }
     }
 
+    // static async updateData(url, data) {
+    //     try {
+    //         const response = await this.api.put(url, data);
+    //         return response.data;
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw error;
+    //     }
+    // }
     static async updateData(url, data) {
         try {
-            const response = await this.api.put(url, data);
+            const response = await this.api.patch(url, data); // Utilisez patch ici
             return response.data;
         } catch (error) {
             console.error(error);
             throw error;
         }
     }
+    
 
     static async deleteData(url) {
         try {

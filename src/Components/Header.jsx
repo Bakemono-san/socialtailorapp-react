@@ -1,37 +1,210 @@
-import { faBasketShopping, faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
-import React from "react";
+
+import DataHandler from "../DataHandler";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useContext, useState ,useEffect} from "react";
+import { DataContext } from "../App";
+import LocalStorage from "../Utils/LocalStorage";
 
 export default function Header() {
+  const { value, setValue } = useContext(DataContext); // Récupérer setValue du contexte
+  const [user,setUser] = useState(LocalStorage.get("user"))
+  const [modalMessage, setModalMessage] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
+  const [unreadNotifications, setUnreadNotifications] = useState(0); // Stocke le nombre de notifications non lues
+
+ // Récupérer les notifications non lues via DataHandler dans le header
+useEffect(() => {
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await DataHandler.getDatas("/notifications/unread");
+      if (response.unreadCount !== undefined) {
+        setUnreadNotifications(response.unreadCount); // Mettre à jour le nombre de notifications non lues
+      } else {
+        console.error("Erreur lors de la récupération des notifications non lues");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion au serveur:", error);
+    }
+  };
+
+  fetchUnreadNotifications();
+}, []);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Gérer l'état du menu déroulant
+  const navigate = useNavigate();
+
+  // Gérer l'affichage du menu déroulant
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
+
+  // Fonction de déconnexion
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/logout", {
+        method: "POST",
+        credentials: "include", // Important pour envoyer le cookie
+        headers: { "Content-Type": "application/json" }, // Assurez-vous de cette ligne
+      });
+      // setIsModalOpen(true); // Afficher le message de confirmation
+      // setIsSuccess(true); // Afficher le message de succès
+      // await response.json(); // Assurez-vous de cette ligne
+      // setValue(null); // Vider le contexte
+      // localStorage.removeItem("token"); // Supprimer le token du localStorage
+     // navigate("/login"); // Rediriger vers la page de connexion
+      if (response.ok) {
+        localStorage.clear(); // Supprimer les données locales
+        setValue(null); // Réinitialiser le contexte utilisateur
+        setIsModalOpen(true); // Afficher le message de confirmation
+        setIsSuccess(true); // Afficher le message de succès
+        
+        
+        // Remplace l'historique au lieu de le pousser
+        navigate("/login", { replace: true }); 
+        //et affacer tous les données de l'historique
+        window.history.pushState({}, "", "/login");
+      } else {
+        console.error("Erreur lors de la déconnexion.");
+      }
+    } catch (error) {
+      console.error("Erreur de connexion au serveur :", error);
+    }
+  };
+  
+  
+
+  // Fonction pour acheter le badge
+  const acheterBadge = async () => {
+    if (user.badges) return; // Disable click if user already has a badge
+
+    try {
+      const response = await fetch("http://localhost:3004/user/acheterBadge", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Ajouter JWT si nécessaire
+        },
+        body: JSON.stringify({ badgeId: user.badges }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setModalMessage(data.message || "Badge acquis avec succès !");
+        setIsSuccess(true);
+      } else {
+        setModalMessage(data.message || "Une erreur est survenue.");
+        setIsSuccess(false);
+      }
+    } catch (error) {
+      setModalMessage("Erreur de connexion au serveur.");
+      setIsSuccess(false);
+    } finally {
+      setIsModalOpen(true); // Affiche la modal
+    }
+  };
+
+  // Fermer la modal
+  const closeModal = () => setIsModalOpen(false);
+
   return (
-    <div className="bg-blue-700 text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between md:relative w-full  items-center">
-      <div className="flex items-center gap-24 flex-1">
-        <h1 className=" font-bold animate-pulse">Social Tailor</h1>
+    <div className="bg-[#3b5999] text-sm md:text-2xl text-white py-2 px-4 md:px-10 flex justify-between items-center w-full">
+      <div className="flex items-center gap-4 flex-1">
+        <img src={process.env.PUBLIC_URL + '/favicon.ico'} className="rounded" alt="" />
+        <h1 className="font-bold animate-pulse hidden md:flex">Social Tailor</h1>
       </div>
+
       <div className="flex items-center gap-12 flex-1 justify-end">
-        <div className="flex justify-between gap-2 md:gap-4">
-          <div className="notif flex items-center justify-center p-2 cursor-pointer hover:text-red-500">
-            <Link to={"/panier"}>
-              <FontAwesomeIcon icon={faBasketShopping} />
+        <div className="flex gap-4 items-center">
+          <Link to={"/panier"} className="notif p-2 hover:text-red-500">
+            <FontAwesomeIcon icon={faBasketShopping} />
+          </Link>
+
+          <Link to={"/listesouhait"} className="notif p-2 hover:text-red-500">
+            <FontAwesomeIcon icon={faHeart} />
+          </Link>
+
+        {/* Icone de cloche avec le nombre de notifications non lues */}
+<div className="relative notif p-2 cursor-pointer">
+  <Link to={"/notifications"}>
+    <FontAwesomeIcon icon={faBell} />
+  </Link>
+  
+  {/* <FontAwesomeIcon icon={faBell} /> */}
+  {unreadNotifications > 0 && (
+    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+      {unreadNotifications}
+    </span>
+  )}
+</div>
+
+
+
+          <div
+
+
+            className={` p-2 cursor-pointer flex items-center ${user.badges == null ? '' : ' hidden' }`}
+            onClick={user.badges ? null : acheterBadge} // Disable click if user has a badge
+          >
+            <FontAwesomeIcon icon={faMedal} size="sm" />
+          </div>
+
+          {/* Photo de profil avec icône de certification */}
+          <div className="relative flex justify-between items-center">
+            {/* lien pour le profil */}
+            <Link to={"/profil"}>
             </Link>
-          </div>
-          <div className="notif flex items-center justify-center p-2 cursor-pointer">
-            <FontAwesomeIcon icon={faBell} path="/Models" />
-          </div>
-          <div className="profile flex gap-1 md:gap-2 cursor-pointer items-center">
+
+
+
             <img
-              className="w-6 h-6 md:w-12 rounded-full md:h-12"
-              src={`data:image/png;base64,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`}
-              alt=""
+
+              src={user.photoProfile}
+              alt="Profile"
+              className="w-6 h-6 md:w-12 md:h-12 rounded-full cursor-pointer"
+              onClick={toggleDropdown}
             />
-            <div className="text-sm">
-              <h2>Josephine</h2>
+
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-50">
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Déconnexion
+                </button>
+               
+              </div>
+            )}
+            
+            
+            <div className="text-sm md:ml-1">
+              <h2>{user.prenom} <FontAwesomeIcon icon={faCertificate} size="sm" className={`ml-1 text-blue-400 ${user.badges ? '' : 'hidden'}`} /> </h2>
               <p className="hidden">Active</p>
             </div>
           </div>
         </div>
       </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white w-96 p-8 rounded-lg shadow-lg">
+            <p
+              className={`text-lg font-bold text-center ${
+                isSuccess ? "text-green-600" : "text-red-600"
+              }`}
+            >
+              {modalMessage}
+            </p>
+            <button
+              className="mt-6 w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+              onClick={closeModal}
+            >
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

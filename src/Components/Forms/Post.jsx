@@ -1,97 +1,90 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { DataContext } from '../../App';
+import DataHandler from '../../DataHandler';
+import LocalStorage from '../../Utils/LocalStorage';
 
 const ModelForm = () => {
-    const [modelId, setModelId] = useState('');
+    // const { value, setValue } = useContext(DataContext);
+    const [models, setModels] = useState([]);
+    const [modelId, setModelId] = useState();
+    const [selectedModel,setSelectedModel] = useState();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [title,setTitle] = useState("");
+    const [user,setUser] = useState(LocalStorage.get("user"))
 
-    const handleSelectModel = (model) => {
-        setModelId(model);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        DataHandler.postData("http://localhost:3004/post/create",{modelId:modelId,titre:title,description: "hello world"})
+        .then((data) => {
+            if (data) {
+                alert(data.message)
+                alert(data.error)
+                setTitle("");
+                setModelId("");
+            }
+        })
+        .catch((error) => {
+            console.error(error.error);
+        });
+    }
+
+    useEffect(() => {
+        fetchModels();
+    }, []);
+
+    const fetchModels = async () => {
+        try {
+            const response = await DataHandler.getDatas(`/model/${user.id}/getModels`);
+            setModels(response);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des modèles :", error);
+        }
+    };
+
+    const handleSelectModel = (model,id) => {
+        setSelectedModel(model);
+        setModelId(id);
         setIsModalOpen(false); // Close the modal after selecting a model
     };
 
     return (
         <>
-            <form className='flex flex-col gap-2  bg-white p-4 rounded-lg shadow-lg'>
+            <form className='flex flex-col gap-2  bg-white p-4 rounded-lg shadow-lg' onSubmit={handleSubmit}>
                 <div className='flex justify-between items-center '>
                     <h1 className='text-lg font-semibold text-gray-600'>Create a Post</h1>
                     <div className='flex flex-col h-content items-center justify-center'>...</div>
                 </div>
                 <div>
-                    <input type="text" className='w-full bg-gray-200 p-2 rounded' placeholder='write something here...' />
+                    <input type="text" className='w-full bg-gray-200 p-2 rounded' value={title} onChange={(e) => setTitle(e.target.value)} placeholder='write something here...' />
                 </div>
                 <input
-                                type="text"
-                                id="modelId"
-                                name="modelId"
-                                value={modelId}
-                                onChange={(e) => setModelId(e.target.value)}
-                                className="hidden"
-                                required
-                            />
-                            {modelId && <p className="mt-2 text-gray-600">Selected Model: {modelId}</p>}
-                <button
-                    type="button"
-                    className=" bg-blue-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-blue-600"
-                    onClick={() => setIsModalOpen(true)}
-                >
-                    Choose Model
-                </button>
+                    type="text"
+                    id="modelId"
+                    name="modelId"
+                    value={modelId}
+                    onChange={(e) => setModelId(e.target.value)}
+                    className="hidden"
+                    required
+                />
+                {modelId && <p className="mt-2 text-gray-600">Selected Model: {selectedModel}</p>}
+                <div className='p-1 flex justify-between items-center'>
 
+                    <button
+                        type="button"
+                        className=" bg-blue-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-blue-600"
+                        onClick={() => setIsModalOpen(true)}
+                    >
+                        Choose Model
+                    </button>
 
-                {/* <div className="flex flex-col gap-4 w-full md:w-4/5 bg-white p-2 rounded-lg shadow-lg">
+                    <button
+                        type="submit"
+                        className=" bg-green-500 text-white px-3 py-1  w-fit rounded-lg hover:bg-green-600"
+                    >
+                        publish
+                    </button>
 
-                    <div className="flex sm:flex-row gap-4 justify-between">
-                        <div className="flex-1">
-                            <label htmlFor="titre" className="font-semibold">Titre</label>
-                            <input
-                                type="text"
-                                id="titre"
-                                name="titre"
-                                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                required
-                            />
-                        </div>
-                        <div className="flex-1">
-                            <label htmlFor="description" className="font-semibold">Description</label>
-                            <input
-                                type="text"
-                                id="description"
-                                name="description"
-                                className="w-full border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                                required
-                            />
-                        </div>
-                    </div>
-                    <div className='flex justify-between'>
-                        <div>
-
-                            <label htmlFor="modelId" className="font-semibold">Model</label>
-                            <button
-                                type="button"
-                                className="ml-4 bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600"
-                                onClick={() => setIsModalOpen(true)}
-                            >
-                                Choose Model
-                            </button>
-                            <input
-                                type="text"
-                                id="modelId"
-                                name="modelId"
-                                value={modelId}
-                                onChange={(e) => setModelId(e.target.value)}
-                                className="hidden"
-                                required
-                            />
-                            {modelId && <p className="mt-2 text-gray-600">Selected Model: {modelId}</p>}
-                        </div>
-                        <button type='submit' className='btn btn-success text-white'>Post</button>
-
-                    </div>
                 </div>
-
-                <div className='md:block hidden'>
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s" alt="" className='h-full w-full' />
-                </div> */}
 
 
             </form>
@@ -102,20 +95,22 @@ const ModelForm = () => {
                     <div className="bg-white rounded-lg p-6 shadow-lg w-96">
                         <h3 className="font-bold text-lg">Choose a Model</h3>
                         <div className="py-4">
-                            <button
-                                type="button"
-                                className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
-                                onClick={() => handleSelectModel('Model 1')}
-                            >
-                                Model 1
-                            </button>
-                            <button
-                                type="button"
-                                className="w-full bg-gray-100 hover:bg-gray-200 p-2 mb-2 rounded-lg"
-                                onClick={() => handleSelectModel('Model 2')}
-                            >
-                                Model 2
-                            </button>
+
+                            {models.length > 0 ? models.map((model) => {
+                                return <button
+                                    key={model.id}
+                                    type="button"
+                                    className="w-fit bg-gray-100 hover:bg-gray-200 mb-2 rounded-lg"
+                                    onClick={() => handleSelectModel(model.libelle,model.id)}
+                                >
+                                    <img src={model.contenu} alt={model.libelle} className='w-12 h-12 rounded'/>
+                                    {/* {model.libelle} */}
+                                </button>
+                            }):
+                            <div>
+                                <p>pas de model disponible veuillez en creer un</p>
+                            </div>
+                            }
                             {/* Add more model options as needed */}
                         </div>
                         <div className="modal-action mt-4">

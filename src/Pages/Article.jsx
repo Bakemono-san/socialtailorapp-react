@@ -16,6 +16,7 @@ export default function ArticlePage() {
     });
     const articlesPerPage = 6;
 
+
     useEffect(() => {
         fetchArticles();
     }, []);
@@ -26,6 +27,7 @@ export default function ArticlePage() {
             // Construire l'URL avec les filtres si fournis
             const queryParams = new URLSearchParams(filters).toString();
             const response = await DataHandler.getDatas(`/getArticles?${queryParams}`);
+
             console.log("Réponse des articles :", response);
             setArticles(response);
         } catch (error) {
@@ -51,6 +53,7 @@ export default function ArticlePage() {
     const handleSubmit = async (formData) => {
         await createArticle(formData);
         setIsModalOpen(false);
+
     };
 
     const createArticle = async (formData) => {
@@ -132,6 +135,7 @@ export default function ArticlePage() {
                 <table className="min-w-full bg-white shadow-lg rounded-lg">
                     <thead>
                         <tr className="bg-blue-500 text-white -600 uppercase text-sm leading-normal">
+
                             <th className="py-3 px-6 text-left">Libellé</th>
                             <th className="py-3 px-6 text-left">Prix (€)</th>
                             <th className="py-3 px-6 text-left">Quantité</th>
@@ -158,6 +162,7 @@ export default function ArticlePage() {
                                     />
                                 </td>
                                 
+
                             </tr>
                         ))}
                     </tbody>
@@ -182,6 +187,7 @@ export default function ArticlePage() {
                 />
             </div>
         
+
 
             {isModalOpen && (
                 <div className="fixed z-10 inset-0 overflow-y-auto">

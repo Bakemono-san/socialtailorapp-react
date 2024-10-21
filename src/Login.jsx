@@ -64,6 +64,7 @@ function Login() {
             <button
               type="submit"
               className="w-full bg-blue-700 text-white p-3 rounded-lg hover:bg-purple-700 transition duration-200"
+              onClick={handleSignupRedirect}
             >
               Sign in
             </button>
