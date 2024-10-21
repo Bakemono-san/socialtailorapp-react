@@ -105,7 +105,7 @@ export function PostHeader({
           )}
 
           {utilisateur.role === "tailleur" && (
-          {/* {utilisateur.role === "tailleur" && (
+          //  {utilisateur.role === "tailleur" && (
             <>
               <div className="mt-4 flex items-center">
                 {renderStars(averageRating)}
@@ -152,7 +152,7 @@ export function PostHeader({
                 </div>
               )}
             </>
-          )} */}
+          )}
         </div>
       </div>
       <div>
@@ -222,3 +222,4 @@ export function PostHeader({
     </div>
   );
 }
+
