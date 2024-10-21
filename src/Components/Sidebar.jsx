@@ -1,7 +1,7 @@
 import React from 'react';
 import ProfileItem from './ProfileItem';
 import SidebarItem from './SidebarItem';
-import { faCog, faCoins, faHome, faMessage, faVest, faTrophy, faBell } from '@fortawesome/free-solid-svg-icons'; // Ajoutez faBell ici
+import { faCog, faCoins, faHome, faMessage, faVest, faTrophy, faBell, faUser } from '@fortawesome/free-solid-svg-icons'; // Ajoutez faBell ici
 
 import { faNewspaper } from '@fortawesome/free-solid-svg-icons';
 import { useLocation } from 'react-router-dom';
@@ -21,7 +21,7 @@ export default function Sidebar(props) {
   const location = useLocation();
 
   return (
-    <div className={`bg-white bg-opacity-90 shadow-lg md:py-6 flex md:flex-col md:gap-6 md:h-full lg:min-w-64 text-gray-700 md:rounded-lg w-full min-h-12 border border-gray-300 md:w-fit md:px-4`}>
+    <div className={`bg-[#3b5999] shadow-lg md:py-6 flex md:flex-col md:gap-6 md:h-full lg:min-w-64 text-white md:rounded-lg w-full min-h-12 border border-gray-300 md:w-fit md:px-4`}>
       <div className='hidden md:block'>
         <SidebarItem icon={faHome} name="Home" path="/" active={location.pathname === '/'} />
       </div>

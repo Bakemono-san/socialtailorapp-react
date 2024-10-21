@@ -10,7 +10,7 @@ export default function SidebarItem(props) {
     >
       {
         props.icon
-          ? <FontAwesomeIcon icon={props.icon} size="lg" className="text-blue-400" />
+          ? <FontAwesomeIcon icon={props.icon} size="lg" className="text-white" />
           : <img src={props.image} alt={props.image} className='rounded-lg w-12 h-12' />
       }
       <p className='hidden md:block font-medium'>{props.name}</p>

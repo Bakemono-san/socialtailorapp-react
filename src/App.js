@@ -94,7 +94,6 @@ function App() {
                   <RightSideBar color="bg-white" />
                 </div>
               </div>
-            </div>
           } />
         </Routes>
       </Router>
