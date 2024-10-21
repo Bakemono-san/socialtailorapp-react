@@ -48,7 +48,7 @@ export default function Sidebar(props) {
                 <p>{message.Users_UsersDiscussions_receiverIdToUsers.nom}</p>
               </div>
             </div>
-          );
+          
         })}
         {/* <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/1" className="sm:hidden" />
         <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/2" />
