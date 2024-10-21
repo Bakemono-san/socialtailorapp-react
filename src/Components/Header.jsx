@@ -1,14 +1,34 @@
 import { faBasketShopping, faBell, faHeart, faMedal, faCheckCircle, faCertificate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { DataContext } from "../App";
+import DataHandler from "../DataHandler";
 
 export default function Header() {
   const { value } = useContext(DataContext);
   const [modalMessage, setModalMessage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false); // Gérer le type de message
+  const [unreadNotifications, setUnreadNotifications] = useState(0); // Stocke le nombre de notifications non lues
+
+ // Récupérer les notifications non lues via DataHandler dans le header
+useEffect(() => {
+  const fetchUnreadNotifications = async () => {
+    try {
+      const response = await DataHandler.getDatas("/notifications/unread");
+      if (response.unreadCount !== undefined) {
+        setUnreadNotifications(response.unreadCount); // Mettre à jour le nombre de notifications non lues
+      } else {
+        console.error("Erreur lors de la récupération des notifications non lues");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la connexion au serveur:", error);
+    }
+  };
+
+  fetchUnreadNotifications();
+}, []);
 
   // Fonction pour acheter le badge
   const acheterBadge = async () => {
@@ -65,13 +85,24 @@ export default function Header() {
             </Link>
           </div>
 
-          <div className="notif p-2 cursor-pointer">
-            <FontAwesomeIcon icon={faBell} />
-          </div>
+        {/* Icone de cloche avec le nombre de notifications non lues */}
+<div className="relative notif p-2 cursor-pointer">
+  <Link to={"/notifications"}>
+    <FontAwesomeIcon icon={faBell} />
+  </Link>
+  
+  {/* <FontAwesomeIcon icon={faBell} /> */}
+  {unreadNotifications > 0 && (
+    <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+      {unreadNotifications}
+    </span>
+  )}
+</div>
+
 
           {/* Bouton pour acheter un badge */}
           <div
-            className={` p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
+            className={`p-2 cursor-pointer flex items-center ${value.user.badges == null ? '' : ' hidden' }`}
             onClick={value.user.badges ? null : acheterBadge} // Disable click if user has a badge
           >
             <FontAwesomeIcon icon={faMedal} size="sm" />
@@ -79,6 +110,11 @@ export default function Header() {
 
           {/* Photo de profil avec icône de certification */}
           <div className="relative flex justify-between items-center">
+            {/* lien pour le profil */}
+            <Link to={"/profil"}>
+            </Link>
+
+
             <img
               className="w-6 h-6 md:w-12 rounded-full md:h-12"
               src={value.user.photoProfile}

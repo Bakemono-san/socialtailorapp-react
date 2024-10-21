@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { DataContext } from "../../App";
 import DataHandler from "../../DataHandler";
 
@@ -19,37 +18,41 @@ const ChangeRole = () => {
         newRole: newSelectedRole,
       };
       const response = await DataHandler.postData("/changeRole", requestData);
-      // Si la réponse est un succès
       setMessage(response);
       setMessageColor("text-green-500");
     } catch (err) {
-      // Si une erreur se produit
       setMessage(err.response?.data || "Erreur lors du changement de rôle");
       setMessageColor("text-red-500");
       console.log(err);
     }
-    // Timeout pour faire disparaître le message après 3 secondes
+
     setTimeout(() => {
       setMessage("");
     }, 5000);
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-sm">
-        <h2 className="text-2xl font-semibold text-center mb-6">Changement de rôle</h2>
-        <h2 className="text-2xl font-semibold text-center mb-6">Votre rôle: {connectedUser.role}</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+      <div className="bg-white p-8 shadow-lg rounded-xl max-w-lg w-full transform transition duration-500 hover:shadow-2xl hover:scale-105">
+        <h2 className="text-3xl font-extrabold text-center text-gray-800 mb-6">
+          Changer de rôle
+        </h2>
+        <p className="text-center text-gray-500 mb-8">
+          Rôle actuel:{" "}
+          <span className="text-blue-600 font-semibold">
+            {connectedUser.role}
+          </span>
+        </p>
 
-        <form onSubmit={handleChangeRole}>
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="role">
-              Sélectionner un rôle
+        <form onSubmit={handleChangeRole} className="space-y-6">
+          <div>
+            <label className="block text-sm font-semibold text-gray-600">
+              Sélectionnez un nouveau rôle
             </label>
             <select
               value={newSelectedRole}
               onChange={(e) => setNewSelectedRole(e.target.value)}
-              id="role"
-              className="block appearance-none w-full bg-gray-200 border border-gray-300 text-gray-700 py-2 px-3 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              className="mt-2 w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition ease-in-out"
             >
               <option value="tailleur">Tailleur</option>
               <option value="vendeur">Vendeur</option>
@@ -57,18 +60,19 @@ const ChangeRole = () => {
             </select>
           </div>
 
-          {/* Affichage du message de réponse */}
           {message && (
-            <p className={`text-center font-bold mb-4 ${messageColor}`}>
+            <p
+              className={`text-center text-lg font-semibold mt-4 ${messageColor}`}
+            >
               {message}
             </p>
           )}
 
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            className="w-full py-3 px-6 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold rounded-lg hover:from-blue-600 hover:to-indigo-600 focus:outline-none focus:ring-4 focus:ring-blue-300 transform transition-transform duration-300 hover:scale-105"
           >
-            Valider
+            Valider le changement
           </button>
         </form>
       </div>

@@ -21,7 +21,7 @@ const ProfileCard = ({ user, role }) => {
             <span className="text-lg font-semibold">Certifié</span>
           </div>
         )}
-        <p className="text-gray-500 mt-2">{role}</p>
+        <p className="text-gray-500 mt-2">{user.role}</p>
       </div>
     </div>
   );
