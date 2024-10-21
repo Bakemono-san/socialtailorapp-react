@@ -117,75 +117,68 @@ export default function ArticleForm({ onSubmit }) {
     }, [contenu]);
 
     return (
-        <form onSubmit={handleSubmit} ref={form} className="bg-white shadow-md rounded-lg p-8 max-w-xl mx-auto">
-            <div className="form-group mb-5 relative">
-                <label htmlFor="libelle" className="block text-gray-700 font-semibold text-lg">Libellé de l'article</label>
+        <form onSubmit={handleSubmit} ref={form} className="bg-gray-100 shadow-lg rounded-lg p-6">
+            <h2 className="text-xl font-bold text-gray-700 mb-4">Créer un nouvel article</h2>
+
+            <div className="form-group mb-4">
+                <label className="block text-gray-700">Libellé</label>
                 <input
                     type="text"
-                    id="libelle"
                     value={libelle}
                     onChange={(e) => setLibelle(e.target.value)}
-                    className={`mt-1 p-3 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.libelle ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border ${formErrors.libelle ? 'border-red-500' : 'border-gray-300'} rounded`}
                 />
-                {getValidationIcon('libelle', libelle)}
-                {formErrors.libelle && <span className="text-red-500 text-sm">{formErrors.libelle}</span>}
+                {formErrors.libelle && <p className="text-red-500 text-sm">{formErrors.libelle}</p>}
             </div>
 
-            <div className="form-group mb-5 relative">
-                <label htmlFor="prix" className="block text-gray-700 font-semibold text-lg">Prix Unitaire (€)</label>
+            <div className="form-group mb-4">
+                <label className="block text-gray-700">Prix (€)</label>
                 <input
                     type="text"
-                    id="prix"
                     value={prix}
                     onChange={(e) => setPrix(e.target.value)}
-                    className={`mt-1 p-3 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.prix ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border ${formErrors.prix ? 'border-red-500' : 'border-gray-300'} rounded`}
                 />
-                {getValidationIcon('prix', prix)}
-                {formErrors.prix && <span className="text-red-500 text-sm">{formErrors.prix}</span>}
+                {formErrors.prix && <p className="text-red-500 text-sm">{formErrors.prix}</p>}
             </div>
 
-            <div className="form-group mb-5 relative">
-                <label htmlFor="quantite" className="block text-gray-700 font-semibold text-lg">Quantité en Stock</label>
+            <div className="form-group mb-4">
+                <label className="block text-gray-700">Quantité</label>
                 <input
                     type="text"
-                    id="quantite"
                     value={quantite}
                     onChange={(e) => setQuantite(e.target.value)}
-                    className={`mt-1 p-3 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.quantite ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border ${formErrors.quantite ? 'border-red-500' : 'border-gray-300'} rounded`}
                 />
-                {getValidationIcon('quantite', quantite)}
-                {formErrors.quantite && <span className="text-red-500 text-sm">{formErrors.quantite}</span>}
+                {formErrors.quantite && <p className="text-red-500 text-sm">{formErrors.quantite}</p>}
             </div>
 
-            <div className="form-group mb-5 relative">
-                <label htmlFor="type" className="block text-gray-700 font-semibold text-lg">Type d'article</label>
+            <div className="form-group mb-4">
+                <label className="block text-gray-700">Type</label>
                 <select
-                    id="type"
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className={`mt-1 p-3 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.type ? 'border-red-500' : 'border-gray-300'}`}
+                    className={`w-full p-2 border ${formErrors.type ? 'border-red-500' : 'border-gray-300'} rounded`}
                 >
-                    <option value="">Sélectionner un type</option>
+                    <option value="">Sélectionnez le type</option>
                     <option value="tissu">Tissu</option>
                     <option value="accessoire">Accessoire</option>
                 </select>
-                {getValidationIcon('type', type)}
-                {formErrors.type && <span className="text-red-500 text-sm">{formErrors.type}</span>}
+                {formErrors.type && <p className="text-red-500 text-sm">{formErrors.type}</p>}
             </div>
 
-            <div className="form-group mb-6 relative">
-                <label htmlFor="contenu" className="block text-gray-700 font-semibold text-lg">Image de l'article</label>
+            <div className="form-group mb-4">
+                <label className="block text-gray-700">Image</label>
                 <input
                     type="file"
-                    id="contenu"
-                    onChange={handleContenuChange}
-                    className={`mt-1 p-3 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500 ${formErrors.contenu ? 'border-red-500' : 'border-gray-300'}`}
+                    onChange={(e) => setContenu(e.target.files[0])}
+                    className={`w-full p-2 border ${formErrors.contenu ? 'border-red-500' : 'border-gray-300'} rounded`}
                 />
-                {formErrors.contenu && <span className="text-red-500 text-sm">{formErrors.contenu}</span>}
+                {formErrors.contenu && <p className="text-red-500 text-sm">{formErrors.contenu}</p>}
             </div>
 
-            <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700">
-                Ajouter
+            <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+                Ajouter l'article
             </button>
         </form>
     );
