@@ -4,9 +4,55 @@
 // import { faStar as farStar, faStarHalfAlt } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar as fasStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as farStar, faStarHalfAlt } from "@fortawesome/free-regular-svg-icons";
-export function PostHeader({ utilisateur, post, averageRating, showRating, toggleRating, 
-  userRating, handleRating, notification, renderStars , handleAddToFavoris , handleSubmit ,reason , setReason , responseMessage , responseSuccess}) {
+import { faStar as farStar,faStarHalfAlt,} from "@fortawesome/free-regular-svg-icons";
+import { useEffect, useState } from "react";
+
+export function PostHeader({
+  utilisateur,
+  post,
+  averageRating,
+  showRating,
+  toggleRating,
+  userRating,
+  handleRating,
+  notification,
+  renderStars,
+  handleAddToFavoris,
+  handleSubmit,
+  reason,
+  setReason,
+  responseMessage,
+  responseSuccess,
+  isFollowing: initialFollowing,
+  onFollowUser,
+  connectedUser
+}) {
+  const [isFollowing, setIsFollowing] = useState(initialFollowing); // Gérer l'état local pour le suivi
+  const [message, setMessage] = useState("");
+
+  // Met à jour l'état local lorsqu'il change dans le parent
+  useEffect(() => {
+    setIsFollowing(initialFollowing);
+  }, [initialFollowing]);
+
+  const handleClick = async () => {
+    const newFollowState = !isFollowing;
+    await onFollowUser(utilisateur.id, newFollowState);
+
+    // Met à jour l'état local pour le bouton
+    setIsFollowing(newFollowState);
+
+    setMessage(
+      newFollowState
+        ? "Vous suivez ce tailleur"
+        : "Vous vous êtes désabonné de ce tailleur"
+    );
+    setTimeout(() => {
+      setMessage("");
+    }, 4000);
+  }; 
+  
+
   return (
     <div className="flex items-center justify-between py-2 md:py-2 md:px-4 px-2 border-b border-grey-300 rounded-t-xl">
       <div className="flex gap-2 items-center">
@@ -19,6 +65,46 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
           <h3>{utilisateur.prenom + " " + utilisateur.nom}</h3>
           <p>{post.datePublication}</p>
 
+          {connectedUser.id !== post.Users.id &&
+            (isFollowing ?  (
+              <button
+                className="bg-red-500 text-white border-none p-2.5 px-5 cursor-pointer rounded-md hover:opacity-80 transition-opacity"
+                onClick={handleClick}
+              >
+                Unfollow
+              </button>
+            ) : (
+              <button
+                className="bg-blue-500 text-white border-none p-2.5 px-5 cursor-pointer rounded-md hover:opacity-80 transition-opacity"
+                onClick={handleClick}
+              >
+                Follow
+              </button>
+            ))
+            }
+
+          {/* {isFollowing ? (
+            <button
+              className="bg-red-500 text-white border-none p-2.5 px-5 cursor-pointer rounded-md hover:opacity-80 transition-opacity"
+              onClick={handleClick}
+            >
+              Unfollow
+            </button>
+          ) : (
+            <button
+              className="bg-blue-500 text-white border-none p-2.5 px-5 cursor-pointer rounded-md hover:opacity-80 transition-opacity"
+              onClick={handleClick}
+            >
+              Follow
+            </button>
+          )} */}
+
+          {/* Affichage conditionnel du message */}
+          {message && (
+            <p className="mt-2 text-sm text-gray-600 animate-fade">{message}</p>
+          )}
+
+          {utilisateur.role === "tailleur" && (
           {/* {utilisateur.role === "tailleur" && (
             <>
               <div className="mt-4 flex items-center">
@@ -27,17 +113,21 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
                   ({averageRating.toFixed(1)})
                 </span>
               </div>
-
+              
+              {connectedUser.id !== post.Users.id &&  
               <button
                 onClick={toggleRating}
                 className="mb-2 px-4 py-2 bg-blue-500 text-white rounded"
               >
                 {showRating ? "Terminer" : "Noter"}
               </button>
+              }
 
               {showRating && (
                 <div className="mt-2 flex items-center">
-                  <span className="mr-2 text-sm text-gray-600">Votre note :</span>
+                  <span className="mr-2 text-sm text-gray-600">
+                    Votre note :
+                  </span>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <FontAwesomeIcon
                       key={star}
@@ -78,7 +168,13 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
               <button onClick={handleAddToFavoris}>marquer favori</button>
             </li>
             <li>
-              <button onClick={() => document.getElementById("my_modal_5").showModal()}>Signaler</button>
+              <button
+                onClick={() =>
+                  document.getElementById("my_modal_5").showModal()
+                }
+              >
+                Signaler
+              </button>
             </li>
           </ul>
         </div>
@@ -114,8 +210,9 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
           </form>
           {responseMessage && (
             <div
-              className={`mt-4 text-center ${responseSuccess ? "text-green-500" : "text-red-500"
-                }`}
+              className={`mt-4 text-center ${
+                responseSuccess ? "text-green-500" : "text-red-500"
+              }`}
             >
               {responseMessage}
             </div>
@@ -123,7 +220,5 @@ export function PostHeader({ utilisateur, post, averageRating, showRating, toggl
         </div>
       </dialog>
     </div>
-
-
   );
 }

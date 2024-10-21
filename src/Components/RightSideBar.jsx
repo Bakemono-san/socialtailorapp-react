@@ -19,11 +19,18 @@ export default function Sidebar(props) {
 }, [])
 
   return (
+
     <div className={props.color + ` hidden md:flex md:py-4 md:px-5 md:flex-col md:gap-10 md:h-full text-white md:rounded w-full min-h-12 shadow md:w-fit tv:w-max  2xl:w-full`}>
       {/* <div className='hidden md:block bg-[#3b5999] rounded'>
         <SidebarItem icon={faSearch} path="/" />
       </div> */}
 
+
+<Link to="/following" className="hidden md:block bg-[#3b5999] rounded">
+        <FontAwesomeIcon icon={faUserFriends} />
+        <span>Suivis</span>
+      </Link>
+      <hr />
       <Link to="/myFollowers" className="hidden md:block bg-[#3b5999] rounded p-4">
           <FontAwesomeIcon icon={faUserFriends} />
           <span>Followers</span>
@@ -41,9 +48,8 @@ export default function Sidebar(props) {
                 <p>{message.Users_UsersDiscussions_receiverIdToUsers.nom}</p>
               </div>
             </div>
-          }
-          )
-        }
+          );
+        })}
         {/* <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/1" className="sm:hidden" />
         <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/2" />
         <SidebarItem image={'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQVv0X1OiwK4BXsh6RT2w1jXWPS3LoHJ74_Q&s'} path="/discussion/3" />
@@ -53,4 +59,3 @@ export default function Sidebar(props) {
     </div>
   );
 }
-
